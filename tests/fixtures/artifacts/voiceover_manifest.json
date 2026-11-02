@@ -1,0 +1,43 @@
+{
+ "version": "1",
+ "project_id": "fx-ifb-442",
+ "inputs": {
+  "narration_script": "0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "provider": "mock_flite",
+ "voice_id": "mock",
+ "model_id": "flite",
+ "chars_billed_total": 0,
+ "clips": [
+  {
+   "id": "V01",
+   "scene": "S01",
+   "text": "Watch this.",
+   "tts_text": "Watch this.",
+   "request_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+   "cached": false,
+   "file": "media/vo/V01.wav",
+   "sample_rate": 48000,
+   "samples": 48000,
+   "duration_s": 1.0,
+   "onset_correction_s": 0.0,
+   "chars_billed": 0,
+   "words": [
+    {
+     "i": 0,
+     "display": "Watch",
+     "spoken": "Watch",
+     "start_s": 0.05,
+     "end_s": 0.4
+    },
+    {
+     "i": 1,
+     "display": "this.",
+     "spoken": "this.",
+     "start_s": 0.45,
+     "end_s": 0.9
+    }
+   ]
+  }
+ ]
+}

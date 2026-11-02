@@ -1,0 +1,34 @@
+# CH — choreography rules (engine-compiled tracks; re-checked independently of the compiler).
+rules:
+  CH-01: {artifact: choreography, severity: error, text: "2-20 scenes; pitch scenes 2-20 s; declared length_s covers the content", params: {min_scenes: 2, max_scenes: 20, min_s: 2.0, max_s: 20.0}}
+  CH-02: {artifact: choreography, severity: error, text: "every id, handle and time reference resolves; no circular dependencies"}
+  CH-03: {artifact: choreography, severity: error, text: "every principle (tactic) / tactical battle (match preview) is shown in >= 1 pitch scene; explain/demonstrate/exploit/battle scenes cite one"}
+  CH-04: {artifact: choreography, severity: warning, text: "start overrides are few and near the snapshot", params: {max_overrides: 4, max_shift_m: 8}}
+  CH-05: {artifact: choreography, severity: error, text: "every pitch scene changes something (action, overlay or camera move)"}
+  CH-10: {artifact: choreography, severity: error, text: "speed <= 9.5 m/s outfield, <= 7.0 m/s goalkeepers (0.2 s central difference)", params: {vmax: 9.5, vmax_gk: 7.0, window_s: 0.2}}
+  CH-11: {artifact: choreography, severity: warning, text: "no sprint above 7.5 m/s sustained for more than 4 s", params: {v: 7.5, max_s: 4.0}}
+  CH-12: {artifact: choreography, severity: error, text: "acceleration <= 6 m/s^2 (warning above 4.5), 0.3 s smoothing", params: {amax: 6.0, awarn: 4.5}}
+  CH-13: {artifact: choreography, severity: error, text: "per-frame displacement <= 0.5 m except at reset boundaries", params: {max_step_m: 0.5}}
+  CH-14: {artifact: choreography, severity: error, text: "players inside the pitch +- 2 m", params: {margin: 2.0}}
+  CH-15: {artifact: choreography, severity: error, text: "teammates never < 1.2 m apart for > 0.1 s; opponents never < 0.6 m outside duels/tackles; warning when opponents < 1.6 m for > 1.5 s", params: {teammates_min: 1.2, opponents_min: 0.6, opponents_warn: 1.6, warn_s: 1.5}}
+  CH-16: {artifact: choreography, severity: warning, text: "no dead shape: >= 80% of outfield players nearly static (< 0.3 m/s) for > 2 s while the ball travels", params: {share: 0.8, v: 0.3, s: 2.0}}
+  CH-20: {artifact: choreography, severity: error, text: "possession timeline covers every frame without gaps or overlaps"}
+  CH-21: {artifact: choreography, severity: error, text: "a held ball stays within 1.0 m of its carrier", params: {max_m: 1.0}}
+  CH-22: {artifact: choreography, severity: error, text: "average flight speed per pass kind is realistic; instantaneous ball speed <= 35 m/s", params: {ground: [8, 26], driven: [12, 28], through: [8, 22], lofted: [10, 28], cross: [10, 28], shot: [16, 35], vmax: 35}}
+  CH-23: {artifact: choreography, severity: error, text: "passes leave the passer (<= 1.0 m) and arrive at the receiver (<= 1.0 m)", params: {max_m: 1.0}}
+  CH-24: {artifact: choreography, severity: error, text: "a pass is >= 4 m long and >= 8 frames in flight", params: {min_m: 4.0, min_frames: 8}}
+  CH-25: {artifact: choreography, severity: error, text: "possession changes only through passes, tackles, intercepts, shots; only the holder passes, carries or shoots"}
+  CH-26: {artifact: choreography, severity: error, text: "an interceptor is within 1.5 m of the ball at the interception", params: {max_m: 1.5}}
+  CH-27: {artifact: choreography, severity: error, text: "the ball stays inside the pitch +- 1 m unless a shot/goal takes it out", params: {margin: 1.0}}
+  CH-30: {artifact: choreography, severity: error, text: "no receiver is offside at the moment a pass is released (tolerance 0.3 m; warning under 0.5 m margin)", params: {tol: 0.3, warn: 0.5}}
+  CH-40: {artifact: choreography, severity: error, text: "overlays visible >= 0.8 s (warning under 1.2 s)", params: {min_s: 0.8, warn_s: 1.2}}
+  CH-41: {artifact: choreography, severity: error, text: "text overlays readable: visible >= max(1.5 s, 0.3 s/word + 0.6 s)", params: {min_s: 1.5, per_word: 0.3, base: 0.6}}
+  CH-42: {artifact: choreography, severity: error, text: "at any moment <= 4 overlays, <= 2 with text, <= 1 filled zone", params: {max_all: 4, max_text: 2, max_zones: 1}}
+  CH-43: {artifact: choreography, severity: error, text: "a preview run arrow appears >= 0.25 s before its run starts", params: {lead_s: 0.25}}
+  CH-44: {artifact: choreography, severity: error, text: "zone polygons inside the pitch and >= 6 m^2", params: {min_area: 6.0}}
+  CH-50: {artifact: choreography, severity: error, text: "camera rect within the pitch +- 6 m and 32 m <= w <= full fit", params: {margin: 6.0, min_w: 32.0}}
+  CH-51: {artifact: choreography, severity: error, text: "camera pans <= 0.45 w per second and zooms |d ln w/dt| <= 0.6 per second outside cuts", params: {pan: 0.45, zoom: 0.6}}
+  CH-52: {artifact: choreography, severity: error, text: "the ball is on screen in pitch scenes (except shots leaving frame); featured players inside the 90% safe area >= 95% of their active frames", params: {safe: 0.9, share: 0.95}}
+  CH-53: {artifact: choreography, severity: error, text: "camera jumps only at reset/cut scene boundaries", params: {max_jump_m: 2.0}}
+  CH-60: {artifact: choreography, severity: warning, text: "no pitch stretch longer than 6 s without an action, event, overlay or camera change", params: {max_s: 6.0}}
+  CH-61: {artifact: choreography, severity: error, text: "total authored length is 0.6-1.1 x the target duration (holds and voice pacing stretch it later)", params: {lo: 0.6, hi: 1.1}}

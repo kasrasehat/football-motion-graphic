@@ -1,0 +1,386 @@
+{
+  "version": "1",
+  "project_id": "fx-match",
+  "runs": [
+    {
+      "agent": "match-researcher",
+      "scope": "H",
+      "finished_at": "2026-11-02T12:20:00Z"
+    },
+    {
+      "agent": "match-researcher",
+      "scope": "A",
+      "finished_at": "2026-11-02T12:20:00Z"
+    },
+    {
+      "agent": "match-researcher",
+      "scope": "fixture",
+      "finished_at": "2026-11-02T12:20:00Z"
+    }
+  ],
+  "claims": [
+    {
+      "id": "W-001",
+      "fact_key": "H.xg_for_avg",
+      "category": "xg",
+      "statement": "Real Madrid create 2.1 xG per match.",
+      "value": 2.1,
+      "unit": "xG/match",
+      "as_of": "2026-11-01T00:00:00Z",
+      "confidence": "medium",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://fbref.com/en/squads/rma",
+          "title": "FBref preview",
+          "publisher": "FBref",
+          "tier": 2,
+          "quote": "xG per 90: 2.10",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-002",
+      "fact_key": "H.xg_against_avg",
+      "category": "xg",
+      "statement": "Real Madrid concede 1.0 xG per match.",
+      "value": 1.0,
+      "unit": "xG/match",
+      "as_of": "2026-11-01T00:00:00Z",
+      "confidence": "medium",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://fbref.com/en/squads/rma",
+          "title": "FBref preview",
+          "publisher": "FBref",
+          "tier": 2,
+          "quote": "xGA per 90: 1.00",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-003",
+      "fact_key": "A.xg_for_avg",
+      "category": "xg",
+      "statement": "Arsenal create 1.8 xG per match.",
+      "value": 1.8,
+      "unit": "xG/match",
+      "as_of": "2026-11-01T00:00:00Z",
+      "confidence": "medium",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://fbref.com/en/squads/ars",
+          "title": "FBref preview",
+          "publisher": "FBref",
+          "tier": 2,
+          "quote": "xG per 90: 1.80",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-004",
+      "fact_key": "A.xg_against_avg",
+      "category": "xg",
+      "statement": "Arsenal concede 0.8 xG per match.",
+      "value": 0.8,
+      "unit": "xG/match",
+      "as_of": "2026-11-01T00:00:00Z",
+      "confidence": "medium",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://fbref.com/en/squads/ars",
+          "title": "FBref preview",
+          "publisher": "FBref",
+          "tier": 2,
+          "quote": "xGA per 90: 0.80",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-005",
+      "fact_key": "H.tactics.build_up",
+      "category": "tactics",
+      "statement": "Madrid build in a 4-3-3 and attack quickly in transition.",
+      "value": "4-3-3 build-up, fast transitions",
+      "unit": null,
+      "as_of": null,
+      "confidence": "high",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://theanalyst.com/rma-tactics",
+          "title": "The Analyst preview",
+          "publisher": "The Analyst",
+          "tier": 2,
+          "quote": "Madrid look to break quickly once they win the ball",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-006",
+      "fact_key": "A.tactics.pressing_style",
+      "category": "tactics",
+      "statement": "Arsenal press high, the eight jumping onto the holding midfielder.",
+      "value": "high 4-4-2 press",
+      "unit": null,
+      "as_of": null,
+      "confidence": "high",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://theanalyst.com/ars-press",
+          "title": "The Analyst preview",
+          "publisher": "The Analyst",
+          "tier": 2,
+          "quote": "the right eight steps up alongside the striker",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-007",
+      "fact_key": "H.predicted_xi",
+      "category": "lineup",
+      "statement": "Predicted Real Madrid XI.",
+      "value": [
+        {
+          "name": "Navarro",
+          "number": 1,
+          "position": "G"
+        },
+        {
+          "name": "Ortega",
+          "number": 2,
+          "position": "D"
+        },
+        {
+          "name": "Ibarra",
+          "number": 4,
+          "position": "D"
+        },
+        {
+          "name": "Molina",
+          "number": 22,
+          "position": "D"
+        },
+        {
+          "name": "Castro",
+          "number": 23,
+          "position": "D"
+        },
+        {
+          "name": "Serrano",
+          "number": 6,
+          "position": "M"
+        },
+        {
+          "name": "Vidal",
+          "number": 8,
+          "position": "M"
+        },
+        {
+          "name": "Delgado",
+          "number": 5,
+          "position": "M"
+        },
+        {
+          "name": "Romero",
+          "number": 11,
+          "position": "F"
+        },
+        {
+          "name": "Fuentes",
+          "number": 9,
+          "position": "F"
+        },
+        {
+          "name": "Herrera",
+          "number": 7,
+          "position": "F"
+        }
+      ],
+      "unit": null,
+      "as_of": "2026-11-02T10:00:00Z",
+      "confidence": "medium",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://www.marca.com/rma-xi",
+          "title": "Marca preview",
+          "publisher": "Marca",
+          "tier": 1,
+          "quote": "Navarro; Ortega, Ibarra, Molina, Castro",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        },
+        {
+          "kind": "web",
+          "url": "https://www.espn.com/rma-xi",
+          "title": "ESPN preview",
+          "publisher": "ESPN",
+          "tier": 1,
+          "quote": "Navarro in goal behind a back four",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-008",
+      "fact_key": "A.predicted_xi",
+      "category": "lineup",
+      "statement": "Predicted Arsenal XI.",
+      "value": [
+        {
+          "name": "Hughes",
+          "number": 1,
+          "position": "G"
+        },
+        {
+          "name": "Clarke",
+          "number": 2,
+          "position": "D"
+        },
+        {
+          "name": "Walsh",
+          "number": 6,
+          "position": "D"
+        },
+        {
+          "name": "Gardner",
+          "number": 4,
+          "position": "D"
+        },
+        {
+          "name": "Lowe",
+          "number": 3,
+          "position": "D"
+        },
+        {
+          "name": "Fletcher",
+          "number": 41,
+          "position": "M"
+        },
+        {
+          "name": "Bennett",
+          "number": 8,
+          "position": "M"
+        },
+        {
+          "name": "Doyle",
+          "number": 29,
+          "position": "M"
+        },
+        {
+          "name": "Marsh",
+          "number": 7,
+          "position": "F"
+        },
+        {
+          "name": "Shaw",
+          "number": 9,
+          "position": "F"
+        },
+        {
+          "name": "Kerr",
+          "number": 11,
+          "position": "F"
+        }
+      ],
+      "unit": null,
+      "as_of": "2026-11-02T10:00:00Z",
+      "confidence": "medium",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://www.bbc.co.uk/ars-xi",
+          "title": "BBC preview",
+          "publisher": "BBC",
+          "tier": 1,
+          "quote": "Hughes; Clarke, Walsh, Gardner, Lowe",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        },
+        {
+          "kind": "web",
+          "url": "https://www.skysports.com/ars-xi",
+          "title": "Sky Sports preview",
+          "publisher": "Sky Sports",
+          "tier": 1,
+          "quote": "Hughes starts in goal",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-009",
+      "fact_key": "H.suspensions",
+      "category": "suspension",
+      "statement": "No Madrid suspensions.",
+      "value": [],
+      "unit": null,
+      "as_of": "2026-11-02T10:00:00Z",
+      "confidence": "high",
+      "single_source": true,
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://www.uefa.com/disciplinary",
+          "title": "UEFA preview",
+          "publisher": "UEFA",
+          "tier": 1,
+          "quote": "no suspended players for Real Madrid",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-010",
+      "fact_key": "A.suspensions",
+      "category": "suspension",
+      "statement": "No Arsenal suspensions.",
+      "value": [],
+      "unit": null,
+      "as_of": "2026-11-02T10:00:00Z",
+      "confidence": "high",
+      "single_source": true,
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://www.uefa.com/disciplinary",
+          "title": "UEFA preview",
+          "publisher": "UEFA",
+          "tier": 1,
+          "quote": "no suspended players for Arsenal",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "W-011",
+      "fact_key": "fixture.stakes",
+      "category": "news",
+      "statement": "Both sides chase a top-eight league-stage finish.",
+      "value": "top-eight race in the league stage",
+      "unit": null,
+      "as_of": "2026-11-02T09:00:00Z",
+      "confidence": "medium",
+      "sources": [
+        {
+          "kind": "web",
+          "url": "https://www.uefa.com/preview",
+          "title": "UEFA preview",
+          "publisher": "UEFA",
+          "tier": 1,
+          "quote": "both clubs are in the race for the top eight",
+          "retrieved_at": "2026-11-02T12:15:00Z"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/render_report.schema.json",
+  "title": "render_report — measured properties of final.mp4 and FQ rule results",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "inputs", "output", "audio", "checks", "qa_frames", "mock_audio", "verdict"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "inputs": {"$ref": "../defs.schema.json#/$defs/inputs"},
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["file", "captions_file", "width", "height", "fps", "frames", "duration_s", "size_bytes"],
+      "properties": {
+        "file": {"type": "string"}, "captions_file": {"type": ["string", "null"]},
+        "width": {"type": "integer"}, "height": {"type": "integer"}, "fps": {"type": "string"},
+        "frames": {"type": "integer"}, "duration_s": {"type": "number"}, "size_bytes": {"type": "integer"}
+      }
+    },
+    "audio": {
+      "type": "object", "additionalProperties": false,
+      "required": ["integrated_lufs", "true_peak_dbtp", "lra", "vo_music_margin_db"],
+      "properties": {
+        "integrated_lufs": {"type": ["number", "null"]}, "true_peak_dbtp": {"type": ["number", "null"]},
+        "lra": {"type": ["number", "null"]}, "vo_music_margin_db": {"type": ["number", "null"]}
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["rule", "ok", "severity", "detail"],
+        "properties": {
+          "rule": {"type": "string", "pattern": "^[A-Z]{2}-\\d{2}$"}, "ok": {"type": "boolean"},
+          "severity": {"enum": ["error", "warning"]}, "detail": {"type": "string"}
+        }
+      }
+    },
+    "qa_frames": {"type": "array", "items": {"type": "string"}},
+    "mock_audio": {"type": "boolean"},
+    "verdict": {"enum": ["pass", "fail"]}
+  }
+}

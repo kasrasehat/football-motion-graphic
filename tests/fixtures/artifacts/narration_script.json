@@ -1,0 +1,78 @@
+{
+  "version": "1",
+  "project_id": "fx-ifb-442",
+  "language": "en",
+  "pronunciations": {},
+  "title_card": {
+    "title": "The Inverted Full-Back",
+    "subtitle": "How a 4-3-3 becomes a 3-2-5"
+  },
+  "end_card": {
+    "text": "Control the middle."
+  },
+  "lines": [
+    {
+      "scene": "S01",
+      "text": "Watch how one full-back breaks a four-four-two. The Reds line up in a four-three-three, the Blues sit in a compact mid-block.",
+      "silent": false,
+      "anchors": []
+    },
+    {
+      "scene": "S02",
+      "text": "The right-back leaves the touchline and steps inside, next to the holding midfielder.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "steps",
+          "occurrence": 1,
+          "ref": "H2@move#1.start",
+          "lead_s": 0.0
+        }
+      ]
+    },
+    {
+      "scene": "S03",
+      "text": "Now two strikers cannot screen two pivots. The ball goes inside, the six turns, and the eight receives between the lines.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "inside,",
+          "occurrence": 1,
+          "ref": "E01.end",
+          "lead_s": 0.0
+        },
+        {
+          "word": "receives",
+          "occurrence": 1,
+          "ref": "E02.end",
+          "lead_s": 0.0
+        }
+      ]
+    },
+    {
+      "scene": "S04",
+      "text": "When a centre-back steps out, five forwards against four defenders leaves the striker free. One pass, and he is through on goal.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "free.",
+          "occurrence": 1,
+          "ref": "E03",
+          "lead_s": 0.0
+        }
+      ]
+    },
+    {
+      "scene": "S05",
+      "text": "Three at the back, two in the pivot, five in attack. That is the three-two-five, built from a simple full-back rotation.",
+      "silent": false,
+      "anchors": []
+    },
+    {
+      "scene": "S06",
+      "text": "Control the middle, and the block has nowhere to hide.",
+      "silent": false,
+      "anchors": []
+    }
+  ]
+}

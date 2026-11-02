@@ -1,0 +1,340 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/choreography.schema.json",
+  "title": "choreography — engine-compiled dense motion (authored time tau, 30 Hz grid). Never hand-edited.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "project_id",
+    "inputs",
+    "hz",
+    "scenes",
+    "events",
+    "actions",
+    "possession",
+    "tracks",
+    "overlays",
+    "camera_keys",
+    "report",
+    "camera_track",
+    "aspect"
+  ],
+  "properties": {
+    "version": {
+      "$ref": "../defs.schema.json#/$defs/version"
+    },
+    "project_id": {
+      "$ref": "../defs.schema.json#/$defs/slug"
+    },
+    "inputs": {
+      "$ref": "../defs.schema.json#/$defs/inputs"
+    },
+    "hz": {
+      "const": 30
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "tau0",
+          "len",
+          "transition",
+          "holds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^S\\d{2}$"
+          },
+          "kind": {
+            "enum": [
+              "pitch",
+              "graphic"
+            ]
+          },
+          "tau0": {
+            "type": "number",
+            "minimum": 0
+          },
+          "len": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "transition": {
+            "enum": [
+              "continue",
+              "reset",
+              "cut"
+            ]
+          },
+          "holds": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "tau",
+                "max_s",
+                "style"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "tau": {
+                  "type": "number"
+                },
+                "max_s": {
+                  "type": "number"
+                },
+                "style": {
+                  "enum": [
+                    "freeze",
+                    "drift"
+                  ]
+                }
+              }
+            }
+          },
+          "reveals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "tau"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "tau": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "scene",
+          "tau0",
+          "tau1"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^S\\d{2}:E\\d{2}$"
+          },
+          "type": {
+            "enum": [
+              "pass",
+              "press",
+              "tackle",
+              "intercept",
+              "shot"
+            ]
+          },
+          "scene": {
+            "type": "string"
+          },
+          "tau0": {
+            "type": "number"
+          },
+          "tau1": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "handle",
+          "scene",
+          "tau0",
+          "tau1"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "pattern": "^S\\d{2}:[HA](1[01]|[1-9])@(move|carry|press|mark|duel)#[1-9]$"
+          },
+          "scene": {
+            "type": "string"
+          },
+          "tau0": {
+            "type": "number"
+          },
+          "tau1": {
+            "type": "number"
+          },
+          "path_m": {
+            "type": "number"
+          },
+          "v_peak": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "possession": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tau0",
+          "tau1",
+          "state",
+          "by",
+          "event"
+        ],
+        "properties": {
+          "tau0": {
+            "type": "number"
+          },
+          "tau1": {
+            "type": "number"
+          },
+          "state": {
+            "enum": [
+              "held",
+              "flight",
+              "loose",
+              "dead"
+            ]
+          },
+          "by": {
+            "anyOf": [
+              {
+                "$ref": "../defs.schema.json#/$defs/player_id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "event": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "tracks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit",
+        "n",
+        "players",
+        "ball"
+      ],
+      "properties": {
+        "unit": {
+          "const": "cm"
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "players": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "../defs.schema.json#/$defs/player_id"
+          },
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "ball": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "overlays": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "scene",
+          "kind",
+          "tau_in",
+          "tau_out"
+        ]
+      }
+    },
+    "camera_keys": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "tau",
+          "mode"
+        ]
+      }
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "errors",
+        "warnings"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "aspect": {
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1"
+      ]
+    },
+    "camera_track": {
+      "description": "[cx,cy,w] per tau-frame, centimetres (w = visible extent along pitch x)",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  }
+}

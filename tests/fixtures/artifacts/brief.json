@@ -1,0 +1,55 @@
+{
+  "version": "1",
+  "project_id": "fx-ifb-442",
+  "mode": "tactic",
+  "created_at": "2026-11-02T12:00:00Z",
+  "language": "en",
+  "audience": "intermediate",
+  "target_duration_s": 50,
+  "aspect": "16:9",
+  "fps": 30,
+  "tactic": {
+    "source": "user",
+    "request_verbatim": "Explain how an inverted right-back turns a 4-3-3 into a 3-2-5 to beat a 4-4-2 mid-block.",
+    "tactic_text": "In possession the right-back steps into midfield next to the holding midfielder, the left-back tucks in to form a back three, and the two eights push into the half-spaces so five players pin the opponent's back four.",
+    "topic": null
+  },
+  "teams": {
+    "H": {
+      "name": "Reds",
+      "short": "RED",
+      "fill": "#c8102e",
+      "ring": "#ffffff",
+      "text": "#ffffff"
+    },
+    "A": {
+      "name": "Blues",
+      "short": "BLU",
+      "fill": "#1d428a",
+      "ring": "#ffffff",
+      "text": "#ffffff"
+    }
+  },
+  "focus_team": "H",
+  "voice": {
+    "voice_id": "",
+    "model_id": "eleven_multilingual_v2",
+    "stability": 0.55,
+    "similarity_boost": 0.8,
+    "style": 0.15,
+    "speed": 1.0,
+    "seed": 1234
+  },
+  "music": {
+    "source": "generate",
+    "mood": "modern broadcast tactics analysis, driving minimal electronic, 100 bpm, no vocals",
+    "file": null
+  },
+  "captions": true,
+  "show_names": false,
+  "budget": {
+    "tts_chars_max": 3000,
+    "music_s_max": 120,
+    "api_calls_max": 0
+  }
+}

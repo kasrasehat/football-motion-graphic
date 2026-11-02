@@ -1,0 +1,17 @@
+# MD — match_dossier; MA — match_analysis; WC — web_claims.
+rules:
+  WC-01: {artifact: web_claims, severity: error, text: "every source is usable: not a blocked domain (social media), quote present, retrieved_at not in the future"}
+  WC-02: {artifact: web_claims, severity: error, text: "fact_key is a registered key (config/facts.yaml) and the value has the right type/range"}
+  WC-03: {artifact: web_claims, severity: warning, text: "declared tier matches the known tier of the domain (config/sources.yaml)"}
+  WC-04: {artifact: web_claims, severity: error, text: "claim ids are unique"}
+  MD-01: {artifact: match_dossier, severity: error, text: "every fact value has the registered type and a plausible range"}
+  MD-02: {artifact: match_dossier, severity: error, text: "key facts (kickoff, venue, absences, XI) have >= 2 independent sources, an API source, or a single_source flag from the researcher"}
+  MD-03: {artifact: match_dossier, severity: error, text: "freshness: news facts <= 48 h old, stats facts <= 7 days old at build time", params: {news_h: 48, stats_days: 7}}
+  MD-04: {artifact: match_dossier, severity: error, text: "no unresolved conflicts between equally trusted sources"}
+  MD-05: {artifact: match_dossier, severity: error, text: "fixture matches the brief (same teams, kickoff within 2 h)", params: {ko_tol_h: 2}}
+  MD-06: {artifact: match_dossier, severity: error, text: "required facts present (config/facts.yaml required: error); warning for recommended ones"}
+  MD-07: {artifact: match_dossier, severity: error, text: "coverage: minimum claims per category (config/facts.yaml coverage_min)"}
+  MA-01: {artifact: match_analysis, severity: error, text: "every ref is a dossier fact key or claim id (C-xxx / W-xxx)"}
+  MA-02: {artifact: match_analysis, severity: error, text: "key battles name players of the tactic_spec on opposite teams; named players appear in the predicted XIs when the dossier has them"}
+  MA-03: {artifact: match_analysis, severity: error, text: "tactical battles cite tactic_spec principles; each principle is used by a battle"}
+  MA-04: {artifact: match_analysis, severity: error, text: "sections include `tactical` and `outlook`; uncertainties listed when any key fact is single_source"}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/qa_review.schema.json",
+  "title": "qa_review — a reviewer subagent's verdict (recorded with `tms qa record`, which binds it to artifact hashes)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "stage", "agent", "verdict", "summary", "findings"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "stage": {"type": "string"},
+    "agent": {"type": "string"},
+    "verdict": {"enum": ["pass", "fix_and_rereview"]},
+    "summary": {"type": "string", "minLength": 10, "maxLength": 1200},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["severity", "location", "finding"],
+        "properties": {
+          "severity": {"enum": ["critical", "major", "minor", "nitpick"]},
+          "location": {"type": "string", "minLength": 1},
+          "finding": {"type": "string", "minLength": 5},
+          "proposed_fix": {"type": "string", "minLength": 5},
+          "rule": {"type": "string", "pattern": "^[A-Z]{2}-\\d{2}$"}
+        },
+        "if": {"properties": {"severity": {"enum": ["critical", "major"]}}},
+        "then": {"required": ["proposed_fix"]}
+      }
+    },
+    "claim_verdicts": {
+      "description": "fact-checker only: per-claim verification results",
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["claim", "status", "note"],
+        "properties": {
+          "claim": {"$ref": "../defs.schema.json#/$defs/claim_ref"},
+          "status": {"enum": ["verified", "corrected", "unverifiable", "refuted", "stale"]},
+          "note": {"type": "string"}
+        }
+      }
+    }
+  },
+  "if": {"properties": {"verdict": {"const": "pass"}}},
+  "then": {
+    "properties": {
+      "findings": {"items": {"properties": {"severity": {"enum": ["minor", "nitpick"]}}}}
+    }
+  }
+}

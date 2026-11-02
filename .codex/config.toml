@@ -1,0 +1,16 @@
+# Tactic Motion Studio — project-scoped Codex config.
+# Codex loads this only after you trust the project (first launch asks), and runs .codex/hooks.json only after you
+# trust each hook (`/hooks`). The contract is AGENTS.md; custom agents live in .codex/agents/ (generated).
+
+# Live web search for the match-researcher / fact-checker agents.
+web_search = "live"
+
+# AGENTS.md is kept < 24 KiB by a test; leave headroom.
+project_doc_max_bytes = 32768
+
+[features]
+hooks = true
+multi_agent = true
+
+[agents]
+max_concurrent_threads_per_session = 4

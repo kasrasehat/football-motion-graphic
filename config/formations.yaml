@@ -1,0 +1,263 @@
+# Formation templates in a normalized block space (team-normalized frame: the team attacks +x).
+#   u = depth fraction within the block (0 = back line, 1 = most advanced player)
+#   v = fraction across the block width (0 = the team's LEFT touchline side = small y, 1 = right)
+# The shape solver maps a template + block {line_x, depth, width, ball_shift} to metres:
+#   x = line_x + u * depth ;  y = 34 + (v - 0.5) * width + lateral ball shift
+# The goalkeeper is placed by `goalkeeper` below. `line` numbers count from the back (GK = 0).
+
+goalkeeper: {x_min: 4.0, x_max: 16.0, gap: 20.0, follow_shift: 0.3}
+lateral_shift_gain: 0.6       # metres of block shift per metre of ball offset from centre, times ball_shift
+separation: {teammates_m: 4.5, opponents_m: 2.0, iterations: 12}
+
+# Classic shirt-number preferences per role (first free number wins); ids are H<number>/A<number>.
+numbers:
+  GK: [1]
+  RB: [2]
+  RWB: [2]
+  LB: [3]
+  LWB: [3]
+  RCB: [4, 5]
+  CB: [5, 4, 3, 2]
+  LCB: [5, 4]
+  DM: [6, 8, 4]
+  RDM: [6, 8]
+  LDM: [8, 6, 4]
+  RCM: [10, 8, 6]
+  LCM: [8, 10, 6]
+  CM: [8, 6, 10]
+  AM: [10, 8]
+  RAM: [7, 10]
+  LAM: [11, 10]
+  RM: [7]
+  LM: [11]
+  RW: [7]
+  LW: [11]
+  ST: [9, 10]
+  CF: [9]
+  RS: [9, 10]
+  LS: [10, 9]
+  SS: [10, 9]
+
+templates:
+  "4-4-2":
+    formation: "4-4-2"
+    players:
+      - {role: LB, line: 1, u: 0.0, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.35}
+      - {role: RCB, line: 1, u: 0.0, v: 0.65}
+      - {role: RB, line: 1, u: 0.0, v: 1.0}
+      - {role: LM, line: 2, u: 0.55, v: 0.0}
+      - {role: LCM, line: 2, u: 0.52, v: 0.36}
+      - {role: RCM, line: 2, u: 0.52, v: 0.64}
+      - {role: RM, line: 2, u: 0.55, v: 1.0}
+      - {role: LS, line: 3, u: 1.0, v: 0.39}
+      - {role: RS, line: 3, u: 1.0, v: 0.61}
+  "4-1-2-1-2":
+    formation: "4-1-2-1-2"
+    players:
+      - {role: LB, line: 1, u: 0.0, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.35}
+      - {role: RCB, line: 1, u: 0.0, v: 0.65}
+      - {role: RB, line: 1, u: 0.0, v: 1.0}
+      - {role: DM, line: 2, u: 0.3, v: 0.5}
+      - {role: LCM, line: 3, u: 0.5, v: 0.22}
+      - {role: RCM, line: 3, u: 0.5, v: 0.78}
+      - {role: AM, line: 4, u: 0.72, v: 0.5}
+      - {role: LS, line: 5, u: 1.0, v: 0.38}
+      - {role: RS, line: 5, u: 1.0, v: 0.62}
+  "4-3-3":
+    formation: "4-3-3"
+    players:
+      - {role: LB, line: 1, u: 0.0, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.35}
+      - {role: RCB, line: 1, u: 0.0, v: 0.65}
+      - {role: RB, line: 1, u: 0.0, v: 1.0}
+      - {role: LCM, line: 2, u: 0.52, v: 0.24}
+      - {role: DM, line: 2, u: 0.38, v: 0.5}
+      - {role: RCM, line: 2, u: 0.52, v: 0.76}
+      - {role: LW, line: 3, u: 0.95, v: 0.02}
+      - {role: ST, line: 3, u: 1.0, v: 0.5}
+      - {role: RW, line: 3, u: 0.95, v: 0.98}
+  "4-2-3-1":
+    formation: "4-2-3-1"
+    players:
+      - {role: LB, line: 1, u: 0.0, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.35}
+      - {role: RCB, line: 1, u: 0.0, v: 0.65}
+      - {role: RB, line: 1, u: 0.0, v: 1.0}
+      - {role: LDM, line: 2, u: 0.34, v: 0.38}
+      - {role: RDM, line: 2, u: 0.34, v: 0.62}
+      - {role: LW, line: 3, u: 0.7, v: 0.04}
+      - {role: AM, line: 3, u: 0.72, v: 0.5}
+      - {role: RW, line: 3, u: 0.7, v: 0.96}
+      - {role: ST, line: 4, u: 1.0, v: 0.5}
+  "4-1-4-1":
+    formation: "4-1-4-1"
+    players:
+      - {role: LB, line: 1, u: 0.0, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.35}
+      - {role: RCB, line: 1, u: 0.0, v: 0.65}
+      - {role: RB, line: 1, u: 0.0, v: 1.0}
+      - {role: DM, line: 2, u: 0.3, v: 0.5}
+      - {role: LM, line: 3, u: 0.62, v: 0.0}
+      - {role: LCM, line: 3, u: 0.65, v: 0.35}
+      - {role: RCM, line: 3, u: 0.65, v: 0.65}
+      - {role: RM, line: 3, u: 0.62, v: 1.0}
+      - {role: ST, line: 4, u: 1.0, v: 0.5}
+  "4-5-1":
+    formation: "4-5-1"
+    players:
+      - {role: LB, line: 1, u: 0.0, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.35}
+      - {role: RCB, line: 1, u: 0.0, v: 0.65}
+      - {role: RB, line: 1, u: 0.0, v: 1.0}
+      - {role: LM, line: 2, u: 0.55, v: 0.0}
+      - {role: LCM, line: 2, u: 0.5, v: 0.28}
+      - {role: DM, line: 2, u: 0.44, v: 0.5}
+      - {role: RCM, line: 2, u: 0.5, v: 0.72}
+      - {role: RM, line: 2, u: 0.55, v: 1.0}
+      - {role: ST, line: 3, u: 1.0, v: 0.5}
+  "4-2-4":
+    formation: "4-2-4"
+    players:
+      - {role: LB, line: 1, u: 0.0, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.35}
+      - {role: RCB, line: 1, u: 0.0, v: 0.65}
+      - {role: RB, line: 1, u: 0.0, v: 1.0}
+      - {role: LCM, line: 2, u: 0.4, v: 0.38}
+      - {role: RCM, line: 2, u: 0.4, v: 0.62}
+      - {role: LW, line: 3, u: 1.0, v: 0.0}
+      - {role: LS, line: 3, u: 1.0, v: 0.38}
+      - {role: RS, line: 3, u: 1.0, v: 0.62}
+      - {role: RW, line: 3, u: 1.0, v: 1.0}
+  "3-5-2":
+    formation: "3-5-2"
+    players:
+      - {role: LCB, line: 1, u: 0.0, v: 0.15}
+      - {role: CB, line: 1, u: 0.0, v: 0.5}
+      - {role: RCB, line: 1, u: 0.0, v: 0.85}
+      - {role: LWB, line: 2, u: 0.55, v: 0.0}
+      - {role: LCM, line: 2, u: 0.5, v: 0.32}
+      - {role: DM, line: 2, u: 0.42, v: 0.5}
+      - {role: RCM, line: 2, u: 0.5, v: 0.68}
+      - {role: RWB, line: 2, u: 0.55, v: 1.0}
+      - {role: LS, line: 3, u: 1.0, v: 0.38}
+      - {role: RS, line: 3, u: 1.0, v: 0.62}
+  "3-4-3":
+    formation: "3-4-3"
+    players:
+      - {role: LCB, line: 1, u: 0.0, v: 0.15}
+      - {role: CB, line: 1, u: 0.0, v: 0.5}
+      - {role: RCB, line: 1, u: 0.0, v: 0.85}
+      - {role: LWB, line: 2, u: 0.5, v: 0.0}
+      - {role: LCM, line: 2, u: 0.45, v: 0.38}
+      - {role: RCM, line: 2, u: 0.45, v: 0.62}
+      - {role: RWB, line: 2, u: 0.5, v: 1.0}
+      - {role: LW, line: 3, u: 0.95, v: 0.08}
+      - {role: ST, line: 3, u: 1.0, v: 0.5}
+      - {role: RW, line: 3, u: 0.95, v: 0.92}
+  "5-3-2":
+    formation: "5-3-2"
+    players:
+      - {role: LWB, line: 1, u: 0.05, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.25}
+      - {role: CB, line: 1, u: 0.0, v: 0.5}
+      - {role: RCB, line: 1, u: 0.0, v: 0.75}
+      - {role: RWB, line: 1, u: 0.05, v: 1.0}
+      - {role: LCM, line: 2, u: 0.55, v: 0.25}
+      - {role: DM, line: 2, u: 0.5, v: 0.5}
+      - {role: RCM, line: 2, u: 0.55, v: 0.75}
+      - {role: LS, line: 3, u: 1.0, v: 0.38}
+      - {role: RS, line: 3, u: 1.0, v: 0.62}
+  "5-4-1":
+    formation: "5-4-1"
+    players:
+      - {role: LWB, line: 1, u: 0.05, v: 0.0}
+      - {role: LCB, line: 1, u: 0.0, v: 0.25}
+      - {role: CB, line: 1, u: 0.0, v: 0.5}
+      - {role: RCB, line: 1, u: 0.0, v: 0.75}
+      - {role: RWB, line: 1, u: 0.05, v: 1.0}
+      - {role: LM, line: 2, u: 0.55, v: 0.02}
+      - {role: LCM, line: 2, u: 0.5, v: 0.36}
+      - {role: RCM, line: 2, u: 0.5, v: 0.64}
+      - {role: RM, line: 2, u: 0.55, v: 0.98}
+      - {role: ST, line: 3, u: 1.0, v: 0.5}
+  "3-2-5":
+    formation: "3-2-5"
+    players:
+      - {role: LCB, line: 1, u: 0.0, v: 0.2}
+      - {role: CB, line: 1, u: 0.0, v: 0.5}
+      - {role: RCB, line: 1, u: 0.0, v: 0.8}
+      - {role: LDM, line: 2, u: 0.38, v: 0.38}
+      - {role: RDM, line: 2, u: 0.38, v: 0.62}
+      - {role: LW, line: 3, u: 0.97, v: 0.0}
+      - {role: LCM, line: 3, u: 0.9, v: 0.27}
+      - {role: ST, line: 3, u: 1.0, v: 0.5}
+      - {role: RCM, line: 3, u: 0.9, v: 0.73}
+      - {role: RW, line: 3, u: 0.97, v: 1.0}
+  "2-3-5":
+    formation: "2-3-5"
+    players:
+      - {role: LCB, line: 1, u: 0.0, v: 0.32}
+      - {role: RCB, line: 1, u: 0.0, v: 0.68}
+      - {role: LDM, line: 2, u: 0.35, v: 0.2}
+      - {role: DM, line: 2, u: 0.32, v: 0.5}
+      - {role: RDM, line: 2, u: 0.35, v: 0.8}
+      - {role: LW, line: 3, u: 0.97, v: 0.0}
+      - {role: LCM, line: 3, u: 0.9, v: 0.27}
+      - {role: ST, line: 3, u: 1.0, v: 0.5}
+      - {role: RCM, line: 3, u: 0.9, v: 0.73}
+      - {role: RW, line: 3, u: 0.97, v: 1.0}
+  "3-1-6":
+    formation: "3-1-6"
+    players:
+      - {role: LCB, line: 1, u: 0.0, v: 0.2}
+      - {role: CB, line: 1, u: 0.0, v: 0.5}
+      - {role: RCB, line: 1, u: 0.0, v: 0.8}
+      - {role: DM, line: 2, u: 0.32, v: 0.5}
+      - {role: LW, line: 3, u: 0.95, v: 0.0}
+      - {role: LAM, line: 3, u: 0.88, v: 0.2}
+      - {role: LS, line: 3, u: 1.0, v: 0.4}
+      - {role: RS, line: 3, u: 1.0, v: 0.6}
+      - {role: RAM, line: 3, u: 0.88, v: 0.8}
+      - {role: RW, line: 3, u: 0.95, v: 1.0}
+  "3-2-2-3":
+    formation: "3-2-2-3"
+    players:
+      - {role: LCB, line: 1, u: 0.0, v: 0.2}
+      - {role: CB, line: 1, u: 0.0, v: 0.5}
+      - {role: RCB, line: 1, u: 0.0, v: 0.8}
+      - {role: LDM, line: 2, u: 0.32, v: 0.38}
+      - {role: RDM, line: 2, u: 0.32, v: 0.62}
+      - {role: LAM, line: 3, u: 0.64, v: 0.33}
+      - {role: RAM, line: 3, u: 0.64, v: 0.67}
+      - {role: LW, line: 4, u: 0.97, v: 0.0}
+      - {role: ST, line: 4, u: 1.0, v: 0.5}
+      - {role: RW, line: 4, u: 0.97, v: 1.0}
+
+# Default blocks (line_x, depth, width, ball_shift) per phase for the team IN possession and OUT of possession,
+# each in its own team-normalized frame (line_x measured from the team's own goal line).
+phase_blocks:
+  build_up:       {in_possession: [25, 43, 56, 0.2], out_of_possession: [30, 25, 44, 0.3]}
+  progression:    {in_possession: [36, 38, 60, 0.2], out_of_possession: [24, 24, 42, 0.35]}
+  final_third:    {in_possession: [50, 36, 62, 0.2], out_of_possession: [12, 22, 40, 0.4]}
+  high_press:     {in_possession: [13, 40, 58, 0.1], out_of_possession: [46, 30, 52, 0.35]}
+  mid_block:      {in_possession: [30, 40, 60, 0.2], out_of_possession: [28, 26, 44, 0.3]}
+  low_block:      {in_possession: [48, 36, 62, 0.2], out_of_possession: [12, 22, 40, 0.35]}
+  counter_press:  {in_possession: [24, 36, 50, 0.3], out_of_possession: [48, 30, 50, 0.4]}
+  def_transition: {in_possession: [40, 40, 56, 0.3], out_of_possession: [38, 34, 52, 0.4]}
+  att_transition: {in_possession: [30, 46, 56, 0.3], out_of_possession: [44, 36, 54, 0.3]}
+
+# Who carries the ball by default in each phase (first role found in the team in possession).
+default_holder:
+  build_up: [RCB, LCB, CB, GK]
+  progression: [DM, RDM, LDM, RCM, LCM, CM]
+  final_third: [AM, RCM, LCM, RW, LW, ST]
+  high_press: [RCB, LCB, CB, GK]
+  mid_block: [RCB, LCB, CB, DM]
+  low_block: [AM, RCM, LCM, RW, LW, DM]
+  counter_press: [DM, RCM, LCM, CM, AM]
+  def_transition: [AM, RCM, LCM, ST, RW, LW]
+  att_transition: [DM, RCM, LCM, AM, ST]
+
+in_possession_phases: [build_up, progression, final_third, att_transition, corner, free_kick]

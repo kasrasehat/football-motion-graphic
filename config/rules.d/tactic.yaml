@@ -1,0 +1,19 @@
+# TS — tactic_spec rules. Positions are checked in the team-normalized frame unless stated otherwise.
+rules:
+  TS-01: {artifact: tactic_spec, severity: error, text: "player ids are exactly H1-H11 and A1-A11"}
+  TS-02: {artifact: tactic_spec, severity: error, text: "exactly one GK per team and it is the only player on line 0"}
+  TS-03: {artifact: tactic_spec, severity: error, text: "formation_base and formation_phase digits sum to 10"}
+  TS-04: {artifact: tactic_spec, severity: error, text: "players per line equal the formation_phase digits"}
+  TS-05: {artifact: tactic_spec, severity: error, text: "mean x of each line exceeds the previous line's by >= gap", params: {min_gap_m: 3.0}}
+  TS-06: {artifact: tactic_spec, severity: error, text: "within a line, left-side roles have smaller y than central roles, central smaller than right-side"}
+  TS-07: {artifact: tactic_spec, severity: warning, text: "role bands: left-wide y <= 26, right-wide y >= 42, central y in [14, 54] unless the player is named in a principle or has a note", params: {left_max: 26, right_min: 42, central_min: 14, central_max: 54}}
+  TS-08: {artifact: tactic_spec, severity: error, text: "positions inside the pitch with a small margin", params: {margin: 0.5}}
+  TS-09: {artifact: tactic_spec, severity: error, text: "teammates >= 4 m apart; opponents >= 1 m (warning under 1.8 m), absolute frame", params: {teammates_min: 4.0, opponents_min: 1.0, opponents_warn: 1.8}}
+  TS-10: {artifact: tactic_spec, severity: error, text: "goalkeeper not absurdly far from goal (warning beyond 18 m, error beyond 30 m)", params: {warn_x: 18, max_x: 30}}
+  TS-11: {artifact: tactic_spec, severity: error, text: "shirt numbers unique within each team"}
+  TS-12: {artifact: tactic_spec, severity: error, text: "number of principles fits the video length: 1..max(2, min(5, floor(target_s / 15)))", params: {seconds_per_principle: 15, max: 5}}
+  TS-13: {artifact: tactic_spec, severity: error, text: "ball holder belongs to the team in possession for the phase (focus team in possession phases, opponent otherwise)"}
+  TS-14: {artifact: tactic_spec, severity: warning, text: "defending team's outfield block: vertical spread 20-45 m, lateral spread 25-60 m", params: {depth_min: 20, depth_max: 45, width_min: 25, width_max: 60}}
+  TS-15: {artifact: tactic_spec, severity: warning, text: "attacking player in an offside position in the snapshot (absolute frame)"}
+  TS-16: {artifact: tactic_spec, severity: error, text: "all cross-references (principles, triggers, strengths, weaknesses, counters) resolve"}
+  TS-17: {artifact: tactic_spec, severity: error, text: "focus_team matches the brief"}

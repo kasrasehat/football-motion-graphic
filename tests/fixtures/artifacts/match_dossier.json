@@ -1,0 +1,1791 @@
+{
+ "version": "1",
+ "project_id": "fx-match",
+ "inputs": {
+  "brief": "0000000000000000000000000000000000000000000000000000000000000000",
+  "web_claims": "1111111111111111111111111111111111111111111111111111111111111111"
+ },
+ "built_at": "2026-11-02T12:30:00Z",
+ "data_mode": "api+web",
+ "fixture": {
+  "home": "Real Madrid",
+  "away": "Arsenal",
+  "competition": "UEFA Champions League",
+  "kickoff_utc": "2026-11-02T20:00:00Z",
+  "venue": "Estadio Santiago Bernabeu",
+  "fixture_id": 1234567
+ },
+ "claims": [
+  {
+   "id": "C-001",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.kickoff_utc",
+   "category": "fixture",
+   "statement": "Kick-off 2026-11-02T20:00:00Z",
+   "value": "2026-11-02T20:00:00Z",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures",
+     "field_path": "response[0].fixture.date",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-002",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.venue",
+   "category": "fixture",
+   "statement": "Venue Estadio Santiago Bernabeu",
+   "value": "Estadio Santiago Bernabeu",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures",
+     "field_path": "response[0].fixture.venue.name",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-003",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.competition",
+   "category": "fixture",
+   "statement": "UEFA Champions League",
+   "value": "UEFA Champions League",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures",
+     "field_path": "response[0].league.name",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-004",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.round",
+   "category": "fixture",
+   "statement": "League Stage - 4",
+   "value": "League Stage - 4",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures",
+     "field_path": "response[0].league.round",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-005",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.referee",
+   "category": "fixture",
+   "statement": "A. Referee",
+   "value": "A. Referee",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures",
+     "field_path": "response[0].fixture.referee",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-006",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.form.last5",
+   "category": "form",
+   "statement": "Real Madrid last 5: LWDWL",
+   "value": [
+    "L",
+    "W",
+    "D",
+    "W",
+    "L"
+   ],
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures",
+     "field_path": "response[*] (team=541, last=5)",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-007",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.goals_for_avg",
+   "category": "team_stats",
+   "statement": "Real Madrid goals for avg 2.3",
+   "value": 2.3,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.for.average.total",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-008",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.goals_against_avg",
+   "category": "team_stats",
+   "statement": "Real Madrid goals against avg 1.0",
+   "value": 1.0,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.against.average.total",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-009",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.home_goals_for_avg",
+   "category": "team_stats",
+   "statement": "Real Madrid home goals for avg 2.6",
+   "value": 2.6,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.for.average.home",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-010",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.home_goals_against_avg",
+   "category": "team_stats",
+   "statement": "Real Madrid home goals against avg 0.8",
+   "value": 0.8,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.against.average.home",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-011",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.away_goals_for_avg",
+   "category": "team_stats",
+   "statement": "Real Madrid away goals for avg 2.0",
+   "value": 2.0,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.for.average.away",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-012",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.away_goals_against_avg",
+   "category": "team_stats",
+   "statement": "Real Madrid away goals against avg 1.2",
+   "value": 1.2,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.against.average.away",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-013",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.clean_sheets",
+   "category": "team_stats",
+   "statement": "Real Madrid clean sheets 4",
+   "value": 4,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.clean_sheet.total",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-014",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.formation",
+   "category": "tactics",
+   "statement": "Real Madrid most used formation 4-3-3",
+   "value": "4-3-3",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.lineups[max played].formation",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-015",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.manager",
+   "category": "tactics",
+   "statement": "Real Madrid manager M. Coach",
+   "value": "M. Coach",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/coachs",
+     "field_path": "response[0].name",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-016",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.form.last5",
+   "category": "form",
+   "statement": "Arsenal last 5: WDWWD",
+   "value": [
+    "W",
+    "D",
+    "W",
+    "W",
+    "D"
+   ],
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures",
+     "field_path": "response[*] (team=42, last=5)",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-017",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.goals_for_avg",
+   "category": "team_stats",
+   "statement": "Arsenal goals for avg 1.9",
+   "value": 1.9,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.for.average.total",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-018",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.goals_against_avg",
+   "category": "team_stats",
+   "statement": "Arsenal goals against avg 0.9",
+   "value": 0.9,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.against.average.total",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-019",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.home_goals_for_avg",
+   "category": "team_stats",
+   "statement": "Arsenal home goals for avg 2.2",
+   "value": 2.2,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.for.average.home",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-020",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.home_goals_against_avg",
+   "category": "team_stats",
+   "statement": "Arsenal home goals against avg 0.6",
+   "value": 0.6,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.against.average.home",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-021",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.away_goals_for_avg",
+   "category": "team_stats",
+   "statement": "Arsenal away goals for avg 1.6",
+   "value": 1.6,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.for.average.away",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-022",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.away_goals_against_avg",
+   "category": "team_stats",
+   "statement": "Arsenal away goals against avg 1.2",
+   "value": 1.2,
+   "unit": "goals/match",
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.goals.against.average.away",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-023",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.clean_sheets",
+   "category": "team_stats",
+   "statement": "Arsenal clean sheets 5",
+   "value": 5,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.clean_sheet.total",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-024",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.formation",
+   "category": "tactics",
+   "statement": "Arsenal most used formation 4-3-3",
+   "value": "4-3-3",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/teams/statistics",
+     "field_path": "response.lineups[max played].formation",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-025",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.manager",
+   "category": "tactics",
+   "statement": "Arsenal manager A. Manager",
+   "value": "A. Manager",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/coachs",
+     "field_path": "response[0].name",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-026",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.standing.position",
+   "category": "standings",
+   "statement": "Real Madrid 3",
+   "value": 3,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/standings",
+     "field_path": "response[0].league.standings[][].rank",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-027",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.standing.points",
+   "category": "standings",
+   "statement": "Real Madrid 9 pts",
+   "value": 9,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/standings",
+     "field_path": "response[0].league.standings[][].points",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-028",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.standing.played",
+   "category": "standings",
+   "statement": "Real Madrid played 3",
+   "value": 3,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/standings",
+     "field_path": "response[0].league.standings[][].all.played",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-029",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.standing.position",
+   "category": "standings",
+   "statement": "Arsenal 5",
+   "value": 5,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/standings",
+     "field_path": "response[0].league.standings[][].rank",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-030",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.standing.points",
+   "category": "standings",
+   "statement": "Arsenal 7 pts",
+   "value": 7,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/standings",
+     "field_path": "response[0].league.standings[][].points",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-031",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.standing.played",
+   "category": "standings",
+   "statement": "Arsenal played 3",
+   "value": 3,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/standings",
+     "field_path": "response[0].league.standings[][].all.played",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-032",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "h2h.last5",
+   "category": "h2h",
+   "statement": "last 3 meetings",
+   "value": [
+    {
+     "date": "2025-04-16",
+     "home": "Real Madrid",
+     "away": "Arsenal",
+     "score": "1-2"
+    },
+    {
+     "date": "2025-04-08",
+     "home": "Arsenal",
+     "away": "Real Madrid",
+     "score": "3-0"
+    },
+    {
+     "date": "2006-03-08",
+     "home": "Arsenal",
+     "away": "Real Madrid",
+     "score": "0-0"
+    }
+   ],
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/fixtures/headtohead",
+     "field_path": "response[*]",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-033",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "H.injuries",
+   "category": "injury",
+   "statement": "Real Madrid: 1 absences",
+   "value": [
+    {
+     "player": "Castillo",
+     "reason": "Knee Injury",
+     "status": "out"
+    }
+   ],
+   "unit": null,
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/injuries",
+     "field_path": "response[team.id=541]",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-034",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "A.injuries",
+   "category": "injury",
+   "statement": "Arsenal: 1 absences",
+   "value": [
+    {
+     "player": "Porter",
+     "reason": "Hamstring",
+     "status": "doubt"
+    }
+   ],
+   "unit": null,
+   "as_of": "2026-11-02T12:10:00Z",
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/injuries",
+     "field_path": "response[team.id=42]",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-035",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.odds_home",
+   "category": "odds",
+   "statement": "Home 2.05",
+   "value": 2.05,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/odds",
+     "field_path": "bets[Match Winner].values[Home]",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-036",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.odds_draw",
+   "category": "odds",
+   "statement": "Draw 3.6",
+   "value": 3.6,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/odds",
+     "field_path": "bets[Match Winner].values[Draw]",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-037",
+   "origin": "api",
+   "web_id": null,
+   "fact_key": "fixture.odds_away",
+   "category": "odds",
+   "statement": "Away 3.4",
+   "value": 3.4,
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "api",
+     "endpoint": "/odds",
+     "field_path": "bets[Match Winner].values[Away]",
+     "retrieved_at": "2026-11-02T12:10:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-038",
+   "origin": "web",
+   "web_id": "W-001",
+   "fact_key": "H.xg_for_avg",
+   "category": "xg",
+   "statement": "Real Madrid create 2.1 xG per match.",
+   "value": 2.1,
+   "unit": "xG/match",
+   "as_of": "2026-11-01T00:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://fbref.com/en/squads/rma",
+     "title": "FBref preview",
+     "publisher": "FBref",
+     "tier": 2,
+     "quote": "xG per 90: 2.10",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "C-039",
+   "origin": "web",
+   "web_id": "W-002",
+   "fact_key": "H.xg_against_avg",
+   "category": "xg",
+   "statement": "Real Madrid concede 1.0 xG per match.",
+   "value": 1.0,
+   "unit": "xG/match",
+   "as_of": "2026-11-01T00:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://fbref.com/en/squads/rma",
+     "title": "FBref preview",
+     "publisher": "FBref",
+     "tier": 2,
+     "quote": "xGA per 90: 1.00",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "C-040",
+   "origin": "web",
+   "web_id": "W-003",
+   "fact_key": "A.xg_for_avg",
+   "category": "xg",
+   "statement": "Arsenal create 1.8 xG per match.",
+   "value": 1.8,
+   "unit": "xG/match",
+   "as_of": "2026-11-01T00:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://fbref.com/en/squads/ars",
+     "title": "FBref preview",
+     "publisher": "FBref",
+     "tier": 2,
+     "quote": "xG per 90: 1.80",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "C-041",
+   "origin": "web",
+   "web_id": "W-004",
+   "fact_key": "A.xg_against_avg",
+   "category": "xg",
+   "statement": "Arsenal concede 0.8 xG per match.",
+   "value": 0.8,
+   "unit": "xG/match",
+   "as_of": "2026-11-01T00:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://fbref.com/en/squads/ars",
+     "title": "FBref preview",
+     "publisher": "FBref",
+     "tier": 2,
+     "quote": "xGA per 90: 0.80",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "C-042",
+   "origin": "web",
+   "web_id": "W-005",
+   "fact_key": "H.tactics.build_up",
+   "category": "tactics",
+   "statement": "Madrid build in a 4-3-3 and attack quickly in transition.",
+   "value": "4-3-3 build-up, fast transitions",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://theanalyst.com/rma-tactics",
+     "title": "The Analyst preview",
+     "publisher": "The Analyst",
+     "tier": 2,
+     "quote": "Madrid look to break quickly once they win the ball",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-043",
+   "origin": "web",
+   "web_id": "W-006",
+   "fact_key": "A.tactics.pressing_style",
+   "category": "tactics",
+   "statement": "Arsenal press high, the eight jumping onto the holding midfielder.",
+   "value": "high 4-4-2 press",
+   "unit": null,
+   "as_of": null,
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://theanalyst.com/ars-press",
+     "title": "The Analyst preview",
+     "publisher": "The Analyst",
+     "tier": 2,
+     "quote": "the right eight steps up alongside the striker",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-044",
+   "origin": "web",
+   "web_id": "W-007",
+   "fact_key": "H.predicted_xi",
+   "category": "lineup",
+   "statement": "Predicted Real Madrid XI.",
+   "value": [
+    {
+     "name": "Navarro",
+     "number": 1,
+     "position": "G"
+    },
+    {
+     "name": "Ortega",
+     "number": 2,
+     "position": "D"
+    },
+    {
+     "name": "Ibarra",
+     "number": 4,
+     "position": "D"
+    },
+    {
+     "name": "Molina",
+     "number": 22,
+     "position": "D"
+    },
+    {
+     "name": "Castro",
+     "number": 23,
+     "position": "D"
+    },
+    {
+     "name": "Serrano",
+     "number": 6,
+     "position": "M"
+    },
+    {
+     "name": "Vidal",
+     "number": 8,
+     "position": "M"
+    },
+    {
+     "name": "Delgado",
+     "number": 5,
+     "position": "M"
+    },
+    {
+     "name": "Romero",
+     "number": 11,
+     "position": "F"
+    },
+    {
+     "name": "Fuentes",
+     "number": 9,
+     "position": "F"
+    },
+    {
+     "name": "Herrera",
+     "number": 7,
+     "position": "F"
+    }
+   ],
+   "unit": null,
+   "as_of": "2026-11-02T10:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://www.marca.com/rma-xi",
+     "title": "Marca preview",
+     "publisher": "Marca",
+     "tier": 1,
+     "quote": "Navarro; Ortega, Ibarra, Molina, Castro",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    },
+    {
+     "kind": "web",
+     "url": "https://www.espn.com/rma-xi",
+     "title": "ESPN preview",
+     "publisher": "ESPN",
+     "tier": 1,
+     "quote": "Navarro in goal behind a back four",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "C-045",
+   "origin": "web",
+   "web_id": "W-008",
+   "fact_key": "A.predicted_xi",
+   "category": "lineup",
+   "statement": "Predicted Arsenal XI.",
+   "value": [
+    {
+     "name": "Hughes",
+     "number": 1,
+     "position": "G"
+    },
+    {
+     "name": "Clarke",
+     "number": 2,
+     "position": "D"
+    },
+    {
+     "name": "Walsh",
+     "number": 6,
+     "position": "D"
+    },
+    {
+     "name": "Gardner",
+     "number": 4,
+     "position": "D"
+    },
+    {
+     "name": "Lowe",
+     "number": 3,
+     "position": "D"
+    },
+    {
+     "name": "Fletcher",
+     "number": 41,
+     "position": "M"
+    },
+    {
+     "name": "Bennett",
+     "number": 8,
+     "position": "M"
+    },
+    {
+     "name": "Doyle",
+     "number": 29,
+     "position": "M"
+    },
+    {
+     "name": "Marsh",
+     "number": 7,
+     "position": "F"
+    },
+    {
+     "name": "Shaw",
+     "number": 9,
+     "position": "F"
+    },
+    {
+     "name": "Kerr",
+     "number": 11,
+     "position": "F"
+    }
+   ],
+   "unit": null,
+   "as_of": "2026-11-02T10:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://www.bbc.co.uk/ars-xi",
+     "title": "BBC preview",
+     "publisher": "BBC",
+     "tier": 1,
+     "quote": "Hughes; Clarke, Walsh, Gardner, Lowe",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    },
+    {
+     "kind": "web",
+     "url": "https://www.skysports.com/ars-xi",
+     "title": "Sky Sports preview",
+     "publisher": "Sky Sports",
+     "tier": 1,
+     "quote": "Hughes starts in goal",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "C-046",
+   "origin": "web",
+   "web_id": "W-009",
+   "fact_key": "H.suspensions",
+   "category": "suspension",
+   "statement": "No Madrid suspensions.",
+   "value": [],
+   "unit": null,
+   "as_of": "2026-11-02T10:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://www.uefa.com/disciplinary",
+     "title": "UEFA preview",
+     "publisher": "UEFA",
+     "tier": 1,
+     "quote": "no suspended players for Real Madrid",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-047",
+   "origin": "web",
+   "web_id": "W-010",
+   "fact_key": "A.suspensions",
+   "category": "suspension",
+   "statement": "No Arsenal suspensions.",
+   "value": [],
+   "unit": null,
+   "as_of": "2026-11-02T10:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://www.uefa.com/disciplinary",
+     "title": "UEFA preview",
+     "publisher": "UEFA",
+     "tier": 1,
+     "quote": "no suspended players for Arsenal",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "C-048",
+   "origin": "web",
+   "web_id": "W-011",
+   "fact_key": "fixture.stakes",
+   "category": "news",
+   "statement": "Both sides chase a top-eight league-stage finish.",
+   "value": "top-eight race in the league stage",
+   "unit": null,
+   "as_of": "2026-11-02T09:00:00Z",
+   "sources": [
+    {
+     "kind": "web",
+     "url": "https://www.uefa.com/preview",
+     "title": "UEFA preview",
+     "publisher": "UEFA",
+     "tier": 1,
+     "quote": "both clubs are in the race for the top eight",
+     "retrieved_at": "2026-11-02T12:15:00Z"
+    }
+   ],
+   "confidence": "medium"
+  }
+ ],
+ "facts": {
+  "A.away_goals_against_avg": {
+   "value": 1.2,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-022"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.away_goals_for_avg": {
+   "value": 1.6,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-021"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.clean_sheets": {
+   "value": 5,
+   "unit": null,
+   "claim_ids": [
+    "C-023"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.form.last5": {
+   "value": [
+    "W",
+    "D",
+    "W",
+    "W",
+    "D"
+   ],
+   "unit": null,
+   "claim_ids": [
+    "C-016"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.formation": {
+   "value": "4-3-3",
+   "unit": null,
+   "claim_ids": [
+    "C-024"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.goals_against_avg": {
+   "value": 0.9,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-018"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.goals_for_avg": {
+   "value": 1.9,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-017"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.home_goals_against_avg": {
+   "value": 0.6,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-020"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.home_goals_for_avg": {
+   "value": 2.2,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-019"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.injuries": {
+   "value": [
+    {
+     "player": "Porter",
+     "reason": "Hamstring",
+     "status": "doubt"
+    }
+   ],
+   "unit": null,
+   "claim_ids": [
+    "C-034"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.manager": {
+   "value": "A. Manager",
+   "unit": null,
+   "claim_ids": [
+    "C-025"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.predicted_xi": {
+   "value": [
+    {
+     "name": "Hughes",
+     "number": 1,
+     "position": "G"
+    },
+    {
+     "name": "Clarke",
+     "number": 2,
+     "position": "D"
+    },
+    {
+     "name": "Walsh",
+     "number": 6,
+     "position": "D"
+    },
+    {
+     "name": "Gardner",
+     "number": 4,
+     "position": "D"
+    },
+    {
+     "name": "Lowe",
+     "number": 3,
+     "position": "D"
+    },
+    {
+     "name": "Fletcher",
+     "number": 41,
+     "position": "M"
+    },
+    {
+     "name": "Bennett",
+     "number": 8,
+     "position": "M"
+    },
+    {
+     "name": "Doyle",
+     "number": 29,
+     "position": "M"
+    },
+    {
+     "name": "Marsh",
+     "number": 7,
+     "position": "F"
+    },
+    {
+     "name": "Shaw",
+     "number": 9,
+     "position": "F"
+    },
+    {
+     "name": "Kerr",
+     "number": 11,
+     "position": "F"
+    }
+   ],
+   "unit": null,
+   "claim_ids": [
+    "C-045"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T10:00:00Z"
+  },
+  "A.standing.played": {
+   "value": 3,
+   "unit": null,
+   "claim_ids": [
+    "C-031"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.standing.points": {
+   "value": 7,
+   "unit": null,
+   "claim_ids": [
+    "C-030"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.standing.position": {
+   "value": 5,
+   "unit": null,
+   "claim_ids": [
+    "C-029"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "A.suspensions": {
+   "value": [],
+   "unit": null,
+   "claim_ids": [
+    "C-047"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-02T10:00:00Z"
+  },
+  "A.tactics.pressing_style": {
+   "value": "high 4-4-2 press",
+   "unit": null,
+   "claim_ids": [
+    "C-043"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-02T12:15:00Z"
+  },
+  "A.xg_against_avg": {
+   "value": 0.8,
+   "unit": "xG/match",
+   "claim_ids": [
+    "C-041"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-01T00:00:00Z"
+  },
+  "A.xg_for_avg": {
+   "value": 1.8,
+   "unit": "xG/match",
+   "claim_ids": [
+    "C-040"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-01T00:00:00Z"
+  },
+  "H.away_goals_against_avg": {
+   "value": 1.2,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-012"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.away_goals_for_avg": {
+   "value": 2.0,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-011"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.clean_sheets": {
+   "value": 4,
+   "unit": null,
+   "claim_ids": [
+    "C-013"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.form.last5": {
+   "value": [
+    "L",
+    "W",
+    "D",
+    "W",
+    "L"
+   ],
+   "unit": null,
+   "claim_ids": [
+    "C-006"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.formation": {
+   "value": "4-3-3",
+   "unit": null,
+   "claim_ids": [
+    "C-014"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.goals_against_avg": {
+   "value": 1.0,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-008"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.goals_for_avg": {
+   "value": 2.3,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-007"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.home_goals_against_avg": {
+   "value": 0.8,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-010"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.home_goals_for_avg": {
+   "value": 2.6,
+   "unit": "goals/match",
+   "claim_ids": [
+    "C-009"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.injuries": {
+   "value": [
+    {
+     "player": "Castillo",
+     "reason": "Knee Injury",
+     "status": "out"
+    }
+   ],
+   "unit": null,
+   "claim_ids": [
+    "C-033"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.manager": {
+   "value": "M. Coach",
+   "unit": null,
+   "claim_ids": [
+    "C-015"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.predicted_xi": {
+   "value": [
+    {
+     "name": "Navarro",
+     "number": 1,
+     "position": "G"
+    },
+    {
+     "name": "Ortega",
+     "number": 2,
+     "position": "D"
+    },
+    {
+     "name": "Ibarra",
+     "number": 4,
+     "position": "D"
+    },
+    {
+     "name": "Molina",
+     "number": 22,
+     "position": "D"
+    },
+    {
+     "name": "Castro",
+     "number": 23,
+     "position": "D"
+    },
+    {
+     "name": "Serrano",
+     "number": 6,
+     "position": "M"
+    },
+    {
+     "name": "Vidal",
+     "number": 8,
+     "position": "M"
+    },
+    {
+     "name": "Delgado",
+     "number": 5,
+     "position": "M"
+    },
+    {
+     "name": "Romero",
+     "number": 11,
+     "position": "F"
+    },
+    {
+     "name": "Fuentes",
+     "number": 9,
+     "position": "F"
+    },
+    {
+     "name": "Herrera",
+     "number": 7,
+     "position": "F"
+    }
+   ],
+   "unit": null,
+   "claim_ids": [
+    "C-044"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T10:00:00Z"
+  },
+  "H.standing.played": {
+   "value": 3,
+   "unit": null,
+   "claim_ids": [
+    "C-028"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.standing.points": {
+   "value": 9,
+   "unit": null,
+   "claim_ids": [
+    "C-027"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.standing.position": {
+   "value": 3,
+   "unit": null,
+   "claim_ids": [
+    "C-026"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "H.suspensions": {
+   "value": [],
+   "unit": null,
+   "claim_ids": [
+    "C-046"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-02T10:00:00Z"
+  },
+  "H.tactics.build_up": {
+   "value": "4-3-3 build-up, fast transitions",
+   "unit": null,
+   "claim_ids": [
+    "C-042"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-02T12:15:00Z"
+  },
+  "H.xg_against_avg": {
+   "value": 1.0,
+   "unit": "xG/match",
+   "claim_ids": [
+    "C-039"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-01T00:00:00Z"
+  },
+  "H.xg_for_avg": {
+   "value": 2.1,
+   "unit": "xG/match",
+   "claim_ids": [
+    "C-038"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-01T00:00:00Z"
+  },
+  "fixture.competition": {
+   "value": "UEFA Champions League",
+   "unit": null,
+   "claim_ids": [
+    "C-003"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "fixture.kickoff_utc": {
+   "value": "2026-11-02T20:00:00Z",
+   "unit": null,
+   "claim_ids": [
+    "C-001"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "fixture.odds_away": {
+   "value": 3.4,
+   "unit": null,
+   "claim_ids": [
+    "C-037"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "fixture.odds_draw": {
+   "value": 3.6,
+   "unit": null,
+   "claim_ids": [
+    "C-036"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "fixture.odds_home": {
+   "value": 2.05,
+   "unit": null,
+   "claim_ids": [
+    "C-035"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "fixture.referee": {
+   "value": "A. Referee",
+   "unit": null,
+   "claim_ids": [
+    "C-005"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "fixture.round": {
+   "value": "League Stage - 4",
+   "unit": null,
+   "claim_ids": [
+    "C-004"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "fixture.stakes": {
+   "value": "top-eight race in the league stage",
+   "unit": null,
+   "claim_ids": [
+    "C-048"
+   ],
+   "status": "single_source",
+   "as_of": "2026-11-02T09:00:00Z"
+  },
+  "fixture.venue": {
+   "value": "Estadio Santiago Bernabeu",
+   "unit": null,
+   "claim_ids": [
+    "C-002"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  },
+  "h2h.last5": {
+   "value": [
+    {
+     "date": "2025-04-16",
+     "home": "Real Madrid",
+     "away": "Arsenal",
+     "score": "1-2"
+    },
+    {
+     "date": "2025-04-08",
+     "home": "Arsenal",
+     "away": "Real Madrid",
+     "score": "3-0"
+    },
+    {
+     "date": "2006-03-08",
+     "home": "Arsenal",
+     "away": "Real Madrid",
+     "score": "0-0"
+    }
+   ],
+   "unit": null,
+   "claim_ids": [
+    "C-032"
+   ],
+   "status": "agreed",
+   "as_of": "2026-11-02T12:10:00Z"
+  }
+ },
+ "conflicts": [],
+ "coverage": {
+  "fixture": 5,
+  "form": 2,
+  "team_stats": 14,
+  "tactics": 6,
+  "standings": 6,
+  "h2h": 1,
+  "injury": 2,
+  "odds": 3,
+  "xg": 4,
+  "lineup": 2,
+  "suspension": 2,
+  "news": 1
+ },
+ "api_calls": 12
+}

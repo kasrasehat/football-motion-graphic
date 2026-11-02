@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "stage": "tactic",
+  "agent": "tactics-critic",
+  "verdict": "pass",
+  "summary": "Shape and distances are realistic for a 3-2-5 build-up against a 4-4-2 mid-block; principles are observable and tied to named players.",
+  "findings": [
+    {"severity": "minor", "location": "principles/P3", "finding": "Visual proof depends on A2 stepping up, which the storyboard must stage explicitly.", "proposed_fix": "Add an action where A2 steps toward H10 before H7 is shown free."}
+  ]
+}

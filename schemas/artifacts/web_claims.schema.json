@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/web_claims.schema.json",
+  "title": "web_claims — facts found by web research, each with verifiable sources",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "runs", "claims"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "runs": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["agent", "scope", "finished_at"],
+        "properties": {
+          "agent": {"type": "string"},
+          "scope": {"enum": ["H", "A", "fixture"]},
+          "finished_at": {"$ref": "../defs.schema.json#/$defs/datetime"}
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "fact_key", "category", "statement", "value", "unit", "as_of", "sources", "confidence"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^W-\\d{3,4}$"},
+          "fact_key": {"anyOf": [{"$ref": "../defs.schema.json#/$defs/fact_key"}, {"type": "null"}]},
+          "category": {"enum": ["fixture", "form", "standings", "h2h", "team_stats", "xg", "injury", "suspension",
+                                 "lineup", "manager", "tactics", "quote", "news", "odds", "other"]},
+          "statement": {"type": "string", "minLength": 5, "maxLength": 400},
+          "value": {},
+          "unit": {"type": ["string", "null"]},
+          "as_of": {"anyOf": [{"$ref": "../defs.schema.json#/$defs/datetime"}, {"type": "null"}]},
+          "sources": {"type": "array", "minItems": 1, "items": {"$ref": "../defs.schema.json#/$defs/source"}},
+          "confidence": {"enum": ["high", "medium", "low"]},
+          "single_source": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+---
+name: stage-storyboard
+description: Storyboard stage - author scene_plan.json and narration_script.json together, compile them into the engine choreography, render the silent animatic and contact sheet, run the tactics, script, visual (and fact) reviews, and hand off for approve storyboard. Use when tms next names the storyboard stage.
+---
+
+# Stage: storyboard → `scene_plan` + `narration_script` (+ engine `build/choreography.json`)
+
+Author: **storyboarder** (writes motion and words together so they stay coupled). Reviewers: **tactics-critic**,
+**script-editor**, **visual-qa**, and in match previews **fact-checker**. Gate: `approve storyboard` — this approval also
+authorises the paid voice/music spend capped by `brief.budget`.
+Read `skills/choreo-dsl/SKILL.md` and `skills/narration-craft/SKILL.md` first.
+
+## Steps
+1. `.venv/Scripts/tms stage begin storyboard`
+2. Launch the **storyboarder** with: slug, brief, tactic_spec (and in match previews: match_analysis, match_dossier,
+   prediction), the tactic still path, and the target duration. It returns `{"scene_plan": {...}, "narration_script": {...}}`.
+   Write them to `projects/<slug>/artifacts/scene_plan.json` and `projects/<slug>/artifacts/narration_script.json`.
+3. Compile and preview:
+   ```
+   .venv/Scripts/tms storyboard compile          # writes build/choreography.json, prints CH findings
+   .venv/Scripts/tms validate scene_plan narration_script
+   .venv/Scripts/tms storyboard preview          # silent animatic + contact sheet (+ CH findings)
+   ```
+   Every error goes back to the storyboarder with its rule id. Iterate until 0 errors.
+4. Look at `projects/<slug>/renders/contact_sheet.png` (panel → scene in `contact_sheet.json`) yourself.
+5. QA in parallel (see `skills/verification-protocol/SKILL.md`), each with the artifact paths, the animatic and contact
+   sheet paths and validator warnings:
+   - **tactics-critic** — does the motion demonstrate each principle/battle realistically?
+   - **script-editor** — is the narration accurate, clear, well paced, anchored?
+   - **visual-qa** — legibility, clutter, framing, caption placement on the contact sheet and sampled frames;
+   - **fact-checker** (match previews only) — every number and claim in narration/graphics matches the dossier.
+   Record each with `.venv/Scripts/tms qa record storyboard --agent <agent> --review <file>`; fix and re-run preview
+   after every change (any edit invalidates earlier passes).
+6. **gate-verifier** → `pass`, then `.venv/Scripts/tms stage submit storyboard`.
+7. Present: the animatic path and contact sheet, the full narration text, estimated duration, open warnings, and the
+   spend this approval authorises (TTS characters ≈ narration length, music seconds ≈ video length, from `brief.budget`).
+   "Type `approve storyboard`, or `reject storyboard: <what to change>`." End your turn.
+
+## Graphic templates (graphic scenes; data comes only from `bind`; rules GS-01..07)
+Bind values: a dossier fact key (`H.goals_for_avg`), a prediction path (`prediction.probs_final.home`), a key battle
+(`KB1`), or `text:<label without numbers>`. Never a typed number. Worked example: `tests/fixtures/match/scene_plan.json`.
+| template | required slots (optional in brackets) | example |
+|---|---|---|
+| `title_card` / `text_card` | headline, [sub] | `{"headline":"text:Real Madrid v Arsenal","sub":"text:Champions League preview"}` |
+| `stat_compare` | labels[], home[], away[] (equal length), [title] | `{"labels":["text:Goals per game"],"home":["H.goals_for_avg"],"away":["A.goals_for_avg"]}` |
+| `form_guide` | home, away | `{"home":"H.form.last5","away":"A.form.last5"}` |
+| `h2h_strip` | results | `{"results":"h2h.last5"}` |
+| `lineup_board` | home, away, [home_formation, away_formation] | `{"home":"H.predicted_xi","away":"A.predicted_xi","home_formation":"H.formation"}` |
+| `team_news` | home, away (a list merges injuries + suspensions) | `{"home":["H.injuries","H.suspensions"],"away":["A.injuries","A.suspensions"]}` |
+| `key_player_duel` | battle, [home_stats, away_stats as [label, value, …]] | `{"battle":"KB1"}` |
+| `probability_bar` | home, draw, away | `{"home":"prediction.probs_final.home", …}` |
+| `scoreline_grid` | scorelines | `{"scorelines":"prediction.scorelines"}` |
+| `prediction_card` | result, scoreline, confidence, [note] | `{"result":"prediction.headline.result","scoreline":"prediction.headline.scoreline","confidence":"prediction.confidence"}` |
+`reveals` (R1, R2, …) bring items in one after another; anchor narration words to them (`"ref":"R1"`).
+Match previews must show the prediction (`probability_bar` or `prediction_card`, which always prints "not betting advice").

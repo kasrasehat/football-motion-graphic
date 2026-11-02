@@ -1,0 +1,573 @@
+{
+ "description": "Shared world(m)->screen(px) projection vectors for render/src/lib/projection.ts and engine/tms/render/projection.py. Regenerate with tests/render/gen_projection_vectors.py.",
+ "tolerance_px": 1e-06,
+ "vectors": [
+  {
+   "name": "landscape centre",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    52.5,
+    34.0
+   ],
+   "screen_px": [
+    960.0,
+    540.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "landscape corner top-left",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    0.0,
+    0.0
+   ],
+   "screen_px": [
+    0.0,
+    -81.714285714
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "landscape corner bottom-right",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    105.0,
+    68.0
+   ],
+   "screen_px": [
+    1920.0,
+    1161.714285714
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "landscape corner top-right",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    105.0,
+    0.0
+   ],
+   "screen_px": [
+    1920.0,
+    -81.714285714
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "landscape home goal centre",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    0.0,
+    34.0
+   ],
+   "screen_px": [
+    0.0,
+    540.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "landscape penalty spot right",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    94.0,
+    34.0
+   ],
+   "screen_px": [
+    1718.857142857,
+    540.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "landscape zoomed w60 at H2 pivot",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    40.0,
+    40.0,
+    60.0
+   ],
+   "world_m": [
+    40.0,
+    39.0
+   ],
+   "screen_px": [
+    960.0,
+    508.0
+   ],
+   "px_per_m": 32.0,
+   "token_radius_px": 32.0
+  },
+  {
+   "name": "landscape zoomed w60 off-centre",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    40.0,
+    40.0,
+    60.0
+   ],
+   "world_m": [
+    25.1,
+    45.79
+   ],
+   "screen_px": [
+    483.2,
+    725.28
+   ],
+   "px_per_m": 32.0,
+   "token_radius_px": 32.0
+  },
+  {
+   "name": "landscape zoomed w30 tight",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    80.0,
+    20.0,
+    30.0
+   ],
+   "world_m": [
+    88.5,
+    13.84
+   ],
+   "screen_px": [
+    1504.0,
+    145.76
+   ],
+   "px_per_m": 64.0,
+   "token_radius_px": 64.0
+  },
+  {
+   "name": "landscape wide w125 fit",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    125.0
+   ],
+   "world_m": [
+    0.0,
+    68.0
+   ],
+   "screen_px": [
+    153.6,
+    1062.24
+   ],
+   "px_per_m": 15.36,
+   "token_radius_px": 15.36
+  },
+  {
+   "name": "landscape half-res centre",
+   "orientation": "landscape",
+   "width": 960,
+   "height": 540,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    52.5,
+    34.0
+   ],
+   "screen_px": [
+    480.0,
+    270.0
+   ],
+   "px_per_m": 9.142857143,
+   "token_radius_px": 9.142857143
+  },
+  {
+   "name": "landscape half-res corner",
+   "orientation": "landscape",
+   "width": 960,
+   "height": 540,
+   "camera_m": [
+    40.0,
+    40.0,
+    60.0
+   ],
+   "world_m": [
+    0.0,
+    0.0
+   ],
+   "screen_px": [
+    -160.0,
+    -370.0
+   ],
+   "px_per_m": 16.0,
+   "token_radius_px": 16.0
+  },
+  {
+   "name": "portrait centre",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    52.5,
+    34.0
+   ],
+   "screen_px": [
+    540.0,
+    960.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "portrait home goal is bottom",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    0.0,
+    34.0
+   ],
+   "screen_px": [
+    540.0,
+    1920.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "portrait away goal is top",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    105.0,
+    34.0
+   ],
+   "screen_px": [
+    540.0,
+    0.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "portrait corner top-left",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    0.0,
+    0.0
+   ],
+   "screen_px": [
+    -81.714285714,
+    1920.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "portrait corner bottom-right",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    105.0,
+    68.0
+   ],
+   "screen_px": [
+    1161.714285714,
+    0.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "portrait right flank is screen right",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    52.5,
+    68.0
+   ],
+   "screen_px": [
+    1161.714285714,
+    960.0
+   ],
+   "px_per_m": 18.285714286,
+   "token_radius_px": 18.285714286
+  },
+  {
+   "name": "portrait zoomed w60",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    40.0,
+    40.0,
+    60.0
+   ],
+   "world_m": [
+    40.0,
+    28.0
+   ],
+   "screen_px": [
+    156.0,
+    960.0
+   ],
+   "px_per_m": 32.0,
+   "token_radius_px": 32.0
+  },
+  {
+   "name": "portrait half-res zoomed",
+   "orientation": "portrait",
+   "width": 540,
+   "height": 960,
+   "camera_m": [
+    70.0,
+    30.0,
+    45.0
+   ],
+   "world_m": [
+    61.0,
+    40.0
+   ],
+   "screen_px": [
+    483.333333333,
+    672.0
+   ],
+   "px_per_m": 21.333333333,
+   "token_radius_px": 21.333333333
+  },
+  {
+   "name": "portrait full-height fit w118",
+   "orientation": "portrait",
+   "width": 1080,
+   "height": 1920,
+   "camera_m": [
+    52.5,
+    34.0,
+    118.0
+   ],
+   "world_m": [
+    105.0,
+    0.0
+   ],
+   "screen_px": [
+    -13.220338983,
+    105.762711864
+   ],
+   "px_per_m": 16.271186441,
+   "token_radius_px": 16.271186441
+  },
+  {
+   "name": "square centre",
+   "orientation": "square",
+   "width": 1080,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    52.5,
+    34.0
+   ],
+   "screen_px": [
+    540.0,
+    540.0
+   ],
+   "px_per_m": 10.285714286,
+   "token_radius_px": 13.0
+  },
+  {
+   "name": "square corner top-left",
+   "orientation": "square",
+   "width": 1080,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    0.0,
+    0.0
+   ],
+   "screen_px": [
+    0.0,
+    190.285714286
+   ],
+   "px_per_m": 10.285714286,
+   "token_radius_px": 13.0
+  },
+  {
+   "name": "square corner bottom-right",
+   "orientation": "square",
+   "width": 1080,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    105.0
+   ],
+   "world_m": [
+    105.0,
+    68.0
+   ],
+   "screen_px": [
+    1080.0,
+    889.714285714
+   ],
+   "px_per_m": 10.285714286,
+   "token_radius_px": 13.0
+  },
+  {
+   "name": "square zoomed w50",
+   "orientation": "square",
+   "width": 1080,
+   "height": 1080,
+   "camera_m": [
+    30.0,
+    50.0,
+    50.0
+   ],
+   "world_m": [
+    36.0,
+    61.0
+   ],
+   "screen_px": [
+    669.6,
+    777.6
+   ],
+   "px_per_m": 21.6,
+   "token_radius_px": 21.6
+  },
+  {
+   "name": "square tiny-token floor",
+   "orientation": "square",
+   "width": 1080,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    140.0
+   ],
+   "world_m": [
+    11.0,
+    34.0
+   ],
+   "screen_px": [
+    219.857142857,
+    540.0
+   ],
+   "px_per_m": 7.714285714,
+   "token_radius_px": 13.0
+  },
+  {
+   "name": "landscape tiny-token floor",
+   "orientation": "landscape",
+   "width": 1920,
+   "height": 1080,
+   "camera_m": [
+    52.5,
+    34.0,
+    160.0
+   ],
+   "world_m": [
+    52.5,
+    0.0
+   ],
+   "screen_px": [
+    960.0,
+    132.0
+   ],
+   "px_per_m": 12.0,
+   "token_radius_px": 13.0
+  }
+ ]
+}

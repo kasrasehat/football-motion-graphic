@@ -1,0 +1,514 @@
+{
+  "version": "1",
+  "project_id": "fx-match",
+  "start": {
+    "from": "tactic_snapshot",
+    "overrides": {}
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "kind": "graphic",
+      "purpose": "intro",
+      "title": "Preview",
+      "transition": "cut",
+      "length_s": 6,
+      "template": "title_card",
+      "bind": {
+        "headline": "text:Real Madrid v Arsenal",
+        "sub": "text:Champions League preview"
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.3
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "kind": "graphic",
+      "purpose": "form",
+      "title": "Form",
+      "transition": "cut",
+      "length_s": 7,
+      "template": "form_guide",
+      "bind": {
+        "home": "H.form.last5",
+        "away": "A.form.last5"
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.5
+        },
+        {
+          "id": "R2",
+          "at": 1.5
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "kind": "graphic",
+      "purpose": "context",
+      "title": "The numbers",
+      "transition": "cut",
+      "length_s": 8,
+      "template": "stat_compare",
+      "bind": {
+        "title": "text:Season averages",
+        "labels": [
+          "text:Goals per game",
+          "text:Goals conceded",
+          "text:xG created",
+          "text:xG conceded"
+        ],
+        "home": [
+          "H.goals_for_avg",
+          "H.goals_against_avg",
+          "H.xg_for_avg",
+          "H.xg_against_avg"
+        ],
+        "away": [
+          "A.goals_for_avg",
+          "A.goals_against_avg",
+          "A.xg_for_avg",
+          "A.xg_against_avg"
+        ]
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.4
+        },
+        {
+          "id": "R2",
+          "at": 1.6
+        },
+        {
+          "id": "R3",
+          "at": 2.8
+        },
+        {
+          "id": "R4",
+          "at": 4.0
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "kind": "graphic",
+      "purpose": "team_news",
+      "title": "Team news",
+      "transition": "cut",
+      "length_s": 6,
+      "template": "team_news",
+      "bind": {
+        "home": [
+          "H.injuries",
+          "H.suspensions"
+        ],
+        "away": [
+          "A.injuries",
+          "A.suspensions"
+        ]
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.4
+        },
+        {
+          "id": "R2",
+          "at": 1.4
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "kind": "graphic",
+      "purpose": "lineups",
+      "title": "Predicted XIs",
+      "transition": "cut",
+      "length_s": 7,
+      "template": "lineup_board",
+      "bind": {
+        "home": "H.predicted_xi",
+        "away": "A.predicted_xi",
+        "home_formation": "H.formation",
+        "away_formation": "A.formation"
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.4
+        },
+        {
+          "id": "R2",
+          "at": 1.6
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "kind": "pitch",
+      "purpose": "battle",
+      "title": "Arsenal's press",
+      "principles": [
+        "P1"
+      ],
+      "battles": [
+        "TB1"
+      ],
+      "transition": "cut",
+      "reset_to": null,
+      "length_s": 9,
+      "shape": [],
+      "actions": [
+        {
+          "type": "press",
+          "player": "A10",
+          "on": "H4",
+          "cut": "H6",
+          "at": 0.3,
+          "pace": "sprint",
+          "until": {
+            "after": "E01",
+            "plus": 0.4
+          }
+        },
+        {
+          "type": "mark",
+          "player": "A8",
+          "on": "H6",
+          "from": 0.6,
+          "until": {
+            "after": "E02",
+            "plus": 1.5
+          },
+          "dist_m": 1.6,
+          "goal_side": true
+        },
+        {
+          "type": "pass",
+          "id": "E01",
+          "from": "H4",
+          "to": "H5",
+          "at": {
+            "after": "A10@press#1.start",
+            "plus": 1.3
+          },
+          "kind": "ground"
+        },
+        {
+          "type": "press",
+          "player": "A9",
+          "on": "H5",
+          "cut": "H6",
+          "at": {
+            "after": "E01",
+            "plus": 0.0
+          },
+          "pace": "sprint",
+          "until": {
+            "after": "E02",
+            "plus": 0.4
+          }
+        },
+        {
+          "type": "pass",
+          "id": "E02",
+          "from": "H5",
+          "to": "H3",
+          "at": {
+            "after": "E01",
+            "plus": 1.1
+          },
+          "kind": "ground"
+        },
+        {
+          "type": "press",
+          "player": "A7",
+          "on": "H3",
+          "at": {
+            "after": "E02",
+            "plus": 0.0
+          },
+          "pace": "sprint"
+        }
+      ],
+      "holds": [
+        {
+          "id": "h1",
+          "at": {
+            "after": "E02",
+            "plus": 0.5
+          },
+          "max_s": 2.5,
+          "style": "freeze"
+        }
+      ],
+      "overlays": [
+        {
+          "id": "N01",
+          "kind": "ring",
+          "players": [
+            "A10",
+            "A9",
+            "A8"
+          ],
+          "in": 0.5,
+          "out": "scene.end"
+        },
+        {
+          "id": "N02",
+          "kind": "label",
+          "anchor": {
+            "player": "A8"
+          },
+          "text": "The eight jumps",
+          "in": 1.0,
+          "out": 4.5
+        },
+        {
+          "id": "N03",
+          "kind": "pass_line",
+          "event": "E01",
+          "in": {
+            "after": "E01",
+            "plus": 0
+          },
+          "out": "scene.end"
+        },
+        {
+          "id": "N04",
+          "kind": "pass_line",
+          "event": "E02",
+          "in": {
+            "after": "E02",
+            "plus": 0
+          },
+          "out": "scene.end"
+        }
+      ],
+      "camera": [
+        {
+          "at": 0,
+          "mode": "frame",
+          "targets": [
+            "H4",
+            "H5",
+            "H3",
+            "H6",
+            "A10",
+            "A9",
+            "A8",
+            "ball"
+          ],
+          "pad_m": 8,
+          "dur_s": 1.0
+        }
+      ]
+    },
+    {
+      "id": "S07",
+      "kind": "pitch",
+      "purpose": "battle",
+      "title": "Madrid's escape",
+      "principles": [
+        "P2"
+      ],
+      "battles": [
+        "TB2"
+      ],
+      "transition": "reset",
+      "reset_to": "tactic_snapshot",
+      "length_s": null,
+      "shape": [
+        {
+          "at": 0,
+          "team": "A",
+          "block": {
+            "ball_shift": 0.4
+          },
+          "react_s": 0.5
+        }
+      ],
+      "actions": [
+        {
+          "type": "move",
+          "player": "H7",
+          "at": 0.4,
+          "to": {
+            "pitch": [
+              76,
+              55
+            ]
+          },
+          "pace": "sprint",
+          "curve_m": 4
+        },
+        {
+          "type": "pass",
+          "id": "E01",
+          "from": "H4",
+          "to": "H7",
+          "at": {
+            "after": "H7@move#1.start",
+            "plus": 0.3
+          },
+          "kind": "lofted"
+        },
+        {
+          "type": "move",
+          "player": "A3",
+          "at": {
+            "after": "E01",
+            "plus": 0.3
+          },
+          "to": {
+            "rel_player": "H7",
+            "offset": [
+              3,
+              1.5
+            ]
+          },
+          "pace": "run"
+        },
+        {
+          "type": "move",
+          "player": "H9",
+          "at": {
+            "after": "E01",
+            "plus": 0.0
+          },
+          "to": {
+            "pitch": [
+              88,
+              38
+            ]
+          },
+          "pace": "sprint"
+        }
+      ],
+      "holds": [
+        {
+          "id": "h1",
+          "at": {
+            "after": "E01",
+            "plus": 0.4
+          },
+          "max_s": 2.5,
+          "style": "freeze"
+        }
+      ],
+      "overlays": [
+        {
+          "id": "N05",
+          "kind": "run_arrow",
+          "action": "H7@move#1",
+          "style": "preview",
+          "in": 0.0,
+          "out": {
+            "after": "E01",
+            "plus": 1.0
+          }
+        },
+        {
+          "id": "N06",
+          "kind": "line",
+          "geom": {
+            "def_line": "A"
+          },
+          "in": 0.0,
+          "out": "scene.end"
+        },
+        {
+          "id": "N07",
+          "kind": "pass_line",
+          "event": "E01",
+          "in": {
+            "after": "E01",
+            "plus": 0
+          },
+          "out": "scene.end"
+        }
+      ],
+      "camera": [
+        {
+          "at": 0,
+          "mode": "full"
+        },
+        {
+          "at": {
+            "after": "E01",
+            "plus": 0.0
+          },
+          "mode": "follow",
+          "target": "ball",
+          "w_m": 70
+        }
+      ]
+    },
+    {
+      "id": "S08",
+      "kind": "graphic",
+      "purpose": "key_players",
+      "title": "Key duel",
+      "transition": "cut",
+      "length_s": 7,
+      "template": "key_player_duel",
+      "bind": {
+        "battle": "KB1"
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.4
+        }
+      ]
+    },
+    {
+      "id": "S09",
+      "kind": "graphic",
+      "purpose": "prediction",
+      "title": "The model",
+      "transition": "cut",
+      "length_s": 8,
+      "template": "probability_bar",
+      "bind": {
+        "home": "prediction.probs_final.home",
+        "draw": "prediction.probs_final.draw",
+        "away": "prediction.probs_final.away"
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.5
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "kind": "graphic",
+      "purpose": "outro",
+      "title": "Prediction",
+      "transition": "cut",
+      "length_s": 8,
+      "template": "prediction_card",
+      "bind": {
+        "result": "prediction.headline.result",
+        "scoreline": "prediction.headline.scoreline",
+        "confidence": "prediction.confidence",
+        "note": "text:Line-ups still to be confirmed"
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.5
+        }
+      ]
+    }
+  ]
+}

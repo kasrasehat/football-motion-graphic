@@ -1,0 +1,78 @@
+{
+ "version": "1",
+ "project_id": "fx-ifb-442",
+ "inputs": {
+  "render_props": "0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "output": {
+  "file": "renders/final.mp4",
+  "captions_file": "renders/captions.srt",
+  "width": 1920,
+  "height": 1080,
+  "fps": "30/1",
+  "frames": 120,
+  "duration_s": 4.0,
+  "size_bytes": 123456
+ },
+ "audio": {
+  "integrated_lufs": -14.1,
+  "true_peak_dbtp": -1.6,
+  "lra": 5.2,
+  "vo_music_margin_db": 11.0
+ },
+ "checks": [
+  {
+   "rule": "FQ-01",
+   "ok": true,
+   "severity": "error",
+   "detail": "ok"
+  },
+  {
+   "rule": "FQ-02",
+   "ok": true,
+   "severity": "error",
+   "detail": "ok"
+  },
+  {
+   "rule": "FQ-03",
+   "ok": true,
+   "severity": "error",
+   "detail": "ok"
+  },
+  {
+   "rule": "FQ-04",
+   "ok": true,
+   "severity": "error",
+   "detail": "ok"
+  },
+  {
+   "rule": "FQ-05",
+   "ok": true,
+   "severity": "error",
+   "detail": "ok"
+  },
+  {
+   "rule": "FQ-06",
+   "ok": true,
+   "severity": "error",
+   "detail": "ok"
+  },
+  {
+   "rule": "FQ-07",
+   "ok": true,
+   "severity": "warning",
+   "detail": "ok"
+  },
+  {
+   "rule": "FQ-08",
+   "ok": true,
+   "severity": "warning",
+   "detail": "ok"
+  }
+ ],
+ "qa_frames": [
+  "renders/qa/f0060.png"
+ ],
+ "mock_audio": true,
+ "verdict": "pass"
+}

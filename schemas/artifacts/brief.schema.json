@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/brief.schema.json",
+  "title": "brief — what video to make (intake)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "mode", "created_at", "language", "audience", "target_duration_s",
+               "aspect", "fps", "teams", "focus_team", "voice", "music", "captions", "show_names", "budget"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "mode": {"enum": ["tactic", "match_preview"]},
+    "created_at": {"$ref": "../defs.schema.json#/$defs/datetime"},
+    "language": {"const": "en"},
+    "audience": {"enum": ["beginner", "intermediate", "expert"]},
+    "target_duration_s": {"type": "integer", "minimum": 30, "maximum": 240},
+    "aspect": {"enum": ["16:9", "9:16", "1:1"]},
+    "fps": {"const": 30},
+    "tactic": {
+      "type": "object", "additionalProperties": false, "required": ["source", "request_verbatim", "tactic_text", "topic"],
+      "properties": {
+        "source": {"enum": ["user", "ai"]},
+        "request_verbatim": {"type": "string", "minLength": 1},
+        "tactic_text": {"type": ["string", "null"]},
+        "topic": {"type": ["string", "null"], "maxLength": 80}
+      }
+    },
+    "match": {
+      "type": "object", "additionalProperties": false,
+      "required": ["query", "home", "away", "competition", "kickoff_utc", "local_timezone", "venue", "fixture_id", "resolution"],
+      "properties": {
+        "query": {"type": "string", "minLength": 3},
+        "home": {"type": "string", "minLength": 2},
+        "away": {"type": "string", "minLength": 2},
+        "competition": {"type": "string", "minLength": 2},
+        "kickoff_utc": {"$ref": "../defs.schema.json#/$defs/datetime"},
+        "local_timezone": {"type": "string", "minLength": 3},
+        "venue": {"type": ["string", "null"]},
+        "fixture_id": {"type": ["integer", "null"]},
+        "resolution": {
+          "type": "object", "additionalProperties": false, "required": ["method", "resolved_at", "sources"],
+          "properties": {
+            "method": {"enum": ["api", "web"]},
+            "resolved_at": {"$ref": "../defs.schema.json#/$defs/datetime"},
+            "sources": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3}}
+          }
+        }
+      }
+    },
+    "teams": {
+      "type": "object", "additionalProperties": false, "required": ["H", "A"],
+      "properties": {
+        "H": {"$ref": "../defs.schema.json#/$defs/team_style"},
+        "A": {"$ref": "../defs.schema.json#/$defs/team_style"}
+      }
+    },
+    "focus_team": {"enum": ["H", "A", "both"]},
+    "voice": {
+      "type": "object", "additionalProperties": false,
+      "required": ["voice_id", "model_id", "stability", "similarity_boost", "style", "speed", "seed"],
+      "properties": {
+        "voice_id": {"type": "string"},
+        "model_id": {"type": "string", "minLength": 3},
+        "stability": {"type": "number", "minimum": 0, "maximum": 1},
+        "similarity_boost": {"type": "number", "minimum": 0, "maximum": 1},
+        "style": {"type": "number", "minimum": 0, "maximum": 1},
+        "speed": {"type": "number", "minimum": 0.7, "maximum": 1.2},
+        "seed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "music": {
+      "type": "object", "additionalProperties": false, "required": ["source", "mood", "file"],
+      "properties": {
+        "source": {"enum": ["generate", "file", "none"]},
+        "mood": {"type": "string", "maxLength": 200},
+        "file": {"type": ["string", "null"]}
+      }
+    },
+    "captions": {"type": "boolean"},
+    "show_names": {"type": "boolean"},
+    "budget": {
+      "type": "object", "additionalProperties": false, "required": ["tts_chars_max", "music_s_max", "api_calls_max"],
+      "properties": {
+        "tts_chars_max": {"type": "integer", "minimum": 0},
+        "music_s_max": {"type": "integer", "minimum": 0},
+        "api_calls_max": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"mode": {"const": "tactic"}}}, "then": {"required": ["tactic"]}},
+    {"if": {"properties": {"mode": {"const": "match_preview"}}}, "then": {"required": ["match"]}}
+  ]
+}

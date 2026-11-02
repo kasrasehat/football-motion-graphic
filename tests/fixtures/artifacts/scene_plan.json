@@ -1,0 +1,494 @@
+{
+  "version": "1",
+  "project_id": "fx-ifb-442",
+  "start": {
+    "from": "tactic_snapshot",
+    "overrides": {
+      "H2": [
+        36,
+        61
+      ],
+      "H3": [
+        31,
+        7
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "kind": "pitch",
+      "purpose": "establish",
+      "title": "4-3-3 vs 4-4-2",
+      "principles": [],
+      "transition": "continue",
+      "reset_to": null,
+      "length_s": 5,
+      "shape": [],
+      "actions": [],
+      "holds": [],
+      "overlays": [
+        {
+          "id": "N01",
+          "kind": "label",
+          "anchor": {
+            "player": "A9"
+          },
+          "text": "Blues 4-4-2 mid-block",
+          "in": 0.4,
+          "out": 4.6
+        },
+        {
+          "id": "N02",
+          "kind": "ring",
+          "players": [
+            "H2"
+          ],
+          "in": 2.0,
+          "out": "scene.end"
+        }
+      ],
+      "camera": [
+        {
+          "at": 0,
+          "mode": "full"
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "kind": "pitch",
+      "purpose": "explain",
+      "title": "The full-back steps in",
+      "principles": [
+        "P1"
+      ],
+      "transition": "continue",
+      "reset_to": null,
+      "length_s": 9,
+      "shape": [],
+      "actions": [
+        {
+          "type": "move",
+          "player": "H2",
+          "at": 0.6,
+          "to": {
+            "rel_player": "H6",
+            "offset": [
+              0,
+              11
+            ]
+          },
+          "pace": "run",
+          "curve_m": 3
+        },
+        {
+          "type": "move",
+          "player": "H3",
+          "at": 0.9,
+          "to": {
+            "pitch": [
+              27,
+              16
+            ]
+          },
+          "pace": "jog"
+        }
+      ],
+      "holds": [
+        {
+          "id": "h1",
+          "at": {
+            "after": "H2@move#1.end",
+            "plus": 0.2
+          },
+          "max_s": 2.0,
+          "style": "drift"
+        }
+      ],
+      "overlays": [
+        {
+          "id": "N03",
+          "kind": "run_arrow",
+          "action": "H2@move#1",
+          "style": "preview",
+          "in": 0.1,
+          "out": {
+            "after": "H2@move#1.end",
+            "plus": 0.6
+          }
+        },
+        {
+          "id": "N04",
+          "kind": "ring",
+          "players": [
+            "H2",
+            "H6"
+          ],
+          "in": {
+            "after": "H2@move#1.end",
+            "plus": 0.1
+          },
+          "out": "scene.end"
+        },
+        {
+          "id": "N05",
+          "kind": "label",
+          "anchor": {
+            "player": "H6"
+          },
+          "text": "2-man pivot",
+          "in": {
+            "after": "H2@move#1.end",
+            "plus": 0.2
+          },
+          "out": "scene.end"
+        }
+      ],
+      "camera": [
+        {
+          "at": 0,
+          "mode": "frame",
+          "targets": [
+            "H2",
+            "H6",
+            "H4",
+            "H3"
+          ],
+          "pad_m": 10,
+          "dur_s": 1.0
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "kind": "pitch",
+      "purpose": "demonstrate",
+      "title": "Two strikers, two pivots",
+      "principles": [
+        "P1",
+        "P2"
+      ],
+      "transition": "continue",
+      "reset_to": null,
+      "length_s": null,
+      "shape": [
+        {
+          "at": 0,
+          "team": "A",
+          "block": {
+            "ball_shift": 0.5
+          },
+          "react_s": 0.4
+        }
+      ],
+      "actions": [
+        {
+          "type": "press",
+          "player": "A9",
+          "on": "H4",
+          "cut": "H2",
+          "at": 0.3,
+          "pace": "sprint"
+        },
+        {
+          "type": "pass",
+          "id": "E01",
+          "from": "H4",
+          "to": "H6",
+          "at": {
+            "after": "A9@press#1.start",
+            "plus": 0.9
+          },
+          "kind": "ground"
+        },
+        {
+          "type": "move",
+          "player": "H10",
+          "at": {
+            "after": "E01",
+            "plus": 0.0
+          },
+          "to": {
+            "zone": "r_half_space_mid"
+          },
+          "pace": "jog"
+        },
+        {
+          "type": "pass",
+          "id": "E02",
+          "from": "H6",
+          "to": "H10",
+          "at": {
+            "after": "E01",
+            "plus": 0.8
+          },
+          "kind": "driven",
+          "lead_m": 1.0
+        }
+      ],
+      "holds": [
+        {
+          "id": "h1",
+          "at": {
+            "after": "E02",
+            "plus": 0.3
+          },
+          "max_s": 2.5,
+          "style": "freeze"
+        }
+      ],
+      "overlays": [
+        {
+          "id": "N06",
+          "kind": "pass_line",
+          "event": "E01",
+          "in": {
+            "after": "E01",
+            "plus": 0
+          },
+          "out": "scene.end"
+        },
+        {
+          "id": "N07",
+          "kind": "pass_line",
+          "event": "E02",
+          "in": {
+            "after": "E02",
+            "plus": 0
+          },
+          "out": "scene.end"
+        },
+        {
+          "id": "N08",
+          "kind": "zone",
+          "geom": {
+            "hull": [
+              "A6",
+              "A4",
+              "A2",
+              "A7"
+            ]
+          },
+          "text": "Between the lines",
+          "in": {
+            "before": "E02",
+            "plus": 0.6
+          },
+          "out": "scene.end"
+        }
+      ],
+      "camera": [
+        {
+          "at": 0,
+          "mode": "frame",
+          "targets": [
+            "H4",
+            "H6",
+            "H10",
+            "A9",
+            "ball"
+          ],
+          "pad_m": 8,
+          "dur_s": 1.0
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "kind": "pitch",
+      "purpose": "exploit",
+      "title": "Five pin four",
+      "principles": [
+        "P3"
+      ],
+      "transition": "continue",
+      "reset_to": null,
+      "length_s": null,
+      "shape": [],
+      "actions": [
+        {
+          "type": "carry",
+          "player": "H10",
+          "at": 0.2,
+          "to": {
+            "pitch": [
+              67,
+              44
+            ]
+          },
+          "pace": "run"
+        },
+        {
+          "type": "move",
+          "player": "A4",
+          "at": 0.6,
+          "to": {
+            "rel_player": "H10",
+            "offset": [
+              3,
+              0
+            ]
+          },
+          "pace": "sprint"
+        },
+        {
+          "type": "move",
+          "player": "H9",
+          "at": {
+            "before": "E03",
+            "plus": 0.3
+          },
+          "to": {
+            "pitch": [
+              88,
+              36
+            ]
+          },
+          "pace": "sprint",
+          "curve_m": 2
+        },
+        {
+          "type": "pass",
+          "id": "E03",
+          "from": "H10",
+          "to": "H9",
+          "at": {
+            "after": "H10@carry#1.end",
+            "plus": 0.1
+          },
+          "kind": "through"
+        }
+      ],
+      "holds": [
+        {
+          "id": "h1",
+          "at": {
+            "after": "E03",
+            "plus": 0.4
+          },
+          "max_s": 2.0,
+          "style": "freeze"
+        }
+      ],
+      "overlays": [
+        {
+          "id": "N09",
+          "kind": "line",
+          "geom": {
+            "def_line": "A"
+          },
+          "in": 0.0,
+          "out": "scene.end"
+        },
+        {
+          "id": "N10",
+          "kind": "run_arrow",
+          "action": "H9@move#1",
+          "style": "preview",
+          "in": {
+            "before": "H9@move#1.start",
+            "plus": 0.5
+          },
+          "out": {
+            "after": "E03",
+            "plus": 0.8
+          }
+        },
+        {
+          "id": "N11",
+          "kind": "pass_line",
+          "event": "E03",
+          "in": {
+            "after": "E03",
+            "plus": 0
+          },
+          "out": "scene.end"
+        }
+      ],
+      "camera": [
+        {
+          "at": 0,
+          "mode": "follow",
+          "target": "ball",
+          "w_m": 60
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "kind": "pitch",
+      "purpose": "recap",
+      "title": "3-2-5",
+      "principles": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "transition": "reset",
+      "reset_to": "tactic_snapshot",
+      "length_s": 6,
+      "shape": [],
+      "actions": [],
+      "holds": [],
+      "overlays": [
+        {
+          "id": "N12",
+          "kind": "polygon",
+          "players": [
+            "H3",
+            "H5",
+            "H4"
+          ],
+          "in": 0.3,
+          "out": "scene.end"
+        },
+        {
+          "id": "N13",
+          "kind": "polygon",
+          "players": [
+            "H6",
+            "H2"
+          ],
+          "in": 1.5,
+          "out": "scene.end"
+        },
+        {
+          "id": "N14",
+          "kind": "label",
+          "anchor": {
+            "player": "H9"
+          },
+          "text": "Five pin four",
+          "in": 2.7,
+          "out": "scene.end"
+        }
+      ],
+      "camera": [
+        {
+          "at": 0,
+          "mode": "full"
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "kind": "graphic",
+      "purpose": "outro",
+      "title": "Control the middle",
+      "transition": "cut",
+      "length_s": 4,
+      "template": "text_card",
+      "bind": {
+        "headline": "text:Control the middle",
+        "sub": "text:Inverted full-back, 3-2-5"
+      },
+      "reveals": [
+        {
+          "id": "R1",
+          "at": 0.3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/prediction.schema.json",
+  "title": "prediction — engine-computed (Dixon-Coles) outcome probabilities with bounded analyst adjustments",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "inputs", "model", "inputs_used", "lambda", "probs_model", "odds_implied",
+               "blend_weight", "adjustments_applied", "probs_final", "scorelines", "headline", "confidence", "entropy", "disclaimer"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "inputs": {"$ref": "../defs.schema.json#/$defs/inputs"},
+    "model": {
+      "type": "object", "additionalProperties": false, "required": ["name", "home_advantage", "rho", "league_avg_goals", "max_goals"],
+      "properties": {
+        "name": {"const": "dixon-coles"},
+        "home_advantage": {"type": "number"},
+        "rho": {"type": "number", "minimum": -0.3, "maximum": 0.3},
+        "league_avg_goals": {"type": "number", "exclusiveMinimum": 0},
+        "max_goals": {"type": "integer", "minimum": 6, "maximum": 15}
+      }
+    },
+    "inputs_used": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["fact_key", "value"],
+        "properties": {"fact_key": {"$ref": "../defs.schema.json#/$defs/fact_key"}, "value": {"type": "number"}}
+      }
+    },
+    "lambda": {
+      "type": "object", "additionalProperties": false, "required": ["home", "away"],
+      "properties": {"home": {"type": "number", "exclusiveMinimum": 0}, "away": {"type": "number", "exclusiveMinimum": 0}}
+    },
+    "probs_model": {"$ref": "#/$defs/probs"},
+    "odds_implied": {"anyOf": [{"$ref": "#/$defs/probs"}, {"type": "null"}]},
+    "blend_weight": {"type": "number", "minimum": 0, "maximum": 1},
+    "adjustments_applied": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["outcome", "delta_pp", "reason", "refs"],
+        "properties": {
+          "outcome": {"enum": ["home", "draw", "away"]},
+          "delta_pp": {"type": "number"},
+          "reason": {"type": "string"},
+          "refs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "probs_final": {"$ref": "#/$defs/probs"},
+    "scorelines": {
+      "type": "array", "minItems": 3, "maxItems": 10,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["home", "away", "p"],
+        "properties": {
+          "home": {"type": "integer", "minimum": 0}, "away": {"type": "integer", "minimum": 0},
+          "p": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    "headline": {
+      "type": "object", "additionalProperties": false, "required": ["result", "scoreline"],
+      "properties": {
+        "result": {"enum": ["home", "draw", "away"]},
+        "scoreline": {"type": "string", "pattern": "^\\d{1,2}-\\d{1,2}$"}
+      }
+    },
+    "confidence": {"enum": ["low", "medium", "high"]},
+    "entropy": {"type": "number", "minimum": 0},
+    "disclaimer": {"type": "string", "minLength": 20}
+  },
+  "$defs": {
+    "probs": {
+      "type": "object", "additionalProperties": false, "required": ["home", "draw", "away"],
+      "properties": {
+        "home": {"type": "number", "minimum": 0, "maximum": 1},
+        "draw": {"type": "number", "minimum": 0, "maximum": 1},
+        "away": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    }
+  }
+}

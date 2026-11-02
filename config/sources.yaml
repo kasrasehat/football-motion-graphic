@@ -1,0 +1,42 @@
+# Source tiers for web research (match-data-sources skill). Tier is set by the researcher per source; these lists
+# let the validator warn on obvious mismatches. Unknown domains default to tier 3 (warning on key facts).
+tier1:   # official / primary
+  - uefa.com
+  - premierleague.com
+  - laliga.com
+  - bundesliga.com
+  - legaseriea.it
+  - ligue1.com
+  - fifa.com
+  - realmadrid.com
+  - arsenal.com
+  - bbc.co.uk
+  - bbc.com
+  - theathletic.com
+  - nytimes.com
+  - reuters.com
+  - apnews.com
+  - skysports.com
+  - espn.com
+  - marca.com
+  - as.com
+tier2:   # established statistics / analysis
+  - fbref.com
+  - understat.com
+  - whoscored.com
+  - sofascore.com
+  - fotmob.com
+  - transfermarkt.com
+  - opta.com
+  - theanalyst.com
+  - footballcritic.com
+  - totalfootballanalysis.com
+  - statsbomb.com
+blocked:  # never acceptable as sources
+  - reddit.com
+  - x.com
+  - twitter.com
+  - facebook.com
+  - instagram.com
+  - tiktok.com
+  - youtube.com

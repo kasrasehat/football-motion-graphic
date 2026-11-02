@@ -1,0 +1,55 @@
+# Hook policy (hooks/dispatch.py -> tms.harness.policy). Globs are repo-relative POSIX paths.
+# Hooks are the SECOND layer of protection; gates in the tms CLI are the first and never rely on hooks.
+
+deny_write:
+  - pattern: "projects/*/state/**"
+    why: "state/ is written only by tms (events, approvals, QA records, decisions)"
+  - pattern: "projects/*/history/**"
+    why: "history/ holds immutable submit snapshots"
+  - pattern: "projects/*/build/**"
+    why: "build/ is engine output; change the authored artifact and re-run the tms command"
+  - pattern: "projects/*/project.json"
+    why: "project.json is created by `tms init`"
+  - pattern: ".env"
+    why: "secrets are managed by the user"
+  - pattern: ".env.local"
+    why: "secrets are managed by the user"
+  - pattern: ".claude/skills/**"
+    why: "generated: edit skills/<name>/SKILL.md then run `.venv/Scripts/tms sync-harness`"
+  - pattern: ".claude/agents/**"
+    why: "generated: edit agents/<name>.md then run `.venv/Scripts/tms sync-harness`"
+  - pattern: ".agents/skills/**"
+    why: "generated: edit skills/<name>/SKILL.md then run `.venv/Scripts/tms sync-harness`"
+  - pattern: ".codex/agents/**"
+    why: "generated: edit agents/<name>.md then run `.venv/Scripts/tms sync-harness`"
+
+deny_read:
+  - pattern: ".env"
+    why: "secrets: the tms CLI loads keys itself; never read or print them"
+  - pattern: ".env.local"
+    why: "secrets"
+
+# Regexes applied to shell commands (Bash / PowerShell / Codex shell).
+deny_commands:
+  - regex: '(?i)\btms(\.exe|\.cmd)?["'']?\s+approve\b|-m\s+tms\s+approve\b'
+    why: "approvals come only from the user (type `approve <stage>` in chat, or run it in their own terminal)"
+  - regex: '(?i)(^|[\s;&|(''"])python(3)?(\.exe)?\s'
+    why: "bare `python` is Python 3.8 on this machine; use .venv/Scripts/python.exe or .venv/Scripts/tms"
+  - regex: '(?i)api\.elevenlabs\.io|api-sports\.io|api-football\.com'
+    why: "paid/quota APIs are called only through tms commands (cached, budgeted, logged)"
+  - regex: '(?i)TacticMotionStudio|approval\.key'
+    why: "the approval key directory is off-limits"
+  - regex: '(?i)(^|[\s;&|(''"=])(\./)?\.env(\.local)?(["'';\s|)]|$)'
+    why: "secrets: never read or print .env"
+  - regex: '(?i)(--no-verify|--dangerously-bypass-hook-trust)'
+    why: "bypassing hooks is not allowed"
+
+# Shell commands that WRITE into protected project dirs (heuristic: protected path + write verb).
+protected_write_paths_regex: '(?i)projects[/\\][^/\\\s]+[/\\](state|history|build)([/\\]|\s|$)|project\.json'
+write_verbs_regex: '(?i)(>|\brm\b|\bmv\b|\bcp\b|\bdel\b|\berase\b|\bmove\b|\bcopy\b|Remove-Item|Set-Content|Add-Content|Out-File|New-Item|Copy-Item|Move-Item|\btee\b|sed\s+-i|\btruncate\b|\.write|open\()'
+
+# Paths whose edits mark the session "dirty" so the Stop hook runs the fast test suite.
+dirty_paths:
+  python: ["engine/**", "hooks/**", "tests/**", "schemas/**", "config/**", "pipeline.yaml", "pyproject.toml"]
+  ts: ["render/src/**", "render/test/**", "render/scripts/**"]
+  harness: ["skills/**", "agents/**", "AGENTS.md", "CLAUDE.md", "PROJECT_CONTEXT.md", ".claude/settings.json", ".codex/**"]

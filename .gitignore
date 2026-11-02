@@ -1,0 +1,21 @@
+# secrets
+.env
+.env.*
+!.env.example
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.hypothesis/
+*.egg-info/
+# node / remotion
+node_modules/
+render/out/
+render/.remotion/
+# runtime state (fixtures live under tests/fixtures)
+projects/*
+!projects/.gitkeep
+.tms/
+# claude local overrides only (settings.json IS committed)
+.claude/settings.local.json

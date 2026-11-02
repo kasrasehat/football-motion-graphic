@@ -1,0 +1,12 @@
+# NS — narration_script rules (spoken text = captions, so these also protect the subtitles).
+rules:
+  NS-01: {artifact: narration_script, severity: error, text: "exactly one line per scene_plan scene, in order; at most 2 silent lines", params: {max_silent: 2}}
+  NS-02: {artifact: narration_script, severity: error, text: "no raw ids (H7, E01, S03, N04, P2, KB1 ...) in spoken text"}
+  NS-03: {artifact: narration_script, severity: error, text: "speech fits: per scene est <= 1.6 x scene length + 1 s; total est within 0.6-1.15 x target (est = words / 2.6 + 0.25 s per sentence break)", params: {wps: 2.6, pause: 0.25, scene_factor: 1.6, scene_slack: 1.0, total_lo: 0.6, total_hi: 1.15}}
+  NS-04: {artifact: narration_script, severity: error, text: "the hook (first sentence of the first spoken line) is <= 12 words", params: {max_words: 12}}
+  NS-05: {artifact: narration_script, severity: error, text: "sentences <= 24 words; lines <= 45 words", params: {sentence: 24, line: 45}}
+  NS-06: {artifact: narration_script, severity: error, text: "anchors name a word that occurs in the line and a ref that exists in that scene; >= 50% of explain/demonstrate/exploit/battle scenes anchor a word", params: {share: 0.5}}
+  NS-07: {artifact: narration_script, severity: error, text: "every pronunciation key occurs in the spoken text"}
+  NS-08: {artifact: narration_script, severity: warning, text: "spell formations out for the voice (four-four-two, not 4-4-2)"}
+  NS-09: {artifact: narration_script, severity: warning, text: "avoid filler words (basically, actually, really, very, kind of, sort of, just)"}
+  NS-10: {artifact: narration_script, severity: error, text: "match previews: every number spoken is declared in `numbers` with a ref whose value matches (dossier fact or prediction)", params: {pct_tol: 1.0, abs_tol: 0.05}}

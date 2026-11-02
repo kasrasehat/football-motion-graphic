@@ -1,0 +1,23 @@
+{
+ "version": "1",
+ "project_id": "fx-ifb-442",
+ "inputs": {
+  "timeline": "0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "source": "generate",
+ "provider": "mock_synth",
+ "request_hash": null,
+ "cached": false,
+ "raw_file": "media/music/raw.wav",
+ "raw_duration_s": 8.0,
+ "fitted_file": "media/music/bed_fit.wav",
+ "samples": 192000,
+ "body": {
+  "start_s": 0.0,
+  "end_s": 8.0
+ },
+ "fade_in_frames": 15,
+ "fade_out_frames": 60,
+ "plan_tier": null,
+ "music_s_billed": 0
+}

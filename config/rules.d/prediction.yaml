@@ -1,0 +1,11 @@
+# PR — prediction rules (artifact: build/prediction.json, built by `tms predict build`).
+# Implementation: engine/tms/validate/prediction_rules.py · negative tests: tests/predict/test_rules_prediction.py
+# Model parameters and the confidence thresholds used by PR-05 live in config/predict.yaml.
+rules:
+  PR-01: {artifact: prediction, severity: error, text: "probs_final, probs_model and odds_implied (when present) each sum to 1 +/- 0.001", params: {tol: 0.001}}
+  PR-02: {artifact: prediction, severity: error, text: "every inputs_used fact_key exists in match_dossier.facts with the same value and is not in conflict", params: {rel_tol: 1.0e-9}}
+  PR-03: {artifact: prediction, severity: error, text: "each adjustment |delta_pp| <= 10 with a reason (>= 10 chars) and >= 1 ref; adjustments_applied equals match_analysis.prediction_adjustments", params: {max_abs_delta_pp: 10, min_reason: 10}}
+  PR-04: {artifact: prediction, severity: error, text: "headline.result = argmax(probs_final); headline.scoreline matches that result, is the most likely listed scoreline with it, and is among the top-3 scorelines", params: {top_k: 3}}
+  PR-05: {artifact: prediction, severity: error, text: "entropy = H(probs_final) in nats (+/- 0.002) and the confidence label follows the config/predict.yaml thresholds (entropy + max-prob margin)", params: {entropy_tol: 0.002}}
+  PR-06: {artifact: prediction, severity: error, text: "disclaimer present and says 'not betting advice' (case-insensitive)", params: {phrase: "not betting advice"}}
+  PR-07: {artifact: prediction, severity: error, text: "no outcome of probs_final drifts > 15 pp from the model/market blend (adjustments combined); blend_weight 0 without odds and <= 0.5", params: {max_drift_pp: 15, max_blend_weight: 0.5}}

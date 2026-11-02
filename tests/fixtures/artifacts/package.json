@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "project_id": "fx-ifb-442",
+  "title": "The Inverted Full-Back: How a 4-3-3 Becomes a 3-2-5",
+  "description": "A 75-second tactical explainer: how stepping the right-back into midfield creates a 2-man pivot, frees the eights between the lines, and pins a back four with five forwards.",
+  "chapters": [{"t_s": 0, "title": "The setup"}, {"t_s": 12, "title": "The full-back steps in"}, {"t_s": 50, "title": "Recap"}],
+  "tags": ["football tactics", "inverted full-back", "3-2-5"],
+  "thumbnail_frame": 600
+}

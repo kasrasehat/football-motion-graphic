@@ -1,0 +1,147 @@
+{
+  "version": "1",
+  "project_id": "fx-match",
+  "language": "en",
+  "pronunciations": {},
+  "title_card": {
+    "title": "Real Madrid v Arsenal",
+    "subtitle": "Champions League preview"
+  },
+  "end_card": {
+    "text": "Analysis, not betting advice."
+  },
+  "lines": [
+    {
+      "scene": "S01",
+      "text": "Real Madrid against Arsenal: one tactical question decides it.",
+      "silent": false,
+      "anchors": []
+    },
+    {
+      "scene": "S02",
+      "text": "Look at the form guide. Neither side arrives in full rhythm, and both have dropped points recently.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "form",
+          "occurrence": 1,
+          "ref": "R1",
+          "lead_s": 0.0
+        }
+      ]
+    },
+    {
+      "scene": "S03",
+      "text": "Madrid average 2.3 goals a game, Arsenal 1.9. But Arsenal allow fewer chances, and that matters tonight.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "Madrid",
+          "occurrence": 1,
+          "ref": "R1",
+          "lead_s": 0.0
+        }
+      ],
+      "numbers": [
+        {
+          "text": "2.3",
+          "ref": "H.goals_for_avg"
+        },
+        {
+          "text": "1.9",
+          "ref": "A.goals_for_avg"
+        }
+      ]
+    },
+    {
+      "scene": "S04",
+      "text": "Madrid are missing Castillo, while Arsenal wait on Porter and a late fitness test.",
+      "silent": false,
+      "anchors": []
+    },
+    {
+      "scene": "S05",
+      "text": "Expect a four-three-three on both sides, so the fight for midfield control decides everything.",
+      "silent": false,
+      "anchors": []
+    },
+    {
+      "scene": "S06",
+      "text": "Arsenal press from the front. The striker closes the centre-back, the eight jumps onto Vidal, and Madrid are pushed wide.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "closes",
+          "occurrence": 1,
+          "ref": "A10@press#1.start",
+          "lead_s": 0.0
+        },
+        {
+          "word": "wide.",
+          "occurrence": 1,
+          "ref": "E02",
+          "lead_s": 0.0
+        }
+      ]
+    },
+    {
+      "scene": "S07",
+      "text": "But if Madrid beat that first wave, one long ball releases Herrera behind a high line.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "releases",
+          "occurrence": 1,
+          "ref": "E01",
+          "lead_s": 0.0
+        }
+      ]
+    },
+    {
+      "scene": "S08",
+      "text": "The key duel is Vidal against Bennett. If Madrid's six can turn, the press is broken.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "duel",
+          "occurrence": 1,
+          "ref": "R1",
+          "lead_s": 0.0
+        }
+      ]
+    },
+    {
+      "scene": "S09",
+      "text": "Our model makes Madrid slight favourites: 47% to win, 26% for a draw, and 27% for Arsenal.",
+      "silent": false,
+      "anchors": [
+        {
+          "word": "model",
+          "occurrence": 1,
+          "ref": "R1",
+          "lead_s": 0.0
+        }
+      ],
+      "numbers": [
+        {
+          "text": "47%",
+          "ref": "prediction.probs_final.home"
+        },
+        {
+          "text": "26%",
+          "ref": "prediction.probs_final.draw"
+        },
+        {
+          "text": "27%",
+          "ref": "prediction.probs_final.away"
+        }
+      ]
+    },
+    {
+      "scene": "S10",
+      "text": "The most likely result is a narrow home win. With line-ups unconfirmed, treat it as analysis, not a certainty.",
+      "silent": false,
+      "anchors": []
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel)/.venv/bin/python\" \"$(git rev-parse --show-toplevel)/hooks/dispatch.py\" session-start",
+            "commandWindows": ".venv\\Scripts\\python.exe hooks\\dispatch.py session-start",
+            "timeout": 30,
+            "statusMessage": "tms: loading project status"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel)/.venv/bin/python\" \"$(git rev-parse --show-toplevel)/hooks/dispatch.py\" user-prompt-submit",
+            "commandWindows": ".venv\\Scripts\\python.exe hooks\\dispatch.py user-prompt-submit",
+            "timeout": 30,
+            "statusMessage": "tms: checking for approvals"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel)/.venv/bin/python\" \"$(git rev-parse --show-toplevel)/hooks/dispatch.py\" pre-tool-use",
+            "commandWindows": ".venv\\Scripts\\python.exe hooks\\dispatch.py pre-tool-use",
+            "timeout": 30,
+            "statusMessage": "tms: policy check"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel)/.venv/bin/python\" \"$(git rev-parse --show-toplevel)/hooks/dispatch.py\" post-tool-use",
+            "commandWindows": ".venv\\Scripts\\python.exe hooks\\dispatch.py post-tool-use",
+            "timeout": 60,
+            "statusMessage": "tms: validating artifacts"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel)/.venv/bin/python\" \"$(git rev-parse --show-toplevel)/hooks/dispatch.py\" stop",
+            "commandWindows": ".venv\\Scripts\\python.exe hooks\\dispatch.py stop",
+            "timeout": 600,
+            "statusMessage": "tms: running fast tests"
+          }
+        ]
+      }
+    ]
+  }
+}

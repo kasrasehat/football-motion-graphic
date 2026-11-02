@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/tactic_spec.schema.json",
+  "title": "tactic_spec — both teams' shapes and the principles to explain (team-normalized frame: each team attacks +x)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "title", "summary", "focus_team", "phase", "frame", "teams", "ball",
+               "principles", "triggers", "strengths", "weaknesses", "counters", "assumptions"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "title": {"type": "string", "minLength": 3, "maxLength": 70},
+    "summary": {"type": "string", "minLength": 10, "maxLength": 400},
+    "focus_team": {"enum": ["H", "A", "both"]},
+    "phase": {"$ref": "../defs.schema.json#/$defs/phase"},
+    "frame": {"const": "team_normalized"},
+    "teams": {
+      "type": "object", "additionalProperties": false, "required": ["H", "A"],
+      "properties": {"H": {"$ref": "#/$defs/team"}, "A": {"$ref": "#/$defs/team"}}
+    },
+    "ball": {
+      "type": "object", "additionalProperties": false, "required": ["holder"],
+      "properties": {"holder": {"$ref": "../defs.schema.json#/$defs/player_id"}}
+    },
+    "principles": {
+      "type": "array", "minItems": 1, "maxItems": 6,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "name", "statement", "players", "visual_proof"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^P[1-9]$"},
+          "name": {"type": "string", "minLength": 3, "maxLength": 40},
+          "statement": {"type": "string", "minLength": 10, "maxLength": 300},
+          "players": {"type": "array", "minItems": 1, "items": {"$ref": "../defs.schema.json#/$defs/player_id"}},
+          "visual_proof": {"type": "string", "minLength": 10, "maxLength": 200},
+          "claim_refs": {"type": "array", "items": {"$ref": "../defs.schema.json#/$defs/claim_ref"}}
+        }
+      }
+    },
+    "triggers": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "team", "cue", "response", "players", "principles"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^T[1-9]$"},
+          "team": {"$ref": "../defs.schema.json#/$defs/team"},
+          "cue": {"type": "string", "minLength": 5},
+          "response": {"type": "string", "minLength": 5},
+          "players": {"type": "array", "items": {"$ref": "../defs.schema.json#/$defs/player_id"}},
+          "principles": {"type": "array", "items": {"type": "string", "pattern": "^P[1-9]$"}}
+        }
+      }
+    },
+    "strengths": {"$ref": "#/$defs/notes"},
+    "weaknesses": {"$ref": "#/$defs/notes"},
+    "counters": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "text", "targets"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^C[1-9]$"},
+          "text": {"type": "string", "minLength": 5},
+          "targets": {"type": "string", "pattern": "^W[1-9]$"}
+        }
+      }
+    },
+    "assumptions": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "team": {
+      "type": "object", "additionalProperties": false, "required": ["formation_base", "formation_phase", "shape", "players"],
+      "properties": {
+        "formation_base": {"$ref": "../defs.schema.json#/$defs/formation"},
+        "formation_phase": {"$ref": "../defs.schema.json#/$defs/formation"},
+        "shape": {
+          "type": "object", "additionalProperties": false, "required": ["template", "block"],
+          "properties": {
+            "template": {"type": "string", "minLength": 3},
+            "block": {
+              "type": "object", "additionalProperties": false, "required": ["line_x", "depth", "width", "ball_shift"],
+              "properties": {
+                "line_x": {"type": "number", "minimum": 0, "maximum": 105},
+                "depth": {"type": "number", "minimum": 5, "maximum": 80},
+                "width": {"type": "number", "minimum": 10, "maximum": 68},
+                "ball_shift": {"type": "number", "minimum": 0, "maximum": 1}
+              }
+            }
+          }
+        },
+        "players": {
+          "type": "array", "minItems": 11, "maxItems": 11,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["id", "number", "name", "role", "line", "pos"],
+            "properties": {
+              "id": {"$ref": "../defs.schema.json#/$defs/player_id"},
+              "number": {"type": "integer", "minimum": 1, "maximum": 99},
+              "name": {"type": ["string", "null"], "maxLength": 30},
+              "role": {"$ref": "../defs.schema.json#/$defs/role"},
+              "line": {"type": "integer", "minimum": 0, "maximum": 5},
+              "pos": {"$ref": "../defs.schema.json#/$defs/xy"},
+              "note": {"type": ["string", "null"], "maxLength": 120}
+            }
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "text"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[SW][1-9]$"},
+          "text": {"type": "string", "minLength": 5},
+          "principles": {"type": "array", "items": {"type": "string", "pattern": "^P[1-9]$"}},
+          "players": {"type": "array", "items": {"$ref": "../defs.schema.json#/$defs/player_id"}}
+        }
+      }
+    }
+  }
+}

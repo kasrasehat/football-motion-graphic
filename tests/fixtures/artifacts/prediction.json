@@ -1,0 +1,131 @@
+{
+  "version": "1",
+  "project_id": "fx-match",
+  "inputs": {
+    "match_dossier": "2222222222222222222222222222222222222222222222222222222222222222",
+    "match_analysis": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "model": {
+    "name": "dixon-coles",
+    "home_advantage": 1.2,
+    "rho": -0.08,
+    "league_avg_goals": 1.4,
+    "max_goals": 10
+  },
+  "inputs_used": [
+    {
+      "fact_key": "H.home_goals_for_avg",
+      "value": 2.6
+    },
+    {
+      "fact_key": "H.xg_for_avg",
+      "value": 2.1
+    },
+    {
+      "fact_key": "A.away_goals_against_avg",
+      "value": 1.2
+    },
+    {
+      "fact_key": "A.xg_against_avg",
+      "value": 0.8
+    },
+    {
+      "fact_key": "A.away_goals_for_avg",
+      "value": 1.6
+    },
+    {
+      "fact_key": "A.xg_for_avg",
+      "value": 1.8
+    },
+    {
+      "fact_key": "H.home_goals_against_avg",
+      "value": 0.8
+    },
+    {
+      "fact_key": "H.xg_against_avg",
+      "value": 1.0
+    },
+    {
+      "fact_key": "fixture.odds_home",
+      "value": 2.05
+    },
+    {
+      "fact_key": "fixture.odds_draw",
+      "value": 3.6
+    },
+    {
+      "fact_key": "fixture.odds_away",
+      "value": 3.4
+    }
+  ],
+  "lambda": {
+    "home": 1.6587,
+    "away": 1.0867
+  },
+  "probs_model": {
+    "home": 0.4979,
+    "draw": 0.2624,
+    "away": 0.2397
+  },
+  "odds_implied": {
+    "home": 0.4604,
+    "draw": 0.2621,
+    "away": 0.2775
+  },
+  "blend_weight": 0.35,
+  "adjustments_applied": [
+    {
+      "outcome": "away",
+      "delta_pp": 2.0,
+      "reason": "Arsenal's only doubt is a squad player, while Madrid miss a starter.",
+      "refs": [
+        "H.injuries",
+        "A.injuries"
+      ]
+    }
+  ],
+  "probs_final": {
+    "home": 0.4717,
+    "draw": 0.2553,
+    "away": 0.273
+  },
+  "scorelines": [
+    {
+      "home": 1,
+      "away": 1,
+      "p": 0.121636
+    },
+    {
+      "home": 1,
+      "away": 0,
+      "p": 0.092165
+    },
+    {
+      "home": 2,
+      "away": 1,
+      "p": 0.090968
+    },
+    {
+      "home": 2,
+      "away": 0,
+      "p": 0.083713
+    },
+    {
+      "home": 1,
+      "away": 2,
+      "p": 0.071622
+    },
+    {
+      "home": 0,
+      "away": 0,
+      "p": 0.071496
+    }
+  ],
+  "headline": {
+    "result": "home",
+    "scoreline": "1-0"
+  },
+  "confidence": "low",
+  "entropy": 1.0574,
+  "disclaimer": "Statistical analysis from a Dixon-Coles goals model and public team data: these are probabilities, not certainties, and the match can go any way. For analysis and entertainment only - not betting advice."
+}

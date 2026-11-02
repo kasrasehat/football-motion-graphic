@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/scene_plan.schema.json",
+  "title": "scene_plan — the storyboard: pitch scenes in the choreography language + data-bound graphic scenes. No coordinates for 22 players: the engine solves them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "start", "scenes"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "start": {
+      "type": "object", "additionalProperties": false, "required": ["from", "overrides"],
+      "properties": {
+        "from": {"const": "tactic_snapshot"},
+        "overrides": {
+          "description": "absolute pitch-frame positions (home attacks +x) replacing snapshot positions",
+          "type": "object", "propertyNames": {"$ref": "../defs.schema.json#/$defs/player_id"},
+          "additionalProperties": {"$ref": "../defs.schema.json#/$defs/xy"}
+        }
+      }
+    },
+    "scenes": {"type": "array", "minItems": 2, "maxItems": 20, "items": {"$ref": "#/$defs/scene"}}
+  },
+  "$defs": {
+    "scene_id": {"type": "string", "pattern": "^S(0[1-9]|1[0-9]|20)$"},
+    "event_id": {"type": "string", "pattern": "^E\\d{2}$"},
+    "pid": {"$ref": "../defs.schema.json#/$defs/player_id"},
+    "ref": {
+      "description": "event id (E01), action handle (H2@move#1, optional .start/.end), or scene.end",
+      "type": "string", "pattern": "^(E\\d{2}|[HA](1[01]|[1-9])@(move|carry|press|mark|duel)#[1-9](\\.(start|end))?|scene\\.end)$"
+    },
+    "time": {
+      "description": "scene-local authored seconds, or a reference to another event/action",
+      "oneOf": [
+        {"type": "number", "minimum": 0, "maximum": 30},
+        {
+          "type": "object", "additionalProperties": false, "required": ["plus"],
+          "properties": {"after": {"$ref": "#/$defs/ref"}, "before": {"$ref": "#/$defs/ref"}, "plus": {"type": "number", "minimum": 0, "maximum": 10}},
+          "oneOf": [{"required": ["after"]}, {"required": ["before"]}]
+        }
+      ]
+    },
+    "pace": {"enum": ["walk", "jog", "run", "sprint"]},
+    "target": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["pitch"], "properties": {"pitch": {"$ref": "../defs.schema.json#/$defs/xy"}}},
+        {"type": "object", "additionalProperties": false, "required": ["rel_player", "offset"],
+         "properties": {"rel_player": {"$ref": "#/$defs/pid"}, "offset": {"$ref": "../defs.schema.json#/$defs/xy"}}},
+        {"type": "object", "additionalProperties": false, "required": ["zone"], "properties": {"zone": {"type": "string", "pattern": "^[a-z0-9_]+$"}}}
+      ]
+    },
+    "action": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["type", "player", "at", "to", "pace"],
+         "properties": {"type": {"const": "move"}, "player": {"$ref": "#/$defs/pid"}, "at": {"$ref": "#/$defs/time"},
+                        "to": {"$ref": "#/$defs/target"}, "pace": {"$ref": "#/$defs/pace"}, "curve_m": {"type": "number", "minimum": -15, "maximum": 15}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "player", "at", "to", "pace"],
+         "properties": {"type": {"const": "carry"}, "player": {"$ref": "#/$defs/pid"}, "at": {"$ref": "#/$defs/time"},
+                        "to": {"$ref": "#/$defs/target"}, "pace": {"$ref": "#/$defs/pace"}, "curve_m": {"type": "number", "minimum": -15, "maximum": 15}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "id", "from", "at", "kind"],
+         "properties": {"type": {"const": "pass"}, "id": {"$ref": "#/$defs/event_id"}, "from": {"$ref": "#/$defs/pid"},
+                        "to": {"$ref": "#/$defs/pid"}, "to_point": {"$ref": "../defs.schema.json#/$defs/xy"}, "at": {"$ref": "#/$defs/time"},
+                        "kind": {"enum": ["ground", "driven", "through", "lofted", "cross"]}, "lead_m": {"type": "number", "minimum": 0, "maximum": 15}},
+         "oneOf": [{"required": ["to"]}, {"required": ["to_point"]}]},
+        {"type": "object", "additionalProperties": false, "required": ["type", "player", "on", "at", "pace"],
+         "properties": {"type": {"const": "press"}, "id": {"$ref": "#/$defs/event_id"}, "player": {"$ref": "#/$defs/pid"},
+                        "on": {"$ref": "#/$defs/pid"}, "cut": {"$ref": "#/$defs/pid"}, "at": {"$ref": "#/$defs/time"}, "pace": {"$ref": "#/$defs/pace"},
+                        "until": {"$ref": "#/$defs/time"}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "player", "on", "from", "until"],
+         "properties": {"type": {"const": "mark"}, "player": {"$ref": "#/$defs/pid"}, "on": {"$ref": "#/$defs/pid"},
+                        "from": {"$ref": "#/$defs/time"}, "until": {"$ref": "#/$defs/time"},
+                        "dist_m": {"type": "number", "minimum": 0.8, "maximum": 8}, "goal_side": {"type": "boolean"}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "id", "by", "on", "at"],
+         "properties": {"type": {"const": "tackle"}, "id": {"$ref": "#/$defs/event_id"}, "by": {"$ref": "#/$defs/pid"},
+                        "on": {"$ref": "#/$defs/pid"}, "at": {"$ref": "#/$defs/time"}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "id", "by", "pass"],
+         "properties": {"type": {"const": "intercept"}, "id": {"$ref": "#/$defs/event_id"}, "by": {"$ref": "#/$defs/pid"},
+                        "pass": {"$ref": "#/$defs/event_id"}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "id", "by", "at", "aim", "outcome"],
+         "properties": {"type": {"const": "shot"}, "id": {"$ref": "#/$defs/event_id"}, "by": {"$ref": "#/$defs/pid"},
+                        "at": {"$ref": "#/$defs/time"}, "aim": {"enum": ["near_post", "far_post", "centre"]},
+                        "outcome": {"enum": ["goal", "saved", "wide", "blocked"]}}},
+        {"type": "object", "additionalProperties": false, "required": ["type", "players", "from", "until"],
+         "properties": {"type": {"const": "duel"}, "players": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"$ref": "#/$defs/pid"}},
+                        "from": {"$ref": "#/$defs/time"}, "until": {"$ref": "#/$defs/time"}}}
+      ]
+    },
+    "overlay": {
+      "type": "object", "additionalProperties": false, "required": ["id", "kind", "in", "out"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^N\\d{2}$"},
+        "kind": {"enum": ["run_arrow", "pass_line", "zone", "line", "ring", "spotlight", "label", "distance", "polygon"]},
+        "action": {"type": "string", "pattern": "^[HA](1[01]|[1-9])@(move|carry)#[1-9]$"},
+        "style": {"enum": ["preview", "trail"]},
+        "event": {"$ref": "#/$defs/event_id"},
+        "players": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "#/$defs/pid"}},
+        "geom": {
+          "oneOf": [
+            {"type": "object", "additionalProperties": false, "required": ["hull"], "properties": {"hull": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/pid"}}}},
+            {"type": "object", "additionalProperties": false, "required": ["rect"], "properties": {"rect": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number"}}}},
+            {"type": "object", "additionalProperties": false, "required": ["named"], "properties": {"named": {"type": "string", "pattern": "^[a-z0-9_]+$"}}},
+            {"type": "object", "additionalProperties": false, "required": ["def_line"], "properties": {"def_line": {"$ref": "../defs.schema.json#/$defs/team"}}},
+            {"type": "object", "additionalProperties": false, "required": ["offside"], "properties": {"offside": {"$ref": "../defs.schema.json#/$defs/team"}}},
+            {"type": "object", "additionalProperties": false, "required": ["link"], "properties": {"link": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"$ref": "#/$defs/pid"}}}},
+            {"type": "object", "additionalProperties": false, "required": ["points"], "properties": {"points": {"type": "array", "minItems": 2, "items": {"$ref": "../defs.schema.json#/$defs/xy"}}}}
+          ]
+        },
+        "anchor": {
+          "oneOf": [
+            {"type": "object", "additionalProperties": false, "required": ["player"], "properties": {"player": {"$ref": "#/$defs/pid"}}},
+            {"type": "object", "additionalProperties": false, "required": ["pitch"], "properties": {"pitch": {"$ref": "../defs.schema.json#/$defs/xy"}}}
+          ]
+        },
+        "text": {"type": "string", "minLength": 1, "maxLength": 28},
+        "in": {"$ref": "#/$defs/time"},
+        "out": {"oneOf": [{"$ref": "#/$defs/time"}, {"const": "scene.end"}]}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "run_arrow"}}}, "then": {"required": ["action"]}},
+        {"if": {"properties": {"kind": {"const": "pass_line"}}}, "then": {"required": ["event"]}},
+        {"if": {"properties": {"kind": {"enum": ["zone", "line"]}}}, "then": {"required": ["geom"]}},
+        {"if": {"properties": {"kind": {"enum": ["ring", "spotlight", "distance", "polygon"]}}}, "then": {"required": ["players"]}},
+        {"if": {"properties": {"kind": {"const": "label"}}}, "then": {"required": ["anchor", "text"]}}
+      ]
+    },
+    "camera_key": {
+      "type": "object", "additionalProperties": false, "required": ["at", "mode"],
+      "properties": {
+        "at": {"$ref": "#/$defs/time"},
+        "mode": {"enum": ["full", "frame", "follow", "rect"]},
+        "targets": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^([HA](1[01]|[1-9])|ball)$"}},
+        "target": {"type": "string", "pattern": "^([HA](1[01]|[1-9])|ball)$"},
+        "pad_m": {"type": "number", "minimum": 2, "maximum": 30},
+        "w_m": {"type": "number", "minimum": 30, "maximum": 120},
+        "rect": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "dur_s": {"type": "number", "minimum": 0.3, "maximum": 4}
+      },
+      "allOf": [
+        {"if": {"properties": {"mode": {"const": "frame"}}}, "then": {"required": ["targets"]}},
+        {"if": {"properties": {"mode": {"const": "follow"}}}, "then": {"required": ["target", "w_m"]}},
+        {"if": {"properties": {"mode": {"const": "rect"}}}, "then": {"required": ["rect"]}}
+      ]
+    },
+    "scene": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "kind", "purpose", "title", "principles", "transition", "length_s", "shape", "actions", "holds", "overlays", "camera"],
+          "properties": {
+            "id": {"$ref": "#/$defs/scene_id"},
+            "kind": {"const": "pitch"},
+            "purpose": {"enum": ["intro", "establish", "explain", "demonstrate", "exploit", "counter", "recap", "outro", "battle"]},
+            "title": {"type": "string", "minLength": 2, "maxLength": 28},
+            "principles": {"type": "array", "items": {"type": "string", "pattern": "^P[1-9]$"}},
+            "battles": {"type": "array", "items": {"type": "string", "pattern": "^(TB|KB)[1-9]$"}},
+            "transition": {"enum": ["continue", "reset", "cut"]},
+            "reset_to": {"type": ["string", "null"], "pattern": "^(tactic_snapshot|S\\d{2}:start)$"},
+            "length_s": {"type": ["number", "null"], "minimum": 2, "maximum": 20},
+            "shape": {
+              "type": "array",
+              "items": {
+                "type": "object", "additionalProperties": false, "required": ["at", "team"],
+                "properties": {
+                  "at": {"$ref": "#/$defs/time"},
+                  "team": {"$ref": "../defs.schema.json#/$defs/team"},
+                  "template": {"type": "string"},
+                  "block": {
+                    "type": "object", "additionalProperties": false,
+                    "properties": {"line_x": {"type": "number"}, "depth": {"type": "number"}, "width": {"type": "number"}, "ball_shift": {"type": "number", "minimum": 0, "maximum": 1}}
+                  },
+                  "react_s": {"type": "number", "minimum": 0, "maximum": 2}
+                }
+              }
+            },
+            "actions": {"type": "array", "items": {"$ref": "#/$defs/action"}},
+            "holds": {
+              "type": "array",
+              "items": {
+                "type": "object", "additionalProperties": false, "required": ["id", "at", "max_s", "style"],
+                "properties": {"id": {"type": "string", "pattern": "^h\\d$"}, "at": {"$ref": "#/$defs/time"},
+                               "max_s": {"type": "number", "minimum": 0.3, "maximum": 3}, "style": {"enum": ["freeze", "drift"]}}
+              }
+            },
+            "overlays": {"type": "array", "items": {"$ref": "#/$defs/overlay"}},
+            "camera": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/camera_key"}}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "kind", "purpose", "title", "transition", "length_s", "template", "bind", "reveals"],
+          "properties": {
+            "id": {"$ref": "#/$defs/scene_id"},
+            "kind": {"const": "graphic"},
+            "purpose": {"enum": ["intro", "context", "form", "team_news", "lineups", "key_players", "prediction", "recap", "outro"]},
+            "title": {"type": "string", "minLength": 2, "maxLength": 28},
+            "transition": {"enum": ["continue", "cut"]},
+            "length_s": {"type": ["number", "null"], "minimum": 2, "maximum": 20},
+            "template": {"enum": ["title_card", "text_card", "stat_compare", "form_guide", "h2h_strip", "lineup_board",
+                                  "team_news", "key_player_duel", "probability_bar", "scoreline_grid", "prediction_card"]},
+            "bind": {
+              "description": "template slots -> fact keys (dossier) or prediction paths (prediction.probs_final.home). Never literal numbers.",
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {"type": "string", "pattern": "^((fixture|h2h|[HA])(\\.[a-z0-9_]+)+|prediction(\\.[a-z_]+)+|text:.{1,60}|KB[1-9])$"},
+                  {"type": "array", "items": {"type": "string", "pattern": "^((fixture|h2h|[HA])(\\.[a-z0-9_]+)+|prediction(\\.[a-z_]+)+|text:.{1,60}|KB[1-9])$"}}
+                ]
+              }
+            },
+            "reveals": {
+              "type": "array",
+              "items": {
+                "type": "object", "additionalProperties": false, "required": ["id", "at"],
+                "properties": {"id": {"type": "string", "pattern": "^R\\d$"}, "at": {"type": "number", "minimum": 0, "maximum": 20}, "item": {"type": "string"}}
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

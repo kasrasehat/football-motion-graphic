@@ -1,0 +1,360 @@
+{
+  "version": "1",
+  "project_id": "fx-match",
+  "title": "Madrid build-up v Arsenal press",
+  "summary": "Real Madrid build from the back in a 4-3-3 while Arsenal press high from a 4-4-2, with an eight jumping onto Madrid's holding midfielder.",
+  "focus_team": "both",
+  "phase": "build_up",
+  "frame": "team_normalized",
+  "teams": {
+    "H": {
+      "formation_base": "4-3-3",
+      "formation_phase": "4-3-3",
+      "shape": {
+        "template": "4-3-3",
+        "block": {
+          "line_x": 22,
+          "depth": 34,
+          "width": 56,
+          "ball_shift": 0.2
+        }
+      },
+      "players": [
+        {
+          "id": "H1",
+          "number": 1,
+          "name": "Navarro",
+          "role": "GK",
+          "line": 0,
+          "pos": [
+            4.0,
+            34.0
+          ]
+        },
+        {
+          "id": "H3",
+          "number": 2,
+          "name": "Ortega",
+          "role": "LB",
+          "line": 1,
+          "pos": [
+            22.0,
+            6.0
+          ]
+        },
+        {
+          "id": "H5",
+          "number": 4,
+          "name": "Ibarra",
+          "role": "LCB",
+          "line": 1,
+          "pos": [
+            22.0,
+            25.6
+          ]
+        },
+        {
+          "id": "H4",
+          "number": 22,
+          "name": "Molina",
+          "role": "RCB",
+          "line": 1,
+          "pos": [
+            22.0,
+            42.4
+          ]
+        },
+        {
+          "id": "H2",
+          "number": 23,
+          "name": "Castro",
+          "role": "RB",
+          "line": 1,
+          "pos": [
+            22.0,
+            62.0
+          ]
+        },
+        {
+          "id": "H8",
+          "number": 6,
+          "name": "Serrano",
+          "role": "LCM",
+          "line": 2,
+          "pos": [
+            39.7,
+            19.4
+          ]
+        },
+        {
+          "id": "H6",
+          "number": 8,
+          "name": "Vidal",
+          "role": "DM",
+          "line": 2,
+          "pos": [
+            34.9,
+            34.0
+          ]
+        },
+        {
+          "id": "H10",
+          "number": 5,
+          "name": "Delgado",
+          "role": "RCM",
+          "line": 2,
+          "pos": [
+            39.7,
+            48.6
+          ]
+        },
+        {
+          "id": "H11",
+          "number": 11,
+          "name": "Romero",
+          "role": "LW",
+          "line": 3,
+          "pos": [
+            54.3,
+            7.1
+          ]
+        },
+        {
+          "id": "H9",
+          "number": 9,
+          "name": "Fuentes",
+          "role": "ST",
+          "line": 3,
+          "pos": [
+            56.0,
+            34.0
+          ]
+        },
+        {
+          "id": "H7",
+          "number": 7,
+          "name": "Herrera",
+          "role": "RW",
+          "line": 3,
+          "pos": [
+            54.3,
+            60.9
+          ]
+        }
+      ]
+    },
+    "A": {
+      "formation_base": "4-4-2",
+      "formation_phase": "4-4-2",
+      "shape": {
+        "template": "4-4-2",
+        "block": {
+          "line_x": 46,
+          "depth": 30,
+          "width": 52,
+          "ball_shift": 0.35
+        }
+      },
+      "players": [
+        {
+          "id": "A1",
+          "number": 1,
+          "name": "Hughes",
+          "role": "GK",
+          "line": 0,
+          "pos": [
+            16.0,
+            33.5
+          ]
+        },
+        {
+          "id": "A3",
+          "number": 2,
+          "name": "Clarke",
+          "role": "LB",
+          "line": 1,
+          "pos": [
+            46.0,
+            6.2
+          ]
+        },
+        {
+          "id": "A5",
+          "number": 6,
+          "name": "Walsh",
+          "role": "LCB",
+          "line": 1,
+          "pos": [
+            46.0,
+            24.4
+          ]
+        },
+        {
+          "id": "A4",
+          "number": 4,
+          "name": "Gardner",
+          "role": "RCB",
+          "line": 1,
+          "pos": [
+            46.0,
+            40.0
+          ]
+        },
+        {
+          "id": "A2",
+          "number": 3,
+          "name": "Lowe",
+          "role": "RB",
+          "line": 1,
+          "pos": [
+            46.0,
+            58.2
+          ]
+        },
+        {
+          "id": "A11",
+          "number": 41,
+          "name": "Fletcher",
+          "role": "LM",
+          "line": 2,
+          "pos": [
+            62.5,
+            6.2
+          ]
+        },
+        {
+          "id": "A8",
+          "number": 8,
+          "name": "Bennett",
+          "role": "LCM",
+          "line": 2,
+          "pos": [
+            61.6,
+            25.0
+          ]
+        },
+        {
+          "id": "A6",
+          "number": 29,
+          "name": "Doyle",
+          "role": "RCM",
+          "line": 2,
+          "pos": [
+            61.6,
+            39.5
+          ]
+        },
+        {
+          "id": "A7",
+          "number": 7,
+          "name": "Marsh",
+          "role": "RM",
+          "line": 2,
+          "pos": [
+            62.5,
+            58.2
+          ]
+        },
+        {
+          "id": "A10",
+          "number": 9,
+          "name": "Shaw",
+          "role": "LS",
+          "line": 3,
+          "pos": [
+            76.0,
+            26.5
+          ]
+        },
+        {
+          "id": "A9",
+          "number": 11,
+          "name": "Kerr",
+          "role": "RS",
+          "line": 3,
+          "pos": [
+            76.0,
+            38.0
+          ]
+        }
+      ]
+    }
+  },
+  "ball": {
+    "holder": "H4"
+  },
+  "principles": [
+    {
+      "id": "P1",
+      "name": "Arsenal's front-foot press",
+      "statement": "Arsenal's strikers and an eight press Madrid's centre-backs and screen the holding midfielder.",
+      "players": [
+        "A10",
+        "A9",
+        "A8"
+      ],
+      "visual_proof": "the eight leaves the midfield line to mark the six",
+      "claim_refs": [
+        "A.tactics.pressing_style"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Madrid break in transition",
+      "statement": "When Madrid escape the press, the wingers attack the space behind Arsenal's high line.",
+      "players": [
+        "H11",
+        "H9",
+        "H7"
+      ],
+      "visual_proof": "a vertical pass releases a winger behind the full-back",
+      "claim_refs": [
+        "H.tactics.build_up"
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "id": "T1",
+      "team": "A",
+      "cue": "Madrid's centre-back receives facing his own goal",
+      "response": "the nearest striker presses and the eight jumps",
+      "players": [
+        "A10",
+        "A8"
+      ],
+      "principles": [
+        "P1"
+      ]
+    }
+  ],
+  "strengths": [
+    {
+      "id": "S1",
+      "text": "Arsenal win the ball high and attack a disorganised defence",
+      "principles": [
+        "P1"
+      ]
+    }
+  ],
+  "weaknesses": [
+    {
+      "id": "W1",
+      "text": "Arsenal's high line leaves space behind the full-backs",
+      "players": [
+        "A3",
+        "A2"
+      ]
+    }
+  ],
+  "counters": [
+    {
+      "id": "C1",
+      "text": "Madrid bypass the press with a direct ball to the wingers",
+      "targets": "W1"
+    }
+  ],
+  "assumptions": [
+    "Line-ups are predicted, not confirmed"
+  ]
+}

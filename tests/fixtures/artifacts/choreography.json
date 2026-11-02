@@ -1,0 +1,70 @@
+{
+ "version": "1",
+ "project_id": "fx-ifb-442",
+ "inputs": {
+  "scene_plan": "0000000000000000000000000000000000000000000000000000000000000000",
+  "tactic_spec": "0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "hz": 30,
+ "scenes": [
+  {
+   "id": "S01",
+   "kind": "pitch",
+   "tau0": 0.0,
+   "len": 3.0,
+   "transition": "continue",
+   "holds": []
+  }
+ ],
+ "events": [],
+ "actions": [],
+ "possession": [
+  {
+   "tau0": 0.0,
+   "tau1": 3.0,
+   "state": "held",
+   "by": "H4",
+   "event": null
+  }
+ ],
+ "tracks": {
+  "unit": "cm",
+  "n": 2,
+  "players": {
+   "H4": [
+    2500,
+    2200,
+    2500,
+    2200
+   ]
+  },
+  "ball": [
+   2580,
+   2200,
+   11,
+   2580,
+   2200,
+   11
+  ]
+ },
+ "overlays": [],
+ "camera_keys": [
+  {
+   "tau": 0.0,
+   "mode": "full"
+  }
+ ],
+ "aspect": "16:9",
+ "camera_track": [
+  5250,
+  3400,
+  12575,
+  5250,
+  3400,
+  12575
+ ],
+ "report": {
+  "errors": [],
+  "warnings": []
+ }
+}

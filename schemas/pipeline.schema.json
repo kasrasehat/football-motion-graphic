@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/pipeline.schema.json",
+  "title": "pipeline.yaml manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "clock", "modes", "artifacts", "stages"],
+  "properties": {
+    "version": {"const": "1"},
+    "clock": {
+      "type": "object", "additionalProperties": false, "required": ["fps", "sample_rate"],
+      "properties": {"fps": {"const": 30}, "sample_rate": {"const": 48000}}
+    },
+    "modes": {
+      "type": "object", "minProperties": 1,
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false, "required": ["title", "duration_s", "stages"],
+        "properties": {
+          "title": {"type": "string"},
+          "duration_s": {
+            "type": "object", "additionalProperties": false, "required": ["min", "max", "default"],
+            "properties": {"min": {"type": "integer"}, "max": {"type": "integer"}, "default": {"type": "integer"}}
+          },
+          "stages": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false, "required": ["dir", "writer", "schema"],
+        "properties": {
+          "dir": {"enum": ["artifacts", "build"]},
+          "writer": {"enum": ["agent", "engine"]},
+          "schema": {"type": "string", "pattern": "^[a-z_]+$"}
+        }
+      }
+    },
+    "stages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["title", "skill", "authors", "produces", "inputs", "gate", "qa", "review_focus", "success_criteria"],
+        "properties": {
+          "title": {"type": "string"},
+          "skill": {"type": "string", "pattern": "^skills/[a-z0-9-]+/SKILL\\.md$"},
+          "optional": {"type": "boolean"},
+          "authors": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "produces": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "inputs": {
+            "oneOf": [
+              {"type": "array", "items": {"type": "string"}},
+              {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
+            ]
+          },
+          "gate": {"enum": ["none", "human"]},
+          "approval_word": {"type": "string", "pattern": "^[a-z]+$"},
+          "qa": {
+            "type": "array",
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["agent", "min_rounds", "max_rounds", "blocking"],
+              "properties": {
+                "agent": {"type": "string"},
+                "min_rounds": {"type": "integer", "minimum": 1},
+                "max_rounds": {"type": "integer", "minimum": 1},
+                "blocking": {"type": "boolean"},
+                "modes": {"type": "array", "items": {"type": "string"}}
+              }
+            }
+          },
+          "review_focus": {"type": "array", "items": {"type": "string"}},
+          "success_criteria": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        },
+        "if": {"properties": {"gate": {"const": "human"}}},
+        "then": {"required": ["approval_word"]}
+      }
+    }
+  }
+}

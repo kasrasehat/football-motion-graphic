@@ -1,0 +1,165 @@
+# Tactic Motion Studio — pipeline manifest (single source of truth).
+# Validated by schemas/pipeline.schema.json and tests/contract/test_manifest.py.
+# Stage status is DERIVED by `tms status` from artifacts + state/ records; nothing here is mutable state.
+version: "1"
+clock: {fps: 30, sample_rate: 48000}
+
+modes:
+  tactic:
+    title: Tactic explainer
+    duration_s: {min: 45, max: 120, default: 75}
+    stages: [intake, tactic, storyboard, audio, render, package]
+  match_preview:
+    title: Match preview (analysis + prediction)
+    duration_s: {min: 60, max: 180, default: 120}
+    stages: [intake, research, analysis, storyboard, audio, render, package]
+
+# Where each artifact lives and who may write it. agent = authored by the orchestrator/subagents (artifacts/);
+# engine = written only by `tms` commands (build/), protected from direct edits by hooks.
+artifacts:
+  brief:              {dir: artifacts, writer: agent,  schema: brief}
+  web_claims:         {dir: artifacts, writer: agent,  schema: web_claims}
+  tactic_spec:        {dir: artifacts, writer: agent,  schema: tactic_spec}
+  match_analysis:     {dir: artifacts, writer: agent,  schema: match_analysis}
+  scene_plan:         {dir: artifacts, writer: agent,  schema: scene_plan}
+  narration_script:   {dir: artifacts, writer: agent,  schema: narration_script}
+  package:            {dir: artifacts, writer: agent,  schema: package}
+  match_dossier:      {dir: build,     writer: engine, schema: match_dossier}
+  prediction:         {dir: build,     writer: engine, schema: prediction}
+  choreography:       {dir: build,     writer: engine, schema: choreography}
+  voiceover_manifest: {dir: build,     writer: engine, schema: voiceover_manifest}
+  timeline:           {dir: build,     writer: engine, schema: timeline}
+  music_manifest:     {dir: build,     writer: engine, schema: music_manifest}
+  render_props:       {dir: build,     writer: engine, schema: render_props}
+  render_report:      {dir: build,     writer: engine, schema: render_report}
+
+stages:
+  intake:
+    title: Intake
+    skill: skills/stage-intake/SKILL.md
+    authors: [orchestrator]
+    produces: [brief]
+    inputs: []
+    gate: none
+    qa: []
+    review_focus: []
+    success_criteria:
+      - brief validates (schema + BR rules)
+      - match_preview - fixture resolved to exactly one match with kickoff + timezone
+
+  research:
+    title: Match research
+    skill: skills/stage-research/SKILL.md
+    authors: [match-researcher]
+    produces: [web_claims, match_dossier]
+    inputs: [brief]
+    gate: none
+    qa:
+      - {agent: fact-checker, min_rounds: 1, max_rounds: 2, blocking: true}
+    review_focus:
+      - every claim's value matches its quoted source
+      - key facts corroborated by 2 independent sources or flagged single_source
+      - team news freshness (<= 48h) and stats freshness (<= 7 days)
+      - no fabricated or rumour-level facts presented as confirmed
+    success_criteria:
+      - match_dossier passes MD rules
+      - fact-checker verdict pass on current hashes
+
+  tactic:
+    title: Tactic definition
+    skill: skills/stage-tactic/SKILL.md
+    authors: [tactician]
+    produces: [tactic_spec]
+    inputs: [brief]
+    gate: human
+    approval_word: tactic
+    qa:
+      - {agent: tactics-critic, min_rounds: 1, max_rounds: 3, blocking: true}
+    review_focus:
+      - realistic shape, distances and roles for the phase of play
+      - principles are precise, observable and shown by named players
+      - triggers / strengths / weaknesses are coherent with the shape
+    success_criteria:
+      - tactic_spec passes TS rules
+      - tactics-critic verdict pass on current hashes
+
+  analysis:
+    title: Match analysis + prediction
+    skill: skills/stage-analysis/SKILL.md
+    authors: [match-analyst]
+    produces: [match_analysis, tactic_spec, prediction]
+    inputs: [brief, match_dossier]
+    gate: human
+    approval_word: analysis
+    qa:
+      - {agent: tactics-critic, min_rounds: 1, max_rounds: 3, blocking: true}
+      - {agent: fact-checker, min_rounds: 1, max_rounds: 2, blocking: true}
+    review_focus:
+      - every assertion cites dossier facts/claims
+      - key battles use players from the predicted XIs
+      - prediction adjustments are bounded and justified
+    success_criteria:
+      - match_analysis passes MA rules, tactic_spec passes TS rules, prediction passes PR rules
+
+  storyboard:
+    title: Storyboard (scenes + narration)
+    skill: skills/stage-storyboard/SKILL.md
+    authors: [storyboarder]
+    produces: [scene_plan, narration_script, choreography]
+    inputs:
+      tactic: [brief, tactic_spec]
+      match_preview: [brief, match_dossier, match_analysis, tactic_spec, prediction]
+    gate: human
+    approval_word: storyboard
+    qa:
+      - {agent: tactics-critic, min_rounds: 1, max_rounds: 3, blocking: true}
+      - {agent: script-editor, min_rounds: 1, max_rounds: 3, blocking: true}
+      - {agent: visual-qa, min_rounds: 1, max_rounds: 3, blocking: true}
+      - {agent: fact-checker, min_rounds: 1, max_rounds: 2, blocking: true, modes: [match_preview]}
+    review_focus:
+      - every principle / battle is visibly demonstrated
+      - narration is accurate, hooks in the first sentence, matches on-screen events
+      - motion is realistic and readable; overlays never clutter
+    success_criteria:
+      - choreography compiles with 0 CH errors; scene_plan passes GS rules; narration passes NS rules
+
+  audio:
+    title: Voice-over, timeline, music
+    skill: skills/stage-audio/SKILL.md
+    authors: [audio-engineer]
+    produces: [voiceover_manifest, timeline, music_manifest]
+    inputs: [brief, scene_plan, narration_script, choreography]
+    gate: none
+    qa: []
+    review_focus: []
+    success_criteria:
+      - VO, TL and MU rules pass
+
+  render:
+    title: Render + final QA
+    skill: skills/stage-render/SKILL.md
+    authors: [orchestrator]
+    produces: [render_props, render_report]
+    inputs: [brief, choreography, timeline, voiceover_manifest, music_manifest]
+    gate: human
+    approval_word: final
+    qa:
+      - {agent: visual-qa, min_rounds: 1, max_rounds: 2, blocking: true}
+    review_focus:
+      - legibility, no overlap of captions with action, colours, framing
+    success_criteria:
+      - render_report final verdict pass (FQ rules)
+
+  package:
+    title: Publishing package
+    skill: skills/stage-package/SKILL.md
+    optional: true
+    authors: [orchestrator]
+    produces: [package]
+    inputs: [brief, narration_script, render_report]
+    gate: human
+    approval_word: package
+    qa: []
+    review_focus: []
+    success_criteria:
+      - package validates

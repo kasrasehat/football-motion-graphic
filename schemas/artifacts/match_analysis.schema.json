@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/match_analysis.schema.json",
+  "title": "match_analysis — the analyst's reading of the matchup; every assertion cites dossier facts/claims",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "headline", "angle", "sections", "key_battles", "tactical_battles",
+               "prediction_adjustments", "uncertainties"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "headline": {"type": "string", "minLength": 5, "maxLength": 90},
+    "angle": {"type": "string", "minLength": 10, "maxLength": 300},
+    "sections": {
+      "type": "array", "minItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "title", "assertions"],
+        "properties": {
+          "id": {"enum": ["context", "form", "team_news", "styles", "tactical", "key_players", "outlook"]},
+          "title": {"type": "string", "maxLength": 40},
+          "assertions": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object", "additionalProperties": false, "required": ["text", "refs"],
+              "properties": {
+                "text": {"type": "string", "minLength": 10, "maxLength": 300},
+                "refs": {"type": "array", "minItems": 1, "items": {"$ref": "../defs.schema.json#/$defs/claim_ref"}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "key_battles": {
+      "type": "array", "minItems": 1, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "title", "home_player", "away_player", "why", "refs"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^KB[1-9]$"},
+          "title": {"type": "string", "maxLength": 40},
+          "home_player": {"$ref": "../defs.schema.json#/$defs/player_id"},
+          "away_player": {"$ref": "../defs.schema.json#/$defs/player_id"},
+          "why": {"type": "string", "minLength": 10, "maxLength": 300},
+          "refs": {"type": "array", "minItems": 1, "items": {"$ref": "../defs.schema.json#/$defs/claim_ref"}}
+        }
+      }
+    },
+    "tactical_battles": {
+      "type": "array", "minItems": 1, "maxItems": 3,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "title", "attacking_team", "principles", "description", "refs"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^TB[1-9]$"},
+          "title": {"type": "string", "maxLength": 50},
+          "attacking_team": {"$ref": "../defs.schema.json#/$defs/team"},
+          "principles": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^P[1-9]$"}},
+          "description": {"type": "string", "minLength": 10, "maxLength": 400},
+          "refs": {"type": "array", "minItems": 1, "items": {"$ref": "../defs.schema.json#/$defs/claim_ref"}}
+        }
+      }
+    },
+    "prediction_adjustments": {
+      "type": "array", "maxItems": 3,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["outcome", "delta_pp", "reason", "refs"],
+        "properties": {
+          "outcome": {"enum": ["home", "draw", "away"]},
+          "delta_pp": {"type": "number", "minimum": -10, "maximum": 10},
+          "reason": {"type": "string", "minLength": 10, "maxLength": 300},
+          "refs": {"type": "array", "minItems": 1, "items": {"$ref": "../defs.schema.json#/$defs/claim_ref"}}
+        }
+      }
+    },
+    "uncertainties": {"type": "array", "items": {"type": "string", "minLength": 5}}
+  }
+}

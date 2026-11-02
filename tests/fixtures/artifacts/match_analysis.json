@@ -1,0 +1,98 @@
+{
+  "version": "1",
+  "project_id": "fx-match",
+  "headline": "Madrid's runners against Arsenal's high press",
+  "angle": "Arsenal's front-foot press meets Madrid's direct transitions: whoever controls the second balls controls the night.",
+  "sections": [
+    {
+      "id": "form",
+      "title": "Form",
+      "assertions": [
+        {
+          "text": "Madrid score freely at home, averaging more than two goals a game.",
+          "refs": [
+            "H.home_goals_for_avg"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tactical",
+      "title": "Tactical picture",
+      "assertions": [
+        {
+          "text": "Arsenal press high with an eight jumping onto the holding midfielder.",
+          "refs": [
+            "A.tactics.pressing_style",
+            "W-006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "outlook",
+      "title": "Outlook",
+      "assertions": [
+        {
+          "text": "Home advantage and chance quality give Madrid a slight edge.",
+          "refs": [
+            "H.xg_for_avg",
+            "A.xg_against_avg"
+          ]
+        }
+      ]
+    }
+  ],
+  "key_battles": [
+    {
+      "id": "KB1",
+      "title": "Six under pressure",
+      "home_player": "H6",
+      "away_player": "A8",
+      "why": "If Madrid's six turns away from Arsenal's eight, Madrid break into space behind the press.",
+      "refs": [
+        "A.tactics.pressing_style"
+      ]
+    }
+  ],
+  "tactical_battles": [
+    {
+      "id": "TB1",
+      "title": "Arsenal press v Madrid build-up",
+      "attacking_team": "A",
+      "principles": [
+        "P1"
+      ],
+      "description": "Arsenal's front two and an eight press Madrid's back line.",
+      "refs": [
+        "A.tactics.pressing_style"
+      ]
+    },
+    {
+      "id": "TB2",
+      "title": "Madrid transitions",
+      "attacking_team": "H",
+      "principles": [
+        "P2"
+      ],
+      "description": "Madrid look for their wingers behind Arsenal's high line once the press is beaten.",
+      "refs": [
+        "H.tactics.build_up"
+      ]
+    }
+  ],
+  "prediction_adjustments": [
+    {
+      "outcome": "away",
+      "delta_pp": 2.0,
+      "reason": "Arsenal's only doubt is a squad player, while Madrid miss a starter.",
+      "refs": [
+        "H.injuries",
+        "A.injuries"
+      ]
+    }
+  ],
+  "uncertainties": [
+    "Line-ups are predicted until about an hour before kick-off."
+  ]
+}

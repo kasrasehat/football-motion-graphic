@@ -1,0 +1,16 @@
+# RP — render_props rules; FQ — final-render rules (measured by `tms render final`, re-asserted from render_report).
+rules:
+  RP-01: {artifact: render_props, severity: error, text: "every per-frame array has exactly durationInFrames entries and finite values"}
+  RP-02: {artifact: render_props, severity: error, text: "width x height matches the brief's aspect and orientation"}
+  RP-03: {artifact: render_props, severity: error, text: "every overlay/caption/scene/graphic window lies inside the video"}
+  RP-04: {artifact: render_props, severity: error, text: "input hashes match the current choreography/timeline/brief/audio"}
+  RP-05: {artifact: render_props, severity: warning, text: "props larger than 8 MB slow the renderer", params: {max_mb: 8}}
+  RP-06: {artifact: render_props, severity: error, text: "on-screen player speed stays <= 11 m/s after the timeline warp (0.8x compression of 9.5 m/s ~ 11.9)", params: {vmax: 11.0}}
+  FQ-01: {artifact: render_report, severity: error, text: "h264 High, yuv420p, exact size, 30/1, frame count = timeline"}
+  FQ-02: {artifact: render_report, severity: error, text: "AAC 48 kHz stereo; audio length = video length within 1 frame"}
+  FQ-03: {artifact: render_report, severity: error, text: "-14 +-1 LUFS integrated, true peak <= -1 dBTP, LRA <= 11"}
+  FQ-04: {artifact: render_report, severity: error, text: "voice >= 9 dB above the ducked music"}
+  FQ-05: {artifact: render_report, severity: error, text: "no black frames inside pitch scenes"}
+  FQ-06: {artifact: render_report, severity: error, text: "pixel probes find team colours at projected token positions"}
+  FQ-07: {artifact: render_report, severity: warning, text: "live runs: speech-to-text word error rate <= 10% and word timing p95 <= 160 ms"}
+  FQ-08: {artifact: render_report, severity: warning, text: "bitrate in a sane range for the resolution"}

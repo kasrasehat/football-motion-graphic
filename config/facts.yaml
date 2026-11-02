@@ -1,0 +1,43 @@
+# Fact-key registry for match_dossier.facts. `T` stands for the team prefix H (home) or A (away).
+# type: number | integer | string | list | form | xi | absences | results
+# freshness: news (<= 48 h old), stats (<= 7 days), static (no limit)
+# key: true => needs >= 2 independent sources (or an API source, or an explicit single_source flag)
+# required: error (MD-07 error when missing) | warning | no
+facts:
+  fixture.kickoff_utc:     {type: string, freshness: news, key: true, required: error}
+  fixture.venue:           {type: string, freshness: static, key: true, required: error}
+  fixture.competition:     {type: string, freshness: static, key: false, required: error}
+  fixture.round:           {type: string, freshness: static, key: false, required: no}
+  fixture.referee:         {type: string, freshness: news, key: false, required: no}
+  fixture.league_avg_goals: {type: number, range: [1.8, 4.2], freshness: stats, key: false, required: no}
+  fixture.home_advantage:  {type: number, range: [1.0, 1.6], freshness: stats, key: false, required: no}
+  fixture.odds_home:       {type: number, range: [1.01, 50], freshness: news, key: false, required: no}
+  fixture.odds_draw:       {type: number, range: [1.01, 50], freshness: news, key: false, required: no}
+  fixture.odds_away:       {type: number, range: [1.01, 50], freshness: news, key: false, required: no}
+  fixture.stakes:          {type: string, freshness: news, key: false, required: warning}
+  h2h.last5:               {type: results, freshness: stats, key: false, required: warning}
+  T.manager:               {type: string, freshness: news, key: false, required: warning}
+  T.formation:             {type: string, pattern: "^[1-9](-[1-9]){1,4}$", freshness: stats, key: false, required: warning}
+  T.standing.position:     {type: integer, range: [1, 40], freshness: stats, key: false, required: warning}
+  T.standing.points:       {type: integer, range: [0, 120], freshness: stats, key: false, required: no}
+  T.standing.played:       {type: integer, range: [0, 60], freshness: stats, key: false, required: no}
+  T.form.last5:            {type: form, freshness: stats, key: false, required: error}
+  T.goals_for_avg:         {type: number, range: [0, 6], freshness: stats, key: false, required: error}
+  T.goals_against_avg:     {type: number, range: [0, 6], freshness: stats, key: false, required: error}
+  T.home_goals_for_avg:    {type: number, range: [0, 6], freshness: stats, key: false, required: no}
+  T.home_goals_against_avg: {type: number, range: [0, 6], freshness: stats, key: false, required: no}
+  T.away_goals_for_avg:    {type: number, range: [0, 6], freshness: stats, key: false, required: no}
+  T.away_goals_against_avg: {type: number, range: [0, 6], freshness: stats, key: false, required: no}
+  T.xg_for_avg:            {type: number, range: [0, 4], freshness: stats, key: false, required: warning}
+  T.xg_against_avg:        {type: number, range: [0, 4], freshness: stats, key: false, required: warning}
+  T.possession_avg:        {type: number, range: [20, 80], freshness: stats, key: false, required: no}
+  T.clean_sheets:          {type: integer, range: [0, 60], freshness: stats, key: false, required: no}
+  T.shots_avg:             {type: number, range: [2, 30], freshness: stats, key: false, required: no}
+  T.injuries:              {type: absences, freshness: news, key: true, required: error}
+  T.suspensions:           {type: absences, freshness: news, key: true, required: warning}
+  T.predicted_xi:          {type: xi, freshness: news, key: true, required: error}
+  T.key_players:           {type: list, freshness: stats, key: false, required: warning}
+  T.tactics:               {prefix: true, type: string, freshness: stats, key: false, required: error}
+
+# Coverage categories counted in match_dossier.coverage (MD-07 requires at least these many claims).
+coverage_min: {form: 2, team_stats: 2, injury: 1, lineup: 2, tactics: 2, fixture: 1}

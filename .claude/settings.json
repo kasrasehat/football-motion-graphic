@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(.venv/Scripts/tms:*)",
+      "Bash(.venv/Scripts/tms.exe:*)",
+      "Bash(.venv/Scripts/python.exe -m pytest:*)",
+      "Bash(npm --prefix render run:*)",
+      "Bash(ffprobe:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Edit(./.env)",
+      "Write(./.env)",
+      "Edit(./projects/*/state/**)",
+      "Write(./projects/*/state/**)",
+      "Edit(./projects/*/history/**)",
+      "Write(./projects/*/history/**)",
+      "Edit(./projects/*/build/**)",
+      "Write(./projects/*/build/**)",
+      "Edit(./projects/*/project.json)",
+      "Write(./projects/*/project.json)",
+      "Edit(./.claude/skills/**)",
+      "Write(./.claude/skills/**)",
+      "Edit(./.claude/agents/**)",
+      "Write(./.claude/agents/**)",
+      "Edit(./.agents/skills/**)",
+      "Write(./.agents/skills/**)",
+      "Edit(./.codex/agents/**)",
+      "Write(./.codex/agents/**)",
+      "Bash(.venv/Scripts/tms approve:*)",
+      "Bash(.venv/Scripts/tms.exe approve:*)",
+      "Bash(./tms.cmd approve:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" \"$CLAUDE_PROJECT_DIR/hooks/dispatch.py\" session-start", "timeout": 30}
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" \"$CLAUDE_PROJECT_DIR/hooks/dispatch.py\" user-prompt-submit", "timeout": 30}
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Read|Bash|PowerShell",
+        "hooks": [
+          {"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" \"$CLAUDE_PROJECT_DIR/hooks/dispatch.py\" pre-tool-use", "timeout": 30}
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" \"$CLAUDE_PROJECT_DIR/hooks/dispatch.py\" post-tool-use", "timeout": 60}
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" \"$CLAUDE_PROJECT_DIR/hooks/dispatch.py\" stop", "timeout": 600}
+        ]
+      }
+    ]
+  }
+}

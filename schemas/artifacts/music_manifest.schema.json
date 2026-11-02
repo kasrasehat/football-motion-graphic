@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/music_manifest.schema.json",
+  "title": "music_manifest — the music bed fitted frame-exactly to the timeline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "inputs", "source", "provider", "request_hash", "cached", "raw_file",
+               "raw_duration_s", "fitted_file", "samples", "body", "fade_in_frames", "fade_out_frames", "plan_tier", "music_s_billed"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "inputs": {"$ref": "../defs.schema.json#/$defs/inputs"},
+    "source": {"enum": ["generate", "file", "none"]},
+    "provider": {"enum": ["elevenlabs", "file", "mock_synth", "none"]},
+    "request_hash": {"anyOf": [{"$ref": "../defs.schema.json#/$defs/sha256"}, {"type": "null"}]},
+    "cached": {"type": "boolean"},
+    "raw_file": {"type": ["string", "null"]},
+    "raw_duration_s": {"type": "number", "minimum": 0},
+    "fitted_file": {"type": ["string", "null"]},
+    "samples": {"type": "integer", "minimum": 0},
+    "body": {
+      "type": "object", "additionalProperties": false, "required": ["start_s", "end_s"],
+      "properties": {"start_s": {"type": "number", "minimum": 0}, "end_s": {"type": "number", "minimum": 0}}
+    },
+    "fade_in_frames": {"type": "integer", "minimum": 0},
+    "fade_out_frames": {"type": "integer", "minimum": 0},
+    "plan_tier": {"type": ["string", "null"]},
+    "music_s_billed": {"type": "number", "minimum": 0}
+  }
+}

@@ -1,0 +1,105 @@
+---
+name: choreo-dsl
+description: Exact reference for scene_plan.json, the storyboard language - pitch scenes made of actions (move, carry, pass, press, mark, tackle, intercept, shot, duel), time references, holds, overlays and camera keys, plus data-bound graphic scenes - with engine semantics, validator rules and proven patterns. Use whenever writing, fixing or reviewing a storyboard.
+---
+
+# The choreography language (`artifacts/scene_plan.json`)
+
+You describe **intent**; the engine computes every position, speed, pass flight and camera frame at 30 Hz and then
+validates physics (`config/rules.d/choreography.yaml`, rules `CH-xx`). Never place 22 players by hand.
+Schema: `schemas/artifacts/scene_plan.schema.json`. Worked example: `tests/fixtures/artifacts/scene_plan.json`.
+
+## Top level
+```json
+{"version":"1","project_id":"<slug>","start":{"from":"tactic_snapshot","overrides":{"H2":[36,61]}},"scenes":[...]}
+```
+- The first scene starts from the tactic_spec snapshot. `overrides` (absolute frame, home attacks +x) move a few
+  players before scene 1 — e.g. start the full-back wide so S02 can show him inverting. Keep it ≤ 4 players (`CH-04`).
+- Scenes play back to back. `transition`: `continue` (positions carry on), `reset` (hard cut back to
+  `reset_to`: `tactic_snapshot` or `S02:start`), `cut` (positions carry on, camera may cut).
+
+## Pitch scene
+```json
+{"id":"S03","kind":"pitch","purpose":"demonstrate","title":"Two strikers, two pivots","principles":["P1","P2"],
+ "transition":"continue","reset_to":null,"length_s":null,
+ "shape":[{"at":0,"team":"A","block":{"ball_shift":0.5},"react_s":0.4}],
+ "actions":[...],"holds":[...],"overlays":[...],"camera":[{"at":0,"mode":"full"}]}
+```
+- `purpose`: intro | establish | explain | demonstrate | exploit | counter | recap | outro | battle. explain/demonstrate/
+  exploit/battle scenes must cite `principles` (tactic) or `battles` (match preview: `TB1`, `KB1`) (`CH-03`).
+- `length_s`: null = engine length (last event + 1.2 s). Set it when a scene must linger (labels need reading time).
+- `title` (≤ 28 chars) is shown as a lower third.
+- `shape`: from `at`, a team's idle players slide sideways with the ball by `ball_shift` (0 = static, 0.5 = strong),
+  reacting after `react_s`. Defaults come from the tactic_spec blocks.
+
+### Time expressions (every `at`/`from`/`until`/`in`/`out`)
+- a number: seconds from scene start;
+- `{"after": REF, "plus": s}` — s seconds after REF ends; `{"before": REF, "plus": s}` — s seconds before REF starts;
+- REF = an event id (`E01`), an action handle (`H2@move#1`, i.e. H2's first `move` in this scene; add `.start`/`.end`
+  to pick), or `scene.end`. Handles count per player and type: `A9@press#1`, `H10@carry#2`.
+Cycles or unknown refs fail compilation (`CH-02`).
+
+### Actions
+| type | fields | engine behaviour |
+|---|---|---|
+| `move` | player, at, to, pace, curve_m? | accelerates (≤ 4 m/s²) along a straight or curved path (`curve_m` ± 15, + bends left of travel) and stops at the target |
+| `carry` | same as move | a move by the **ball holder**; the ball stays 0.7 m in front (`CH-25` if not the holder) |
+| `pass` | id, from, to **or** to_point, at, kind, lead_m? | kinds: ground 14, driven 20, through 16, lofted 16, cross 18 m/s. Flight solved so it meets a moving receiver where he will be; `to_point` = into space (first player within 1.2 m picks it up). Passer must hold the ball |
+| `press` | player, on, cut?, at, pace, until? | pursues `on` and stands 1.6 m away on the line to `cut` (cover shadow) or goal-side |
+| `mark` | player, on, from, until, dist_m?, goal_side? | stays `dist_m` goal-side of `on` |
+| `duel` | players [a,b], from, until | both converge; collisions allowed inside the window |
+| `tackle` | id, by, on, at | `on` must hold the ball and `by` be ≤ 4 m away (press first); possession → by |
+| `intercept` | id, by, pass | `by` sprints to the earliest reachable point of that pass (`CH-26` if impossible) |
+| `shot` | id, by, at, aim, outcome | aim near_post/far_post/centre; outcome goal/saved (GK collects)/wide/blocked |
+`to` targets: `{"pitch":[x,y]}` (absolute), `{"rel_player":"H6","offset":[0,11]}` (offset in that player's attacking
+frame, aimed at where he will be on arrival), `{"zone":"r_half_space_mid"}` (in the mover's team frame; list with
+`.venv/Scripts/tms tactic zones`). Paces: walk 1.5, jog 3.5, run 5.5, sprint 7.5 m/s.
+
+### Holds (where the voice-over may pause the motion)
+`{"id":"h1","at":{"after":"E02","plus":0.3},"max_s":2.5,"style":"freeze"}` — `freeze` stops everything, `drift`
+keeps idle sway. The audio stage stretches holds (≤ max_s, ≤ 3 s) when the narration needs time. Put one after
+every key moment you will explain.
+
+### Overlays (≤ 4 at once, ≤ 2 with text, ≤ 1 zone — `CH-42`)
+| kind | needs | draws |
+|---|---|---|
+| `run_arrow` | action (`H9@move#1`), style preview/trail | the run's actual path; preview must appear ≥ 0.25 s before the run (`CH-43`) |
+| `pass_line` | event | release → arrival |
+| `zone` | geom: hull [ids ≥ 3] / rect [x0,y0,x1,y1] / named | translucent area + `text` |
+| `line` | geom: def_line T / offside T / link [a,b] / points | full-width defensive/offside line, or a link |
+| `ring`, `spotlight` | players | rings following players / dim everything else |
+| `label` | anchor {player} or {pitch}, text ≤ 28 | callout; visible ≥ max(1.5 s, 0.3 s/word + 0.6 s) (`CH-41`) |
+| `distance` | players [a,b] | measured gap in metres |
+| `polygon` | players | outline connecting players (shape of a unit) |
+All need `id` (N01…), `in`, `out` (time expressions or `"scene.end"`); visible ≥ 0.8 s (`CH-40`).
+
+### Camera keys
+`{"at":0,"mode":"full"}` · `{"at":1.0,"mode":"frame","targets":["H2","H6","ball"],"pad_m":8,"dur_s":1.0}` ·
+`{"at":3.0,"mode":"follow","target":"ball","w_m":50}` · `{"at":0,"mode":"rect","rect":[cx,cy,w]}`.
+`w` = visible metres along the pitch length (min 32). The engine slows transitions so pans/zooms stay smooth
+(`CH-51`) and keeps the ball and featured players in the safe area (`CH-52`) — frame the action you narrate.
+
+## Graphic scene (data cards; no motion)
+```json
+{"id":"S06","kind":"graphic","purpose":"outro","title":"Control the middle","transition":"cut","length_s":4,
+ "template":"text_card","bind":{"headline":"text:Control the middle","sub":"text:Inverted full-back, 3-2-5"},
+ "reveals":[{"id":"R1","at":0.3}]}
+```
+`bind` values are `text:<literal>`, dossier fact keys (`H.goals_for_avg`) or prediction paths
+(`prediction.probs_final.home`) — **never literal numbers**. Templates and their slots: see `skills/stage-storyboard`.
+
+## Workflow
+1. Draft → `projects/<slug>/drafts/scene_plan.json`;
+   `.venv/Scripts/tms storyboard compile --plan projects/<slug>/drafts/scene_plan.json -p <slug>` (writes nothing).
+2. Fix every `CH` error by changing **intent** (timing, pace, targets, holds), never by fighting the physics.
+3. Typical fixes: offside (`CH-30`) → release the pass earlier or start the run later; arrival misses (`CH-23`) →
+   pass when the receiver is nearer or pick `to_point`; collisions (`CH-15`) → different targets or a `duel`;
+   ball off screen (`CH-52`) → `frame` it or `follow` the ball; label too short (`CH-41`) → later `out` or `length_s`.
+
+## Patterns (copy and adapt)
+- **Third-man run**: A passes to B (E01), C starts running `{"before":"E02","plus":0.4}`, B lays it to C (E02, `to` C).
+- **Pressing trap**: let the pass go wide (E01 to the full-back), then 2 presses at `{"after":"E01","plus":0}`
+  with `cut` on the inside options, `zone` hull of the trapping players, `tackle` 1.5 s later.
+- **Overlap / underlap**: winger carries inside (`carry`, curve), full-back `move` outside with `curve_m` 4, pass to him.
+- **Switch of play**: `lofted` pass across (≥ 35 m), opposite-side block shift via `shape` `ball_shift` 0.5.
+- **Rest defence**: `polygon` of the 3+2 behind the ball, `distance` between centre-backs and the deepest forward.

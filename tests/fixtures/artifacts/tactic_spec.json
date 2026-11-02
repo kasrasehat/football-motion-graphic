@@ -1,0 +1,66 @@
+{
+  "version": "1",
+  "project_id": "fx-ifb-442",
+  "title": "Inverted full-back: 4-3-3 into 3-2-5",
+  "summary": "Reds build up from a 4-3-3 that becomes a 3-2-5: the right-back steps inside next to the holding midfielder, the left-back tucks into a back three, and five forwards pin the Blues' 4-4-2 back line so the eights receive between the lines.",
+  "focus_team": "H",
+  "phase": "build_up",
+  "frame": "team_normalized",
+  "teams": {
+    "H": {
+      "formation_base": "4-3-3",
+      "formation_phase": "3-2-5",
+      "shape": {"template": "3-2-5", "block": {"line_x": 25, "depth": 43, "width": 56, "ball_shift": 0.2}},
+      "players": [
+        {"id": "H1", "number": 1, "name": null, "role": "GK", "line": 0, "pos": [5, 34]},
+        {"id": "H3", "number": 3, "name": null, "role": "LB", "line": 1, "pos": [27, 16], "note": "tucks in as left centre-back of a back three"},
+        {"id": "H5", "number": 5, "name": null, "role": "LCB", "line": 1, "pos": [23, 30]},
+        {"id": "H4", "number": 4, "name": null, "role": "RCB", "line": 1, "pos": [25, 46]},
+        {"id": "H6", "number": 6, "name": null, "role": "DM", "line": 2, "pos": [40, 28]},
+        {"id": "H2", "number": 2, "name": null, "role": "RB", "line": 2, "pos": [40, 39], "note": "inverted: steps into midfield beside the 6"},
+        {"id": "H11", "number": 11, "name": null, "role": "LW", "line": 3, "pos": [64, 6]},
+        {"id": "H8", "number": 8, "name": null, "role": "LCM", "line": 3, "pos": [60, 22]},
+        {"id": "H9", "number": 9, "name": null, "role": "ST", "line": 3, "pos": [68, 34]},
+        {"id": "H10", "number": 10, "name": null, "role": "RCM", "line": 3, "pos": [60, 46]},
+        {"id": "H7", "number": 7, "name": null, "role": "RW", "line": 3, "pos": [64, 62]}
+      ]
+    },
+    "A": {
+      "formation_base": "4-4-2",
+      "formation_phase": "4-4-2",
+      "shape": {"template": "4-4-2", "block": {"line_x": 29, "depth": 25, "width": 44, "ball_shift": 0.3}},
+      "players": [
+        {"id": "A1", "number": 1, "name": null, "role": "GK", "line": 0, "pos": [5, 34]},
+        {"id": "A3", "number": 3, "name": null, "role": "LB", "line": 1, "pos": [30, 12]},
+        {"id": "A5", "number": 5, "name": null, "role": "LCB", "line": 1, "pos": [28, 27]},
+        {"id": "A4", "number": 4, "name": null, "role": "RCB", "line": 1, "pos": [28, 41]},
+        {"id": "A2", "number": 2, "name": null, "role": "RB", "line": 1, "pos": [30, 56]},
+        {"id": "A11", "number": 11, "name": null, "role": "LM", "line": 2, "pos": [44, 12]},
+        {"id": "A8", "number": 8, "name": null, "role": "LCM", "line": 2, "pos": [42, 28]},
+        {"id": "A6", "number": 6, "name": null, "role": "RCM", "line": 2, "pos": [42, 40]},
+        {"id": "A7", "number": 7, "name": null, "role": "RM", "line": 2, "pos": [44, 56]},
+        {"id": "A10", "number": 10, "name": null, "role": "LS", "line": 3, "pos": [53, 28]},
+        {"id": "A9", "number": 9, "name": null, "role": "RS", "line": 3, "pos": [54, 40]}
+      ]
+    }
+  },
+  "ball": {"holder": "H4"},
+  "principles": [
+    {"id": "P1", "name": "Inverted full-back forms a 2-man pivot", "statement": "The right-back leaves the touchline and stands beside the holding midfielder, so the first pressing line of two cannot screen both pivots.", "players": ["H2", "H6"], "visual_proof": "H2 runs from the right touchline to a central slot next to H6 before the pass arrives"},
+    {"id": "P2", "name": "Eights live in the half-spaces", "statement": "The two eights stand in the half-spaces between the Blues' midfield and defensive lines, where neither line can reach them in time.", "players": ["H8", "H10"], "visual_proof": "H10 receives between A6 and A4 facing forward"},
+    {"id": "P3", "name": "Five pin four", "statement": "Five forwards across the last line pin the back four, so a defender stepping out leaves a man free behind him.", "players": ["H7", "H9", "H11"], "visual_proof": "the back four stays deep and H7 is free when A2 steps up"}
+  ],
+  "triggers": [
+    {"id": "T1", "team": "A", "cue": "A9 presses H4 and blocks the pass to H2", "response": "H4 lays the ball into H6, who turns to find H10 in the half-space", "players": ["A9", "H4", "H6", "H10"], "principles": ["P1", "P2"]}
+  ],
+  "strengths": [
+    {"id": "S1", "text": "A 3+2 base gives five safe passing options against two strikers", "principles": ["P1"]}
+  ],
+  "weaknesses": [
+    {"id": "W1", "text": "If the pass into the pivot is intercepted the right flank is empty behind H2", "players": ["H2", "H4"]}
+  ],
+  "counters": [
+    {"id": "C1", "text": "Blues' right midfielder jumps onto H2 early and the striker screens H6", "targets": "W1"}
+  ],
+  "assumptions": ["Blues defend in a compact mid-block and do not press the goalkeeper"]
+}

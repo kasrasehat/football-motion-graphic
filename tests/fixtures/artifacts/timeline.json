@@ -1,0 +1,89 @@
+{
+ "version": "1",
+ "project_id": "fx-ifb-442",
+ "inputs": {
+  "choreography": "0000000000000000000000000000000000000000000000000000000000000000",
+  "voiceover_manifest": "0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "fps": 30,
+ "sr": 48000,
+ "frames": 120,
+ "intro": {
+  "from": 0,
+  "to": 15
+ },
+ "outro": {
+  "from": 105,
+  "to": 120
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "from": 15,
+   "to": 105,
+   "vo": "V01",
+   "warp": [
+    [
+     0.0,
+     0
+    ],
+    [
+     3.0,
+     90
+    ]
+   ]
+  }
+ ],
+ "vo": [
+  {
+   "id": "V01",
+   "scene": "S01",
+   "from": 21,
+   "samples": 48000,
+   "file": "media/vo/V01.wav"
+  }
+ ],
+ "words": [
+  {
+   "i": 0,
+   "clip": "V01",
+   "display": "Watch",
+   "from": 22,
+   "to": 33
+  },
+  {
+   "i": 1,
+   "clip": "V01",
+   "display": "this.",
+   "from": 34,
+   "to": 48
+  }
+ ],
+ "anchors": [],
+ "captions": [
+  {
+   "id": "C01",
+   "from": 22,
+   "to": 60,
+   "lines": [
+    "Watch this."
+   ],
+   "words": [
+    0,
+    1
+   ],
+   "place": "bottom"
+  }
+ ],
+ "duck": {
+  "windows": [
+   [
+    21,
+    51
+   ]
+  ],
+  "depth_db": -10,
+  "attack_ms": 150,
+  "release_ms": 450
+ }
+}

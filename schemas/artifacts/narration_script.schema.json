@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/narration_script.schema.json",
+  "title": "narration_script — one spoken line per scene; captions are these exact words",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "language", "pronunciations", "title_card", "end_card", "lines"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "language": {"const": "en"},
+    "pronunciations": {
+      "description": "display word -> single-token respelling sent to TTS (keeps word alignment 1:1)",
+      "type": "object", "additionalProperties": {"type": "string", "pattern": "^\\S+$"}
+    },
+    "title_card": {
+      "type": "object", "additionalProperties": false, "required": ["title", "subtitle"],
+      "properties": {"title": {"type": "string", "minLength": 2, "maxLength": 40}, "subtitle": {"type": "string", "maxLength": 60}}
+    },
+    "end_card": {
+      "type": "object", "additionalProperties": false, "required": ["text"],
+      "properties": {"text": {"type": "string", "minLength": 2, "maxLength": 60}}
+    },
+    "lines": {
+      "type": "array", "minItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["scene", "text", "silent", "anchors"],
+        "properties": {
+          "scene": {"type": "string", "pattern": "^S\\d{2}$"},
+          "text": {"type": "string", "maxLength": 400},
+          "silent": {"type": "boolean"},
+          "anchors": {
+            "type": "array",
+            "items": {
+              "type": "object", "additionalProperties": false, "required": ["word", "occurrence", "ref"],
+              "properties": {
+                "word": {"type": "string", "pattern": "^\\S+$"},
+                "occurrence": {"type": "integer", "minimum": 1},
+                "ref": {"type": "string", "pattern": "^(E\\d{2}(\\.(start|end))?|[HA](1[01]|[1-9])@(move|carry|press|mark|duel)#[1-9](\\.(start|end))?|R\\d)$"},
+                "lead_s": {"type": "number", "minimum": -0.5, "maximum": 0.5}
+              }
+            }
+          },
+          "numbers": {
+            "description": "every number spoken in this line, bound to its source fact/prediction value",
+            "type": "array",
+            "items": {
+              "type": "object", "additionalProperties": false, "required": ["text", "ref"],
+              "properties": {
+                "text": {"type": "string", "minLength": 1},
+                "ref": {"type": "string", "pattern": "^((fixture|h2h|[HA])(\\.[a-z0-9_]+)+|prediction(\\.[a-z_]+)+|tactic\\.[a-z_]+)$"}
+              }
+            }
+          }
+        },
+        "if": {"properties": {"silent": {"const": false}}},
+        "then": {"properties": {"text": {"minLength": 3}}}
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+# Prediction model parameters (engine/tms/predict). The method in plain language: skills/prediction-model/SKILL.md.
+# The validators (config/rules.d/prediction.yaml, PR-xx) read the confidence thresholds below, so the engine and
+# the rules can never disagree about what "low / medium / high" means.
+
+model:
+  max_goals: 10            # score matrix 0..max_goals per side, renormalised to sum 1 (schema: 6..15)
+  rho: -0.08               # Dixon-Coles low-score correlation; clamped per match to the range where tau >= 0
+  top_scorelines: 6        # scorelines listed in prediction.json (schema: 3..10)
+  lambda_floor: 0.05       # expected goals never below this (a 0.0 goals average would make lambda 0)
+
+strengths:
+  # League average goals scored per TEAM per match (= total goals per match / 2). Fact fixture.league_avg_goals
+  # overrides it; values outside league_avg_range are rejected (they are probably a per-match total).
+  league_avg_goals: 1.40
+  league_avg_range: [0.6, 2.4]
+  # Ratio of a home side's expected goals to the same side's away expected goals against an average opponent.
+  # Applied as sqrt(HA) to the home lambda and 1/sqrt(HA) to the away lambda. Fact fixture.home_advantage overrides.
+  home_advantage: 1.20
+  home_advantage_range: [0.8, 1.6]
+  # Weight of the xG rating when an xG fact exists for the same metric: rating = (1-w)*goals_rating + w*xg_rating.
+  xg_weight: 0.5
+
+market:
+  # Weight of the de-vigged bookmaker probabilities when all three fixture.odds_* facts are present (else 0).
+  blend_weight: 0.35
+
+adjustments:
+  max_abs_delta_pp: 10     # per adjustment (must equal PR-03's param)
+  clip: [0.02, 0.96]       # every outcome probability is kept inside this band, then renormalised
+
+# Confidence label from the entropy H (natural log, max ln 3 = 1.0986) of probs_final and the margin between the
+# largest and the second-largest outcome probability. First matching level wins; otherwise "low".
+confidence:
+  high:   {max_entropy: 0.85, min_margin: 0.30}
+  medium: {max_entropy: 1.02, min_margin: 0.15}
+
+backtest:
+  warmup: 100              # matches seen before the first prediction is scored
+  half_life_days: 180      # exponential time-decay of match weights in the likelihood
+  ridge: 0.01              # L2 penalty on attack/defence ratings (identifiability + early-season shrinkage)
+  rho_bounds: [-0.2, 0.2]
+  max_iter: 500            # L-BFGS-B iteration cap per refit (deterministic)
+
+disclaimer: >-
+  Statistical analysis from a Dixon-Coles goals model and public team data: these are probabilities, not
+  certainties, and the match can go any way. For analysis and entertainment only - not betting advice.

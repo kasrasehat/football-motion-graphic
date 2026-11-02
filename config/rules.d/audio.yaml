@@ -1,0 +1,21 @@
+# VO / TL / MU — voice-over, timeline and music rules.
+rules:
+  VO-01: {artifact: voiceover_manifest, severity: error, text: "every spoken line has a clip; words are ordered, start < end, and end within the clip"}
+  VO-02: {artifact: voiceover_manifest, severity: error, text: "clip words map 1:1 onto the narration line's tokens"}
+  VO-03: {artifact: voiceover_manifest, severity: warning, text: "speech onset differs from the first aligned word by > 40 ms (error > 120 ms)", params: {warn_s: 0.04, max_s: 0.12}}
+  VO-04: {artifact: voiceover_manifest, severity: error, text: "clip files exist, are 48 kHz mono, sample counts match, trailing silence <= 0.3 s", params: {tail_s: 0.3}}
+  VO-05: {artifact: voiceover_manifest, severity: warning, text: "speaking rate 120-190 wpm (error outside 100-220)", params: {lo: 120, hi: 190, min: 100, max: 220}}
+  VO-06: {artifact: voiceover_manifest, severity: error, text: "each clip's request hash matches the current narration and voice settings (no stale audio)"}
+  TL-01: {artifact: timeline, severity: error, text: "intro, scenes and outro are contiguous and sum to `frames`"}
+  TL-02: {artifact: timeline, severity: error, text: "each voice clip sits inside its scene; clips never overlap"}
+  TL-03: {artifact: timeline, severity: error, text: "warp segments run at 0.8-1.25x; each hold <= 3 s; warning when holds exceed 20% of the video", params: {lo: 0.8, hi: 1.25, max_hold_f: 90, hold_share: 0.2}}
+  TL-04: {artifact: timeline, severity: error, text: "anchored words land within 2 frames of their events", params: {max_f: 2}}
+  TL-05: {artifact: timeline, severity: error, text: "duration within 0.7-1.3 x target (warning outside 0.85-1.15)", params: {lo: 0.7, hi: 1.3, wlo: 0.85, whi: 1.15}}
+  TL-06: {artifact: timeline, severity: error, text: "captions: <= 2 lines of <= 42 chars, 0.8-6 s, <= 20 chars/s, cover every word exactly once in order, one clip per caption", params: {cps: 20, min_f: 24, max_f: 180}}
+  TL-07: {artifact: timeline, severity: error, text: "word frames are monotonic and inside their clip"}
+  TL-09: {artifact: timeline, severity: error, text: "title card <= 2 s and the first word within 1.5 s of the first scene", params: {intro_max_f: 60, first_word_max_f: 45}}
+  TL-10: {artifact: timeline, severity: error, text: "end card >= 2 s", params: {min_f: 60}}
+  MU-01: {artifact: music_manifest, severity: error, text: "a generated/file bed needed at most 2 loop splices"}
+  MU-02: {artifact: music_manifest, severity: error, text: "no digital silence (< -60 dBFS) longer than 1 s inside the fitted bed", params: {db: -60, s: 1.0}}
+  MU-03: {artifact: music_manifest, severity: error, text: "the fitted bed has exactly frames x 1600 samples, 48 kHz stereo"}
+  MU-04: {artifact: music_manifest, severity: error, text: "fade-in <= 1 s; fade-out 2-3 s ending on the last frame", params: {in_max: 30, out_min: 60, out_max: 90}}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/match_dossier.schema.json",
+  "title": "match_dossier — merged, sourced evidence (engine-built from API pulls + web_claims)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "inputs", "built_at", "data_mode", "fixture", "claims", "facts", "conflicts", "coverage", "api_calls"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "inputs": {"$ref": "../defs.schema.json#/$defs/inputs"},
+    "built_at": {"$ref": "../defs.schema.json#/$defs/datetime"},
+    "data_mode": {"enum": ["api+web", "web"]},
+    "fixture": {
+      "type": "object", "additionalProperties": false,
+      "required": ["home", "away", "competition", "kickoff_utc", "venue", "fixture_id"],
+      "properties": {
+        "home": {"type": "string"}, "away": {"type": "string"}, "competition": {"type": "string"},
+        "kickoff_utc": {"$ref": "../defs.schema.json#/$defs/datetime"},
+        "venue": {"type": ["string", "null"]}, "fixture_id": {"type": ["integer", "null"]}
+      }
+    },
+    "claims": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "origin", "web_id", "fact_key", "category", "statement", "value", "unit", "as_of", "sources", "confidence"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^C-\\d{3,4}$"},
+          "origin": {"enum": ["api", "web"]},
+          "web_id": {"type": ["string", "null"], "pattern": "^W-\\d{3,4}$"},
+          "fact_key": {"anyOf": [{"$ref": "../defs.schema.json#/$defs/fact_key"}, {"type": "null"}]},
+          "category": {"type": "string"},
+          "statement": {"type": "string"},
+          "value": {},
+          "unit": {"type": ["string", "null"]},
+          "as_of": {"anyOf": [{"$ref": "../defs.schema.json#/$defs/datetime"}, {"type": "null"}]},
+          "sources": {"type": "array", "minItems": 1, "items": {"$ref": "../defs.schema.json#/$defs/source"}},
+          "confidence": {"enum": ["high", "medium", "low"]}
+        }
+      }
+    },
+    "facts": {
+      "type": "object",
+      "propertyNames": {"$ref": "../defs.schema.json#/$defs/fact_key"},
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false, "required": ["value", "unit", "claim_ids", "status", "as_of"],
+        "properties": {
+          "value": {},
+          "unit": {"type": ["string", "null"]},
+          "claim_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^C-\\d{3,4}$"}},
+          "status": {"enum": ["agreed", "single_source", "resolved_conflict", "conflict"]},
+          "as_of": {"anyOf": [{"$ref": "../defs.schema.json#/$defs/datetime"}, {"type": "null"}]}
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["fact_key", "claim_ids", "resolution"],
+        "properties": {
+          "fact_key": {"$ref": "../defs.schema.json#/$defs/fact_key"},
+          "claim_ids": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+          "resolution": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "coverage": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "api_calls": {"type": "integer", "minimum": 0}
+  }
+}

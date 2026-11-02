@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/state/state.schema.json",
+  "title": "State records (written only by the tms CLI / hooks; agents never edit state/)",
+  "$defs": {
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "project_id",
+        "mode",
+        "title",
+        "created_at",
+        "dry_run",
+        "pipeline_version"
+      ],
+      "properties": {
+        "version": {
+          "const": "1"
+        },
+        "project_id": {
+          "$ref": "../defs.schema.json#/$defs/slug"
+        },
+        "mode": {
+          "enum": [
+            "tactic",
+            "match_preview"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "created_at": {
+          "$ref": "../defs.schema.json#/$defs/datetime"
+        },
+        "dry_run": {
+          "type": "boolean"
+        },
+        "pipeline_version": {
+          "const": "1"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ts",
+        "type",
+        "stage",
+        "hmac"
+      ],
+      "properties": {
+        "ts": {
+          "$ref": "../defs.schema.json#/$defs/datetime"
+        },
+        "type": {
+          "enum": [
+            "begin",
+            "submit",
+            "reopen",
+            "reject"
+          ]
+        },
+        "stage": {
+          "type": "string"
+        },
+        "hashes": {
+          "$ref": "../defs.schema.json#/$defs/inputs"
+        },
+        "input_hashes": {
+          "$ref": "../defs.schema.json#/$defs/inputs"
+        },
+        "snapshot": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "qa_records": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^Q-\\d{3,4}$"
+          }
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "hmac": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "if": {
+        "properties": {
+          "type": {
+            "const": "submit"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "hashes",
+          "input_hashes",
+          "snapshot",
+          "warnings",
+          "qa_records"
+        ]
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ts",
+        "project_id",
+        "stage",
+        "word",
+        "hashes",
+        "via",
+        "session_id",
+        "nonce",
+        "key_id",
+        "hmac"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^A-\\d{3,4}$"
+        },
+        "ts": {
+          "$ref": "../defs.schema.json#/$defs/datetime"
+        },
+        "project_id": {
+          "$ref": "../defs.schema.json#/$defs/slug"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "word": {
+          "type": "string"
+        },
+        "hashes": {
+          "$ref": "../defs.schema.json#/$defs/inputs"
+        },
+        "via": {
+          "enum": [
+            "prompt-hook",
+            "tty",
+            "test"
+          ]
+        },
+        "session_id": {
+          "type": "string"
+        },
+        "nonce": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "key_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}$"
+        },
+        "hmac": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "qa_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ts",
+        "stage",
+        "agent",
+        "round",
+        "verdict",
+        "reviewed",
+        "file",
+        "counts",
+        "hmac",
+        "epoch",
+        "file_sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^Q-\\d{3,4}$"
+        },
+        "ts": {
+          "$ref": "../defs.schema.json#/$defs/datetime"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "agent": {
+          "type": "string"
+        },
+        "round": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "fix_and_rereview"
+          ]
+        },
+        "reviewed": {
+          "$ref": "../defs.schema.json#/$defs/inputs"
+        },
+        "file": {
+          "type": "string"
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "hmac": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "file_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ts",
+        "stage",
+        "category",
+        "decided_by",
+        "text",
+        "hmac"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^d-\\d{3,4}$"
+        },
+        "ts": {
+          "$ref": "../defs.schema.json#/$defs/datetime"
+        },
+        "stage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "category": {
+          "enum": [
+            "creative",
+            "tactical",
+            "data",
+            "budget",
+            "provider",
+            "fallback",
+            "scope",
+            "process"
+          ]
+        },
+        "decided_by": {
+          "enum": [
+            "user",
+            "agent"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1000
+        },
+        "hmac": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

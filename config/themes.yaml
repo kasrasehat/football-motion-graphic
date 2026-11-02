@@ -1,0 +1,27 @@
+# Visual themes. render_props.theme is assembled from `pitch` + the brief's team colours + `ui`.
+default: broadcast-dark
+themes:
+  broadcast-dark:
+    pitch: {grass: "#1f5f2c", stripe: "#1c5628", line: "#e8f5e9"}
+    ui: {accent: "#ffd54f", warn: "#ff5252", ink: "#ffffff", panel: "#0b1a12"}
+  broadcast-light:
+    pitch: {grass: "#3f8f45", stripe: "#3a8540", line: "#ffffff"}
+    ui: {accent: "#ffeb3b", warn: "#e53935", ink: "#ffffff", panel: "#102418"}
+
+# Fallback team palettes for the intake template when the user gives no colours (fill, ring, text).
+palettes:
+  red: ["#c8102e", "#ffffff", "#ffffff"]
+  blue: ["#1d428a", "#ffffff", "#ffffff"]
+  white: ["#f5f5f5", "#1a1a1a", "#1a1a1a"]
+  black: ["#161616", "#ffffff", "#ffffff"]
+  yellow: ["#f2c80f", "#1a1a1a", "#1a1a1a"]
+  sky: ["#6cabdd", "#ffffff", "#0b2545"]
+  green: ["#00843d", "#ffffff", "#ffffff"]
+  orange: ["#f47a1f", "#1a1a1a", "#1a1a1a"]
+  purple: ["#5b2c83", "#ffffff", "#ffffff"]
+  claret: ["#7a263a", "#94bee5", "#ffffff"]
+
+resolutions:
+  "16:9": {width: 1920, height: 1080, orientation: landscape}
+  "9:16": {width: 1080, height: 1920, orientation: portrait}
+  "1:1": {width: 1080, height: 1080, orientation: square}

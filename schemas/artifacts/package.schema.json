@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tms.local/schemas/artifacts/package.schema.json",
+  "title": "package — publishing metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project_id", "title", "description", "chapters", "tags", "thumbnail_frame"],
+  "properties": {
+    "version": {"$ref": "../defs.schema.json#/$defs/version"},
+    "project_id": {"$ref": "../defs.schema.json#/$defs/slug"},
+    "title": {"type": "string", "minLength": 10, "maxLength": 100},
+    "description": {"type": "string", "minLength": 20, "maxLength": 5000},
+    "chapters": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["t_s", "title"],
+        "properties": {"t_s": {"type": "number", "minimum": 0}, "title": {"type": "string", "maxLength": 60}}
+      }
+    },
+    "tags": {"type": "array", "maxItems": 30, "items": {"type": "string", "maxLength": 40}},
+    "thumbnail_frame": {"type": "integer", "minimum": 0}
+  }
+}
