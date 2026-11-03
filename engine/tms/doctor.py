@@ -8,7 +8,7 @@ import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from tms import envfile, paths, proc, remotion
+from tms import envfile, jsonio, paths, proc, remotion
 
 REQUIRED_FILTERS = ("loudnorm", "ebur128", "flite", "sidechaincompress", "signalstats",
                     "astats", "silencedetect", "blackdetect", "volume", "aresample")
@@ -93,7 +93,107 @@ def check_keys(r: Report) -> None:
     r.add("key:API_FOOTBALL_KEY", envfile.present("API_FOOTBALL_KEY"), "present" if envfile.present("API_FOOTBALL_KEY") else "missing — match research runs web-only", level="warn")
 
 
-def run_doctor(quick: bool = False) -> Report:
+# ------------------------------------------------------------------ online checks (--online is free; --probe bills)
+PROBE_TEXT = "Watch how one full-back breaks a four-four-two. The right-back steps inside, next to the holding midfielder."
+PROBE_MUSIC = "modern broadcast football tactics analysis bed, driving minimal electronic, 100 bpm, no vocals"
+PROBE_VOICE = "onwK4e9ZLuTAKqWW03F9"  # premade "Daniel - Steady Broadcaster"; TMS_DEFAULT_VOICE_ID overrides
+PROBE_SETTINGS = {"stability": 0.55, "similarity_boost": 0.8, "style": 0.15, "speed": 1.0}
+CASSETTE = Path("tests") / "fixtures" / "cassettes" / "elevenlabs_tts_with_timestamps.json"
+
+
+def check_online(r: Report, client=None) -> object | None:
+    """Free account calls. Returns the ElevenLabs client when reachable."""
+    from tms.audio.elevenlabs import Client, ElevenLabsError
+    from tms.research import api_football as AF
+    c = client or Client()
+    if not c.key:
+        r.add("elevenlabs", False, "no ELEVENLABS_API_KEY", level="warn")
+        c = None
+    else:
+        try:
+            s = c.subscription()
+            used, limit = int(s.get("character_count") or 0), int(s.get("character_limit") or 0)
+            r.add("elevenlabs", True, f"reachable; plan {s.get('tier')}, {limit - used} of {limit} characters left, {s.get('status')}")
+        except ElevenLabsError as e:
+            hint = " — connect your VPN or set TMS_HTTPS_PROXY" if "403" in str(e) else ""
+            r.add("elevenlabs", False, f"{str(e)[:160]}{hint}")
+            c = None
+    af = AF.Client()
+    if not af.available:
+        r.add("api-football", False, "no API_FOOTBALL_KEY — match research runs web-only", level="warn")
+    else:
+        try:
+            st = af.get("/status").get("response") or {}
+            st = st[0] if isinstance(st, list) and st else st
+            sub, req = st.get("subscription") or {}, st.get("requests") or {}
+            r.add("api-football", bool(sub.get("active", True)),
+                  f"plan {sub.get('plan')}, {req.get('current')}/{req.get('limit_day')} requests used today")
+        except AF.ApiError as e:
+            r.add("api-football", False, str(e)[:200], level="warn")
+    return c
+
+
+def probe_tts(r: Report, c, record_to: Path | None = None) -> dict | None:
+    """~108-character live TTS call (cached by request hash: re-runs are free), parsed by the real voice pipeline."""
+    import tempfile
+    from tms.audio import wav
+    from tms.audio.elevenlabs import ElevenLabsError
+    from tms.audio.voiceover import _trim, words_from_alignment
+    voice = envfile.get("TMS_DEFAULT_VOICE_ID").strip() or PROBE_VOICE
+    try:
+        audio, al, h, cached = c.tts(PROBE_TEXT, voice, "eleven_multilingual_v2", PROBE_SETTINGS, 1234)
+    except ElevenLabsError as e:
+        r.add("probe-tts", False, str(e)[:300])
+        return None
+    out = paths.scratch_dir() / "probe"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "tts.mp3").write_bytes(audio)
+    with tempfile.TemporaryDirectory(prefix="tms probe ") as td:
+        wav.to_wav48(out / "tts.mp3", Path(td) / "tts.wav")
+        x = wav.read(Path(td) / "tts.wav")
+    words = words_from_alignment(PROBE_TEXT, PROBE_TEXT, al)
+    y, words, corr = _trim(x, words)
+    wav.write(out / "tts_trimmed.wav", y)
+    span = max(words[-1]["end_s"] - words[0]["start_s"], 0.1)
+    wpm = len(words) / span * 60
+    ok = len(words) == len(PROBE_TEXT.split()) and abs(corr) <= 0.12 and 100 <= wpm <= 220
+    r.add("probe-tts", ok, f"voice {voice}; {len(PROBE_TEXT)} chars {'(cached, not billed)' if cached else 'billed'}; "
+                           f"{len(words)}/{len(PROBE_TEXT.split())} words aligned; {len(y) / wav.SR:.2f}s; {wpm:.0f} wpm; "
+                           f"onset correction {corr * 1000:.0f} ms; audio: {out / 'tts_trimmed.wav'}")
+    if record_to is not None and ok:
+        doc = {"_synthetic": False, "_recorded_at": jsonio.now_iso(),
+               "_note": "real ElevenLabs /with-timestamps response recorded by `tms doctor --online --probe --record-cassette`",
+               "request": {"path": "/v1/text-to-speech/{voice_id}/with-timestamps", "text": PROBE_TEXT, "voice_id": voice,
+                           "model_id": "eleven_multilingual_v2", "voice_settings": PROBE_SETTINGS, "seed": 1234},
+               "response": {"audio_base64": __import__("base64").b64encode(audio).decode(), "alignment": al}}
+        record_to.write_text(json.dumps(doc), encoding="utf-8", newline="\n")
+        r.add("cassette", True, f"recorded real response to {record_to.as_posix()}")
+    return {"words": words, "onset_correction_s": corr, "wpm": wpm, "cached": cached}
+
+
+def probe_music(r: Report, c) -> bool:
+    """10-second live Music call (cached). A refusal means the plan has no Music access: not an error."""
+    from tms.audio import wav
+    from tms.audio.elevenlabs import ElevenLabsError
+    try:
+        audio, h, cached = c.music(PROBE_MUSIC, 10000, seed=7)
+    except ElevenLabsError as e:
+        msg = str(e)
+        if any(f"HTTP {code}" in msg for code in (401, 402, 403)):  # plan / permission: not a bug
+            r.add("probe-music", False, f"Music unavailable on this plan ({msg[:200]}) — use your own track "
+                                        "(brief.music.source=file) or narration only", level="warn")
+        else:  # anything else (e.g. 422 bad request) is our bug or an outage: fail loudly
+            r.add("probe-music", False, f"music request failed: {msg[:300]}")
+        return False
+    out = paths.scratch_dir() / "probe" / "music.mp3"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_bytes(audio)
+    dur = wav.duration(out)
+    r.add("probe-music", 8.0 <= dur <= 13.0, f"{dur:.1f}s instrumental clip {'(cached, not billed)' if cached else 'billed'}; audio: {out}")
+    return True
+
+
+def run_doctor(quick: bool = False, online: bool = False, probe: bool = False, record: bool = False) -> Report:
     r = Report()
     check_python(r)
     check_ffmpeg(r)
@@ -103,11 +203,16 @@ def run_doctor(quick: bool = False) -> Report:
     if not quick:
         check_smoke_render(r)
     check_keys(r)
+    if online or probe:
+        c = check_online(r)
+        if probe and c is not None:
+            probe_tts(r, c, paths.root() / CASSETTE if record else None)
+            probe_music(r, c)
     return r
 
 
 def cmd_doctor(args) -> int:
-    rep = run_doctor(quick=args.quick)
+    rep = run_doctor(quick=args.quick, online=args.online, probe=args.probe, record=args.record_cassette)
     if args.json:
         print(json.dumps({"ok": not rep.failed, "checks": rep.checks}, indent=2))
     else:
@@ -121,5 +226,9 @@ def cmd_doctor(args) -> int:
 def register(sub) -> None:
     p = sub.add_parser("doctor", help="verify toolchain, render smoke test, key presence (names only)")
     p.add_argument("--quick", action="store_true", help="skip the smoke render")
+    p.add_argument("--online", action="store_true", help="free account checks: ElevenLabs plan/characters, API-Football status")
+    p.add_argument("--probe", action="store_true",
+                   help="PAID: ~108-char voice sample + 10 s music clip (cached afterwards); only with the user's OK")
+    p.add_argument("--record-cassette", action="store_true", help="with --probe: save the real TTS response as the test cassette")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_doctor)

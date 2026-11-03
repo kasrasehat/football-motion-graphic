@@ -1,6 +1,6 @@
 """Builds tests/fixtures/cassettes/*.json — SYNTHETIC responses in the exact shape of the ElevenLabs API
 (verified against the official SDK source). Audio is offline flite speech encoded to MP3.
-Replace with recorded responses once the API is reachable from this machine (it currently returns HTTP 403 here).
+`tms doctor --online --probe --record-cassette` replaces it with a real recorded response (never overwritten here).
 
 Run: .venv/Scripts/python tests/fixtures/cassettes/make_cassettes.py
 """
@@ -18,6 +18,10 @@ TEXT = "Watch how one full-back breaks a four-four-two."
 
 
 def main() -> None:
+    target = HERE / "elevenlabs_tts_with_timestamps.json"
+    if target.is_file() and json.loads(target.read_text(encoding="utf-8")).get("_synthetic") is False:
+        print("a REAL recorded cassette exists — not overwriting it with synthetic data")
+        return
     with tempfile.TemporaryDirectory(prefix="tms cassette ") as td:
         tdp = Path(td)
         al = mock.tts(TEXT, tdp / "v.wav")

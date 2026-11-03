@@ -27,9 +27,17 @@ All calls go through `engine/tms/audio/elevenlabs.py` (never curl; hooks block i
 - `brief.budget.tts_chars_max` / `music_s_max` are hard caps (exit 2 before calling). The user approves them with
   the storyboard; raising them needs the user.
 
+## Checking the connection
+- `.venv/Scripts/tms doctor --quick --online` — free: plan, characters left, API-Football status. Run it before any
+  live audio stage.
+- `.venv/Scripts/tms doctor --quick --probe` — **paid, only with the user's OK**: ~108-character voice sample through
+  the real voice pipeline + a 10 s music clip (a refusal there means the plan has no Music: use the user's track or
+  narration only). Cached, so repeating it is free. `--record-cassette` saves the real response as the test cassette.
+
 ## Network
-From some regions the API answers HTTP 403. If the user runs a VPN/proxy client, they can set
-`TMS_HTTPS_PROXY=http://127.0.0.1:<port>` in `.env`; the client then routes through it. Never enable a proxy for them.
+From some regions the API answers HTTP 403 (HTML "Forbidden" page). Ask the user to connect their VPN; if it runs as a
+local proxy instead of a system tunnel, they can set `TMS_HTTPS_PROXY=http://127.0.0.1:<port>` in `.env` and the
+client routes through it. Never enable a proxy for them, and never fall back to mock audio on a live project silently.
 
 ## Dry runs
 Projects created with `--dry-run` use the offline flite voice (robotic, timing-realistic) and a synthesized bed;

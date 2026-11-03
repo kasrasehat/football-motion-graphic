@@ -92,10 +92,10 @@ class Client:
 
     # ------------------------------------------------------------------ music
     def music(self, prompt: str, length_ms: int, seed: int | None = None) -> tuple[bytes, str, bool]:
+        """Prompt-based composition. The API rejects `seed` together with `prompt` (HTTP 422, verified live), so
+        `seed` is accepted for interface compatibility but never sent; repeatability comes from the request cache."""
         length_ms = max(3000, min(int(length_ms), 600000))
         body = {"prompt": prompt, "music_length_ms": length_ms, "force_instrumental": True}
-        if seed is not None:
-            body["seed"] = seed
         h = request_hash("music", body)
         f = self.cache / f"music-{h}.mp3"
         if f.is_file():
