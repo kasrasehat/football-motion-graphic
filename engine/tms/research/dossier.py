@@ -49,14 +49,17 @@ def merge(project_id: str, brief: dict, api_claims: list[dict], web: dict | None
         cs_sorted = sorted(cs, key=_priority, reverse=True)
         best = cs_sorted[0]
         disagree = [c for c in cs_sorted[1:] if not FX.agree(key, best["value"], c["value"])]
-        status = "agreed" if len(_independent_domains(cs)) >= 2 or best["origin"] == "api" else "single_source"
+        flagged = any(single.get(c["id"]) for c in cs)
+        corroborated = len(_independent_domains(cs)) >= 2 or best["origin"] == "api"
+        status = "agreed" if corroborated and not flagged else "single_source"
         if disagree:
             top_peer = [c for c in disagree if _priority(c)[0] == _priority(best)[0]]
             if top_peer:
                 status = "conflict"
                 conflicts.append({"fact_key": key, "claim_ids": [best["id"]] + [c["id"] for c in top_peer], "resolution": None})
             else:
-                status = "resolved_conflict"
+                # The resolution stays on record in `conflicts`; a flagged fact must still reach MA-04 as single_source.
+                status = "single_source" if flagged else "resolved_conflict"
                 why = "API data preferred" if best["origin"] == "api" else "higher-tier source preferred"
                 conflicts.append({"fact_key": key, "claim_ids": [best["id"]] + [c["id"] for c in disagree], "resolution": why})
         facts[key] = {"value": best["value"], "unit": best["unit"], "claim_ids": [c["id"] for c in cs_sorted],

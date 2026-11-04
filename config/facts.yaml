@@ -2,14 +2,15 @@
 # type: number | integer | string | list | form | xi | absences | results
 # freshness: news (<= 48 h old), stats (<= 7 days), static (no limit)
 # key: true => needs >= 2 independent sources (or an API source, or an explicit single_source flag)
-# required: error (MD-07 error when missing) | warning | no
+# required: error (MD-06 error when missing) | warning (MD-06 warning) | no (a bare `no` is YAML false; both mean optional)
 facts:
   fixture.kickoff_utc:     {type: string, freshness: news, key: true, required: error}
   fixture.venue:           {type: string, freshness: static, key: true, required: error}
   fixture.competition:     {type: string, freshness: static, key: false, required: error}
   fixture.round:           {type: string, freshness: static, key: false, required: no}
   fixture.referee:         {type: string, freshness: news, key: false, required: no}
-  fixture.league_avg_goals: {type: number, range: [1.8, 4.2], freshness: stats, key: false, required: no}
+  # Goals per TEAM per match (half the match total): same definition and range as config/predict.yaml league_avg_range.
+  fixture.league_avg_goals: {type: number, range: [0.6, 2.4], freshness: stats, key: false, required: no}
   fixture.home_advantage:  {type: number, range: [1.0, 1.6], freshness: stats, key: false, required: no}
   fixture.odds_home:       {type: number, range: [1.01, 50], freshness: news, key: false, required: no}
   fixture.odds_draw:       {type: number, range: [1.01, 50], freshness: news, key: false, required: no}

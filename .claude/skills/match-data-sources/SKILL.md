@@ -28,6 +28,8 @@ description: Rules for researching football facts for match previews - which sou
 ## Key facts need corroboration
 Kick-off, venue, injuries/suspensions and predicted XIs need two independent domains, an API source, or an explicit
 `"single_source": true` (then the analysis must state the uncertainty). Predicted line-ups are predictions — say so.
+Subdomains count once: `match.uefa.com` and `www.uefa.com` are one domain. A flag on any claim makes the fact
+`single_source`, even when a second cited source exists; only an unresolved conflict outranks it.
 
 ## Freshness
 Team news ≤ 48 h old, stats ≤ 7 days. Close to kick-off, confirmed line-ups replace predicted ones.

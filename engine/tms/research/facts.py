@@ -40,11 +40,12 @@ def required_keys() -> list[tuple[str, str]]:
     """(concrete key, level) for every required fact; prefix facts yield 'H.tactics.*' style patterns."""
     out = []
     for k, v in config()["facts"].items():
-        if v.get("required", "no") == "no":
+        level = v.get("required", "no")
+        if level is False or level == "no":  # YAML reads a bare `no` as boolean False
             continue
         for team in (("H", "A") if k.startswith("T.") else (None,)):
             key = k if team is None else f"{team}.{k[2:]}"
-            out.append((key + (".*" if v.get("prefix") else ""), v["required"]))
+            out.append((key + (".*" if v.get("prefix") else ""), level))
     return out
 
 
@@ -93,13 +94,27 @@ def agree(key: str, a, b) -> bool:
     return a == b
 
 
-def domain(url: str) -> str:
-    host = (urlparse(url).hostname or "").lower()
+def _host(url: str) -> str:
+    """Lower-case host without a leading www. or trailing dot; the tier and blocked lists match against it."""
+    host = (urlparse(url).hostname or "").lower().rstrip(".")
     return host[4:] if host.startswith("www.") else host
 
 
+def domain(url: str) -> str:
+    """Registrable domain, the unit of corroboration: match.uefa.com and www.uefa.com count as one source, as do
+    news.sportsmole.co.uk and sportsmole.co.uk, while sportsmole.co.uk and bbc.co.uk count as two.
+    Multi-part suffixes come from sources.yaml cc_second_level, not the full Public Suffix List; a suffix it misses
+    merges its sites into one domain, which can only under-count corroboration, never invent it."""
+    host = _host(url)
+    labels = host.split(".")
+    if labels[-1].isdigit():  # an IPv4 address has no registrable part
+        return host
+    multi_part = len(labels) > 2 and len(labels[-1]) == 2 and labels[-2] in sources()["cc_second_level"]
+    return ".".join(labels[-3:] if multi_part else labels[-2:])
+
+
 def tier_of(url: str) -> int:
-    d = domain(url)
+    d = _host(url)
     s = sources()
     for t, name in ((1, "tier1"), (2, "tier2")):
         if any(d == x or d.endswith("." + x) for x in s[name]):
@@ -108,5 +123,5 @@ def tier_of(url: str) -> int:
 
 
 def blocked(url: str) -> bool:
-    d = domain(url)
+    d = _host(url)
     return any(d == x or d.endswith("." + x) for x in sources()["blocked"])
