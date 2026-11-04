@@ -1,0 +1,433 @@
+{
+  "version": "1",
+  "project_id": "fx-still-dense",
+  "title": "AEK Athens v Real Madrid: expected shapes",
+  "summary": "Expected shapes from the predicted line-ups, not team sheets: AEK in the deeper 4-4-2 SDNA describes, Real Madrid in a 4-2-3-1 with the ball at the pivot. Three battles: the squeeze on Bellingham, the far-side switch with Mbappé's run, and AEK's direct ball to two strikers.",
+  "focus_team": "both",
+  "phase": "mid_block",
+  "frame": "team_normalized",
+  "teams": {
+    "H": {
+      "formation_base": "4-4-2",
+      "formation_phase": "4-4-2",
+      "shape": {
+        "template": "4-4-2",
+        "block": {
+          "line_x": 25.0,
+          "depth": 25.0,
+          "width": 44.0,
+          "ball_shift": 0.25
+        }
+      },
+      "players": [
+        {
+          "id": "H1",
+          "number": 91,
+          "name": "Alberto Brignoli",
+          "role": "GK",
+          "line": 0,
+          "pos": [
+            5.0,
+            34.3
+          ]
+        },
+        {
+          "id": "H3",
+          "number": 3,
+          "name": "Stavros Pilios",
+          "role": "LB",
+          "line": 1,
+          "pos": [
+            25.0,
+            13.1
+          ]
+        },
+        {
+          "id": "H5",
+          "number": 44,
+          "name": "Filipe Relvas",
+          "role": "LCB",
+          "line": 1,
+          "pos": [
+            25.0,
+            28.5
+          ]
+        },
+        {
+          "id": "H4",
+          "number": 2,
+          "name": "Harold Moukoudi",
+          "role": "RCB",
+          "line": 1,
+          "pos": [
+            25.0,
+            41.7
+          ]
+        },
+        {
+          "id": "H2",
+          "number": 12,
+          "name": "Lazaros Rota",
+          "role": "RB",
+          "line": 1,
+          "pos": [
+            25.0,
+            57.1
+          ],
+          "note": "Availability disputed (W-022): available per Greek reports, doubtful per UEFA."
+        },
+        {
+          "id": "H11",
+          "number": 11,
+          "name": "Aboubakary Koïta",
+          "role": "LM",
+          "line": 2,
+          "pos": [
+            38.8,
+            13.1
+          ],
+          "note": "Novasports reports the same virus as Rota (W-022). Predicted starter; check late."
+        },
+        {
+          "id": "H8",
+          "number": 27,
+          "name": "Milán Vitális",
+          "role": "LCM",
+          "line": 2,
+          "pos": [
+            38.0,
+            28.9
+          ],
+          "note": "SDNA has Arriaga or Vitális beside Marin; Gazzetta has Arriaga in contention (W-025)."
+        },
+        {
+          "id": "H6",
+          "number": 18,
+          "name": "Răzvan Marin",
+          "role": "RCM",
+          "line": 2,
+          "pos": [
+            38.0,
+            41.2
+          ]
+        },
+        {
+          "id": "H7",
+          "number": 14,
+          "name": "Lovro Majer",
+          "role": "RM",
+          "line": 2,
+          "pos": [
+            38.8,
+            57.1
+          ]
+        },
+        {
+          "id": "H10",
+          "number": 9,
+          "name": "Luka Jović",
+          "role": "LS",
+          "line": 3,
+          "pos": [
+            50.0,
+            30.2
+          ]
+        },
+        {
+          "id": "H9",
+          "number": 19,
+          "name": "Barnabás Varga",
+          "role": "RS",
+          "line": 3,
+          "pos": [
+            50.0,
+            39.9
+          ],
+          "note": "SDNA notes Zini as an option; Jović the likely lone forward if the shape changes (W-025, W-040)."
+        }
+      ]
+    },
+    "A": {
+      "formation_base": "4-2-3-1",
+      "formation_phase": "4-2-3-1",
+      "shape": {
+        "template": "4-2-3-1",
+        "block": {
+          "line_x": 37.0,
+          "depth": 41.0,
+          "width": 60.0,
+          "ball_shift": 0.2
+        }
+      },
+      "players": [
+        {
+          "id": "A1",
+          "number": 1,
+          "name": "Thibaut Courtois",
+          "role": "GK",
+          "line": 0,
+          "pos": [
+            16.0,
+            34.0
+          ]
+        },
+        {
+          "id": "A3",
+          "number": 18,
+          "name": "Álvaro Carreras",
+          "role": "LB",
+          "line": 1,
+          "pos": [
+            37.0,
+            4.0
+          ]
+        },
+        {
+          "id": "A5",
+          "number": 4,
+          "name": "Dean Huijsen",
+          "role": "LCB",
+          "line": 1,
+          "pos": [
+            37.0,
+            25.0
+          ],
+          "note": "Contested place: Huijsen or Konaté (W-075). Not named in any battle."
+        },
+        {
+          "id": "A4",
+          "number": 22,
+          "name": "Antonio Rüdiger",
+          "role": "RCB",
+          "line": 1,
+          "pos": [
+            37.0,
+            43.0
+          ],
+          "note": "Side inferred from UEFA's print order; Afrik-Foot's order puts him on the other side (W-075)."
+        },
+        {
+          "id": "A2",
+          "number": 24,
+          "name": "Denzel Dumfries",
+          "role": "RB",
+          "line": 1,
+          "pos": [
+            37.0,
+            64.0
+          ]
+        },
+        {
+          "id": "A8",
+          "number": 20,
+          "name": "Bernardo Silva",
+          "role": "LDM",
+          "line": 2,
+          "pos": [
+            50.9,
+            26.8
+          ],
+          "note": "Side within the pivot inferred from print order; previews differ (W-075)."
+        },
+        {
+          "id": "A6",
+          "number": 6,
+          "name": "Eduardo Camavinga",
+          "role": "RDM",
+          "line": 2,
+          "pos": [
+            50.9,
+            41.2
+          ],
+          "note": "Side within the pivot inferred from print order; previews differ (W-075)."
+        },
+        {
+          "id": "A11",
+          "number": 7,
+          "name": "Vinícius Júnior",
+          "role": "LW",
+          "line": 3,
+          "pos": [
+            65.7,
+            6.4
+          ]
+        },
+        {
+          "id": "A10",
+          "number": 5,
+          "name": "Jude Bellingham",
+          "role": "AM",
+          "line": 3,
+          "pos": [
+            66.5,
+            34.0
+          ]
+        },
+        {
+          "id": "A7",
+          "number": 21,
+          "name": "Brahim Díaz",
+          "role": "RW",
+          "line": 3,
+          "pos": [
+            65.7,
+            61.6
+          ],
+          "note": "Contested place: Brahim or Diomande (W-075). Not named in any battle."
+        },
+        {
+          "id": "A9",
+          "number": 10,
+          "name": "Kylian Mbappé",
+          "role": "ST",
+          "line": 4,
+          "pos": [
+            78.0,
+            34.0
+          ]
+        }
+      ]
+    }
+  },
+  "ball": {
+    "holder": "A8"
+  },
+  "principles": [
+    {
+      "id": "P1",
+      "name": "Deeper block, narrow centre",
+      "statement": "If AEK sit in the deeper 4-4-2 SDNA describes, Varga screens the straight pass from Bernardo Silva into Bellingham, and Marin and Vitális hold narrow behind him. When Bernardo slides wider to open an angle, Marin steps across it and the ball goes back and wide to Carreras.",
+      "players": [
+        "H9",
+        "H6",
+        "H8",
+        "H4",
+        "H5",
+        "A8",
+        "A10",
+        "A3"
+      ],
+      "visual_proof": "Varga stands in Bernardo Silva's lane to Bellingham. Bernardo slides out to open a new angle, Marin steps across it, and the ball goes back and wide to Carreras.",
+      "claim_refs": [
+        "H.tactics.defensive_block",
+        "W-036",
+        "H.predicted_xi",
+        "W-025",
+        "A.predicted_xi",
+        "A.key_players"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Far-side switch, run behind",
+      "statement": "At Racing, Madrid escaped wide pressure, switched diagonally and Mbappé attacked the depth: one match. A deeper AEK may not press Dumfries, so here the switch must beat the block's slide across, and with less space behind, the run starts on the centre-backs' shoulder.",
+      "players": [
+        "A2",
+        "A6",
+        "A11",
+        "A9",
+        "H4",
+        "H5",
+        "H2",
+        "H7"
+      ],
+      "visual_proof": "AEK slide towards Dumfries, taking Majer infield. Camavinga lofts it over Varga to Vinícius. Rota comes out, Majer recovers, and Mbappé runs off Moukoudi's shoulder into the channel by Rota.",
+      "claim_refs": [
+        "A.tactics.transitions",
+        "W-065",
+        "W-075",
+        "A.predicted_xi",
+        "H.tactics.defensive_block",
+        "W-022"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Early ball to two strikers",
+      "statement": "SDNA describes more direct play avoiding build-up as one option. If AEK choose it, the back line could go early to Jović against Rüdiger, with Varga running off Jović, skipping the midfield that one analyst says lacks a ball carrier. The targets are the analyst's reading.",
+      "players": [
+        "H5",
+        "H10",
+        "H9",
+        "A4",
+        "A6"
+      ],
+      "visual_proof": "AEK have just won it. Relvas plays long over Camavinga in front of Rüdiger. Jović contests as Rüdiger steps out and Camavinga drops, and Varga runs off Jović into the gap Rüdiger leaves.",
+      "claim_refs": [
+        "H.tactics.build_up",
+        "W-037",
+        "W-036",
+        "H.tactics.two_strikers",
+        "W-040",
+        "A.predicted_xi"
+      ]
+    }
+  ],
+  "triggers": [],
+  "strengths": [
+    {
+      "id": "S1",
+      "text": "AEK's set pieces: five Super League set-piece goals, the most in that league, and Marin's free-kick beat LASK in the league phase (W-041).",
+      "players": [
+        "H6"
+      ]
+    },
+    {
+      "id": "S2",
+      "text": "Mbappé has scored in all three league-phase games (W-063).",
+      "principles": [
+        "P2"
+      ],
+      "players": [
+        "A9"
+      ]
+    }
+  ],
+  "weaknesses": [
+    {
+      "id": "W1",
+      "text": "Sportime (opinion) argues AEK's midfield has lacked a ball carrier to link defence and attack since Pineda left (W-037).",
+      "principles": [
+        "P3"
+      ],
+      "players": [
+        "H8",
+        "H7"
+      ]
+    },
+    {
+      "id": "W2",
+      "text": "Madrid's base of midfield changes: Tchouaméni, who dropped between the centre-backs at Racing, is not in this squad (W-055, W-064).",
+      "principles": [
+        "P1"
+      ],
+      "players": [
+        "A6",
+        "A8"
+      ]
+    }
+  ],
+  "counters": [
+    {
+      "id": "C1",
+      "text": "If AEK go more direct, as SDNA describes for one option (W-036), earlier balls to the forwards would skip the midfield. Naming Jović and Varga is the analyst's reading.",
+      "targets": "W1"
+    },
+    {
+      "id": "C2",
+      "text": "With no pivot dropping between the centre-backs, Jović and Varga can stand in the lanes from Madrid's two pivots to Bellingham (analyst's reading).",
+      "targets": "W2"
+    }
+  ],
+  "assumptions": [
+    "Both XIs are predictions from the dossier (H.predicted_xi, A.predicted_xi); neither team sheet is out.",
+    "SI gives Madrid's full-back and wing sides (W-075). AEK's sides, and who plays left or right within each central pair, are inferred from the print order of UEFA's predicted line-ups, read right to left. No source states them.",
+    "AEK's block height is the analyst's reading of 'lower positions' (W-036). No source gives a number, so the back line is drawn at the low end of the mid-block range rather than as a full low block.",
+    "Madrid are drawn in the plain 4-2-3-1 (A.formation). The pivot drop, inverted full-back and tucked-in winger seen at Racing (W-064) are not drawn, because that pivot, Tchouaméni, is not in this squad.",
+    "The still shows Madrid on the ball only to frame P1 and P2. Possession for this match is unknown (H.possession_avg, A.possession_avg).",
+    "No triggers are listed, because no source gives a pressing plan for either side for this match (W-039, W-066).",
+    "AEK may instead use three central midfielders and one striker (W-026, W-040). That shape is not drawn.",
+    "The slide of AEK's block towards the ball in P2 is the analyst's drawing, not sourced.",
+    "P3 starts from an AEK regain with Madrid still in the drawn shape; the regain itself is the analyst's framing."
+  ]
+}

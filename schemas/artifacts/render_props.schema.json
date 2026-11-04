@@ -147,6 +147,42 @@
          "properties": {"from": {"type": "integer"}, "to": {"type": "integer"}, "text": {"type": "string"}}}
       ]
     },
+    "principleRail": {
+      "description": "Key panel of the one-frame tactic still (never in a video): the whole principle titles and the players each one involves, beside the pitch so they cannot collide with it. rect = [x0,y0,x1,y1] in output px; the camera leaves that part of the frame free.",
+      "type": "object", "additionalProperties": false, "required": ["rect", "title", "ball", "principles"],
+      "properties": {
+        "rect": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
+        "title": {"type": "string"},
+        "ball": {
+          "type": "object", "additionalProperties": false, "required": ["team", "number", "name"],
+          "properties": {
+            "team": {"enum": ["H", "A"]},
+            "number": {"type": "integer", "minimum": 1, "maximum": 99},
+            "name": {"type": ["string", "null"]}
+          }
+        },
+        "principles": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["id", "name", "players"],
+            "properties": {
+              "id": {"type": "string"},
+              "name": {"type": "string"},
+              "players": {
+                "type": "array",
+                "items": {
+                  "type": "object", "additionalProperties": false, "required": ["team", "number"],
+                  "properties": {
+                    "team": {"enum": ["H", "A"]},
+                    "number": {"type": "integer", "minimum": 1, "maximum": 99}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "debug": {
       "type": "object", "additionalProperties": false, "required": ["overlay"],
       "properties": {"overlay": {"type": "boolean"}}

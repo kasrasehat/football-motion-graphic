@@ -28,6 +28,7 @@ const named = [
   [P.overlays.items.properties.style, "OverlayStyle"],
   [P.graphics.items, "Graphic"],
   [P.captions.items, "Caption"],
+  [P.principleRail, "PrincipleRail"],
   [P.captions.items.properties.words.items, "CaptionWord"],
   [P.titleCard.anyOf[1], "TitleCard"],
   [P.endCard.anyOf[1], "EndCard"],

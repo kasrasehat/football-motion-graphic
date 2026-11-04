@@ -19,6 +19,11 @@ PITCH_LENGTH_M = 105.0
 PITCH_WIDTH_M = 68.0
 TOKEN_DIAMETER_M = 2.0
 TOKEN_MIN_DIAMETER_PX_1080 = 26.0
+BALL_DIAMETER_M = 0.7
+BALL_MIN_R_PX_1080 = 8.0
+RING_TOKEN_FACTOR = 1.6
+RING_MIN_R_PX_1080 = 22.0
+RING_CASING_PX_1080 = 3.5
 
 
 def px_per_metre(w: float, width: int, height: int, orientation: str) -> float:
@@ -55,6 +60,17 @@ def token_radius_px(w: float, width: int, height: int, orientation: str) -> floa
     """Player token radius in px: physical 2.0 m diameter, never below 26 px diameter at 1080p."""
     s = px_per_metre(w, width, height, orientation)
     return max(TOKEN_DIAMETER_M / 2 * s, TOKEN_MIN_DIAMETER_PX_1080 / 2 * resolution_factor(width, height))
+
+
+def ball_radius_px(s: float, u: float) -> float:
+    """Ball radius in px on the ground (twin of ballRadiusPx in lib/projection.ts); s = px per metre, u = 1080p factor."""
+    return max(BALL_DIAMETER_M / 2 * s, BALL_MIN_R_PX_1080 * u)
+
+
+def ring_outer_radius_px(token_r: float, u: float) -> float:
+    """Outer edge in px of a ring overlay around a token, its dark casing included (twin of ringOuterRadiusPx in
+    lib/overlays.ts)."""
+    return max(token_r * RING_TOKEN_FACTOR, RING_MIN_R_PX_1080 * u) + RING_CASING_PX_1080 * u
 
 
 # --- render_props helpers (frame-indexed, centimetres -> metres) -------------------------------------------------

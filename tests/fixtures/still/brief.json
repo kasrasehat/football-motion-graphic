@@ -1,0 +1,67 @@
+{
+  "version": "1",
+  "project_id": "fx-still-dense",
+  "mode": "match_preview",
+  "created_at": "2026-11-03T23:32:49Z",
+  "language": "en",
+  "audience": "intermediate",
+  "target_duration_s": 120,
+  "aspect": "16:9",
+  "fps": 30,
+  "teams": {
+    "H": {
+      "name": "AEK Athens",
+      "short": "AEK",
+      "fill": "#f2c80f",
+      "ring": "#1a1a1a",
+      "text": "#1a1a1a"
+    },
+    "A": {
+      "name": "Real Madrid",
+      "short": "RMA",
+      "fill": "#f5f5f5",
+      "ring": "#1a1a1a",
+      "text": "#1a1a1a"
+    }
+  },
+  "focus_team": "both",
+  "voice": {
+    "voice_id": "",
+    "model_id": "eleven_multilingual_v2",
+    "stability": 0.55,
+    "similarity_boost": 0.8,
+    "style": 0.15,
+    "speed": 1.0,
+    "seed": 1234
+  },
+  "music": {
+    "source": "generate",
+    "mood": "cinematic big-match build-up, pulsing strings and drums, 110 bpm, no vocals",
+    "file": null
+  },
+  "captions": true,
+  "show_names": true,
+  "budget": {
+    "tts_chars_max": 3840,
+    "music_s_max": 150,
+    "api_calls_max": 40
+  },
+  "match": {
+    "query": "AEK v Real Madrid",
+    "home": "AEK Athens",
+    "away": "Real Madrid",
+    "competition": "UEFA Champions League",
+    "kickoff_utc": "2026-11-04T17:45:00Z",
+    "local_timezone": "Asia/Tehran",
+    "venue": "Allwyn Arena, Nea Filadelfia, Athens",
+    "fixture_id": null,
+    "resolution": {
+      "method": "web",
+      "resolved_at": "2026-11-03T23:32:49Z",
+      "sources": [
+        "https://www.paramountplus.com/sneak-peak/how-to-watch-aek-athens-vs-real-madrid-2026-uefa-champions-league-matchday-4/",
+        "https://starting11.com/fixtures/aek-athens-fc-vs-real-madrid"
+      ]
+    }
+  }
+}
