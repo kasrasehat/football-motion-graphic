@@ -8,10 +8,12 @@ from pathlib import Path
 
 import pytest
 
+from tms.predict import config as predict_config
 from tms.research import api_football as AF
+from tms.research import facts as FX
 from tms.research.dossier import merge, parse_query
 from tms.validate.registry import Context
-from tests.helpers import FIX, expect_clean, expect_violation, fixture
+from tests.helpers import FIX, expect_clean, expect_violation, findings, fixture, rule_ids
 
 pytestmark = pytest.mark.fast
 NOW = datetime(2026, 11, 2, 12, 40, tzinfo=timezone.utc)
@@ -220,3 +222,213 @@ def test_parse_query(q, home, away, d0):
 def test_parse_query_rejects_nonsense():
     with pytest.raises(ValueError):
         parse_query("tell me about Madrid", datetime(2026, 11, 2))
+
+
+# ------------------------------------------------------------------ single_source flag reaches the fact status
+def _merge(*web_claims, api=()):
+    return merge("fx-match", fixture("brief.match"), list(api), {"claims": list(web_claims)}, "2026-11-02T12:30:00Z", {}, len(api))
+
+
+def _flag(claim):
+    return {**claim, "single_source": True}
+
+
+def _flagged_injuries_with_second_cited_source():
+    """The researcher flags the claim: the second cited page exists but prints something different."""
+    c = _flag(_web("W-001", "H.injuries", [], "https://www.uefa.com/a", 1))
+    c["sources"].append({**c["sources"][0], "url": "https://www.marca.com/b", "quote": "a different squad list"})
+    return c
+
+
+def test_merge_flagged_claim_is_single_source_despite_a_second_cited_domain():
+    d = _merge(_flagged_injuries_with_second_cited_source())
+    assert d["facts"]["H.injuries"]["status"] == "single_source"
+
+
+def test_MA04_flagged_key_fact_must_be_stated_as_uncertain():
+    dossier = _merge(_flagged_injuries_with_second_cited_source())
+    a = fixture("match_analysis")
+    a["uncertainties"] = []
+    expect_violation("MA-04", "match_analysis", a, ctx(match_dossier=dossier))
+    a["uncertainties"] = ["The injury list rests on one source."]
+    assert "MA-04" not in rule_ids("match_analysis", a, ctx(match_dossier=dossier))
+
+
+def test_merge_flag_on_any_claim_marks_the_fact():
+    web = [_web("W-001", "H.xg_for_avg", 2.10, "https://fbref.com/a", 2), _flag(_web("W-002", "H.xg_for_avg", 2.13, "https://understat.com/b", 2))]
+    d = _merge(*web)
+    assert d["facts"]["H.xg_for_avg"]["status"] == "single_source" and d["conflicts"] == []
+
+
+def test_merge_flagged_claim_keeps_an_unresolved_conflict_blocking():
+    """The prediction model drops facts with status `conflict` and MD-04 blocks them: a flag must not hide that."""
+    web = [_flag(_web("W-001", "H.xg_for_avg", 2.1, "https://fbref.com/a", 2)), _web("W-002", "H.xg_for_avg", 1.4, "https://understat.com/b", 2)]
+    d = _merge(*web)
+    assert d["facts"]["H.xg_for_avg"]["status"] == "conflict"
+    assert d["conflicts"] == [{"fact_key": "H.xg_for_avg", "claim_ids": ["C-001", "C-002"], "resolution": None}]
+    expect_violation("MD-04", "match_dossier", d, ctx())
+
+
+def test_merge_flagged_fact_with_resolved_conflict_reaches_MA04_and_keeps_the_resolution():
+    web = [_flag(_web("W-001", "H.injuries", [], "https://www.uefa.com/a", 1)),
+           _web("W-002", "H.injuries", [{"player": "Someone", "reason": "knock"}], "https://random-blog.example/b", 3)]
+    d = _merge(*web)
+    assert d["facts"]["H.injuries"]["status"] == "single_source"
+    assert d["conflicts"] == [{"fact_key": "H.injuries", "claim_ids": ["C-001", "C-002"], "resolution": "higher-tier source preferred"}]
+    a = fixture("match_analysis")
+    a["uncertainties"] = []
+    expect_violation("MA-04", "match_analysis", a, ctx(match_dossier=d))
+
+
+def test_merge_flagged_web_claim_behind_api_value_keeps_api_value_and_resolution():
+    d = _merge(_flag(_web("W-001", "H.goals_for_avg", 2.9, "https://fbref.com/a", 2)), api=[_api_claim("H.goals_for_avg", 2.3)])
+    f = d["facts"]["H.goals_for_avg"]
+    assert (f["value"], f["status"]) == (2.3, "single_source")
+    assert d["conflicts"][0]["resolution"] == "API data preferred"
+
+
+# ------------------------------------------------------------------ fixture.league_avg_goals definition
+def test_MD01_league_avg_range_is_the_models_range():
+    assert FX.spec("fixture.league_avg_goals")["range"] == predict_config()["strengths"]["league_avg_range"]
+
+
+@pytest.mark.parametrize("value", [0.6, 1.40, 2.4])
+def test_MD01_league_avg_per_team_value_accepted(value):
+    d = fixture("match_dossier")
+    d["facts"]["fixture.league_avg_goals"] = {"value": value, "unit": None, "claim_ids": ["C-001"], "status": "single_source", "as_of": None}
+    assert not [f for f in findings("match_dossier", d, ctx()) if f.rule == "MD-01"]
+
+
+@pytest.mark.parametrize("value", [0.5, 2.5, 3.92])
+def test_MD01_league_avg_per_match_total_rejected(value):
+    d = fixture("match_dossier")
+    d["facts"]["fixture.league_avg_goals"] = {"value": value, "unit": None, "claim_ids": ["C-001"], "status": "single_source", "as_of": None}
+    expect_violation("MD-01", "match_dossier", d, ctx())
+
+
+# ------------------------------------------------------------------ domain(): the unit of corroboration
+@pytest.mark.parametrize("url,expected", [
+    ("https://uefa.com/a", "uefa.com"),
+    ("https://www.uefa.com/a", "uefa.com"),
+    ("https://match.uefa.com/a", "uefa.com"),
+    ("https://standings.uefa.com/a", "uefa.com"),
+    ("https://A.B.UEFA.com:443/a", "uefa.com"),
+    ("https://www.uefa.com./a", "uefa.com"),
+    ("https://sportsmole.co.uk/a", "sportsmole.co.uk"),
+    ("https://www.sportsmole.co.uk/a", "sportsmole.co.uk"),
+    ("https://news.sportsmole.co.uk/a", "sportsmole.co.uk"),
+    ("https://sport.bbc.co.uk/a", "bbc.co.uk"),
+    ("https://www.ole.com.ar/a", "ole.com.ar"),
+    ("https://www.abc.net.au/a", "abc.net.au"),
+    ("https://en.as.com/a", "as.com"),
+    ("https://sport.goal.co/a", "goal.co"),
+    ("https://sport.sky.it/a", "sky.it"),
+    ("http://localhost:3000/a", "localhost"),
+    ("http://10.0.3.4/a", "10.0.3.4"),
+])
+def test_domain_is_the_registrable_domain(url, expected):
+    assert FX.domain(url) == expected
+
+
+def test_merge_subdomains_of_one_site_are_one_source():
+    c = _web("W-001", "H.injuries", [], "https://www.uefa.com/a", 1)
+    c["sources"] += [{**c["sources"][0], "url": "https://match.uefa.com/b"}, {**c["sources"][0], "url": "https://standings.uefa.com/c"}]
+    assert _merge(c)["facts"]["H.injuries"]["status"] == "single_source"
+
+
+def test_merge_two_publishers_under_one_multi_part_suffix_are_independent():
+    c = _web("W-001", "H.injuries", [], "https://www.sportsmole.co.uk/a", 3)
+    c["sources"].append({**c["sources"][0], "url": "https://www.bbc.co.uk/b", "tier": 1})
+    assert _merge(c)["facts"]["H.injuries"]["status"] == "agreed"
+
+
+def _with_xi_sources(*urls):
+    d = fixture("match_dossier")
+    c = next(c for c in d["claims"] if c["fact_key"] == "H.predicted_xi")
+    c["sources"] = [{**c["sources"][0], "url": u} for u in urls]
+    return d
+
+
+@pytest.mark.parametrize("urls", [("https://www.uefa.com/a", "https://match.uefa.com/b"),
+                                  ("https://www.sportsmole.co.uk/a", "https://news.sportsmole.co.uk/b")])
+def test_MD02_subdomains_do_not_corroborate(urls):
+    expect_violation("MD-02", "match_dossier", _with_xi_sources(*urls), ctx())
+
+
+def test_MD02_two_publishers_under_one_multi_part_suffix_corroborate():
+    assert "MD-02" not in rule_ids("match_dossier", _with_xi_sources("https://www.sportsmole.co.uk/a", "https://www.bbc.co.uk/b"), ctx())
+
+
+@pytest.mark.parametrize("url,tier", [
+    ("https://www.uefa.com/a", 1), ("https://match.uefa.com/a", 1), ("https://www.bbc.co.uk/sport", 1), ("https://sport.bbc.co.uk/a", 1),
+    ("https://www.as.com/a", 1), ("https://fbref.com/a", 2), ("https://www.fbref.com/a", 2),
+    ("https://www.sportsmole.co.uk/a", 3), ("https://notuefa.com/a", 3), ("https://notbbc.co.uk/a", 3), ("https://uefa.com.evil.example/a", 3),
+])
+def test_tier_of_matches_listed_sites_and_their_subdomains(url, tier):
+    assert FX.tier_of(url) == tier
+
+
+def test_tier_of_honours_an_entry_below_the_registrable_domain(monkeypatch):
+    """Tier lists match the full host, so a list entry may name one section of a site."""
+    monkeypatch.setattr(FX, "sources", lambda: {"tier1": ["sport.example.co.uk"], "tier2": [], "blocked": [], "cc_second_level": ["co"]})
+    assert FX.tier_of("https://sport.example.co.uk/a") == 1
+    assert FX.tier_of("https://live.sport.example.co.uk/a") == 1
+    assert FX.tier_of("https://example.co.uk/a") == 3
+
+
+@pytest.mark.parametrize("url,is_blocked", [
+    ("https://old.reddit.com/r/a", True), ("https://mobile.x.com/a", True), ("https://www.youtube.com/a", True),
+    ("https://netflix.com/a", False), ("https://www.uefa.com/a", False),
+])
+def test_blocked_matches_listed_sites_and_their_subdomains(url, is_blocked):
+    assert FX.blocked(url) is is_blocked
+
+
+# ------------------------------------------------------------------ required levels of the fact registry
+def test_required_keys_skip_optional_facts_and_keep_levels():
+    per_team = {"manager": "warning", "formation": "warning", "standing.position": "warning", "form.last5": "error",
+                "goals_for_avg": "error", "goals_against_avg": "error", "xg_for_avg": "warning", "xg_against_avg": "warning",
+                "injuries": "error", "suspensions": "warning", "predicted_xi": "error", "key_players": "warning", "tactics.*": "error"}
+    assert dict(FX.required_keys()) == {
+        "fixture.kickoff_utc": "error", "fixture.venue": "error", "fixture.competition": "error", "fixture.stakes": "warning",
+        "h2h.last5": "warning", **{f"{t}.{k}": level for t in "HA" for k, level in per_team.items()}}
+
+
+def test_required_levels_in_the_registry_are_known():
+    for key, sp in FX.config()["facts"].items():
+        assert sp.get("required", "no") in ("error", "warning", "no", False), key
+
+
+def test_required_keys_accept_both_spellings_of_no(monkeypatch):
+    facts = {"a.bare": {"required": False}, "a.quoted": {"required": "no"}, "a.absent": {}, "a.kept": {"required": "warning"}}
+    monkeypatch.setattr(FX, "config", lambda: {"facts": facts})
+    assert FX.required_keys() == [("a.kept", "warning")]
+
+
+def _md06(doc):
+    return {f.location: f.severity for f in findings("match_dossier", doc, ctx()) if f.rule == "MD-06"}
+
+
+def test_MD06_missing_optional_facts_stay_silent():
+    optional = ("fixture.round", "fixture.referee", "fixture.league_avg_goals", "fixture.home_advantage", "fixture.odds_home",
+                "H.possession_avg", "A.clean_sheets", "H.standing.points", "A.shots_avg", "H.home_goals_for_avg", "A.away_goals_against_avg")
+    d = fixture("match_dossier")
+    for key in optional:
+        d["facts"].pop(key, None)
+    assert not set(_md06(d)) & set(optional)
+
+
+@pytest.mark.parametrize("key,severity", [("fixture.stakes", "warning"), ("H.xg_for_avg", "warning"), ("A.suspensions", "warning"),
+                                          ("fixture.venue", "error"), ("A.form.last5", "error"), ("H.predicted_xi", "error")])
+def test_MD06_severity_follows_the_required_level(key, severity):
+    d = fixture("match_dossier")
+    assert key not in _md06(d)
+    del d["facts"][key]
+    assert _md06(d)[key] == severity
+
+
+def test_MD06_missing_tactics_prefix_is_an_error():
+    d = fixture("match_dossier")
+    assert "H.tactics.*" not in _md06(d)
+    d["facts"] = {k: f for k, f in d["facts"].items() if not k.startswith("H.tactics.")}
+    assert _md06(d)["H.tactics.*"] == "error"

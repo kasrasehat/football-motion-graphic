@@ -32,6 +32,9 @@ tier2:   # established statistics / analysis
   - footballcritic.com
   - totalfootballanalysis.com
   - statsbomb.com
+# Under a two-letter country TLD these labels are part of the public suffix (sportsmole.co.uk, ole.com.ar, abc.net.au),
+# so corroboration counts <name>.<label>.<cc> as one domain instead of merging every site under co.uk.
+cc_second_level: [ac, co, com, edu, gob, gov, ltd, me, ne, net, nom, or, org, plc]
 blocked:  # never acceptable as sources
   - reddit.com
   - x.com
