@@ -27,10 +27,10 @@ fixture changes, run `npm --prefix render run sync:fixture`).
 | `tracks.ball` `[x,y,z]` | `components/Ball.tsx` | drawn at ground point; z moves/softens the shadow |
 | `pitchVisible` | `TacticVideo.tsx` | world layer hidden outside spans (6-frame fade at inner span edges) |
 | `overlays` | `components/overlays/Overlays.tsx` | see below |
-| `captions` | `components/Captions.tsx`, `lib/captions.ts` | ≤ 2 lines, 44 px at 1080p (shrinks only to fit), active word highlighted |
+| `captions` | `components/Captions.tsx`, `lib/captions.ts` | ≤ 2 lines, 44 px at 1080p (shrinks only to fit), active word highlighted; `place` comes from `caption_place` in `engine/tms/render/stage.py`: top only if the ball enters the bottom caption box |
 | `scenes[].title` | `components/SceneTitle.tsx`, `lib/hud.ts` | lower-third for the first 60 frames; lifted above a bottom caption |
 | `titleCard` / `endCard` | `components/Cards.tsx` | full-screen, null = none |
-| `freeze` | `components/Hud.tsx` `FreezeVignette` | edge vignette + PAUSED badge (tracks are already frozen by the engine) |
+| `freeze` | `components/Hud.tsx` `FreezeVignette` | edge vignette + PAUSED badge (tracks are already frozen by the engine); the engine emits spans only for pauses of at least 1 s on the pitch (`_freeze_spans`) |
 | `graphics` | `components/graphics/registry.tsx` | all 11 templates implemented; see "Graphic templates" below |
 | `principleRail` | `components/PrincipleRail.tsx`, `lib/rail.ts` | tactic still only: key panel in `rect` (title, teams, ball holder, whole principle names, players as chips); type sized to fit (`railMetrics`) |
 | `debug.overlay` | `components/Hud.tsx` `DebugOverlay` | frame / camera readout + safe-area guide |
@@ -57,7 +57,8 @@ Visible on `[from, to)`. Geometry: `{static: [[x,y],...]}` metres or `{perFrame:
 (clamped). `inAnim`/`outAnim` (`lib/anim.ts`): `draw` reveals a path over its length (out-draw erases from the
 start), `fade`, `pop` (ease-out-back scale), `none`. Non-path kinds treat `draw` as a fade. Colours:
 `accent|warn|ink` → theme, `H|A` → team fill. Kinds: `run_arrow` (curved spline unless `style.curved: false`,
-glow, arrowhead), `pass_line` (dashed, arrowhead, trimmed to the token edge when an end sits on a player), `line`,
+glow, arrowhead; `engine/tms/props/builder.py` sets its colour to the runner's team, and low-contrast kits get a light
+halo), `pass_line` (dashed, arrowhead, trimmed to the token edge when an end sits on a player), `line`,
 `polygon`, `zone` (light fill + hatching), `ring` (frame-derived pulse), `spotlight` (dims everything else),
 `label` (callout above the point), `distance` ("12.3 m").
 Label pills are placed by `lib/labels.ts`: a slot is chosen once per overlay over its whole window so the label never
@@ -113,11 +114,11 @@ Shared rules (`components/graphics/common.tsx`, pure helpers in `lib/graphics.ts
 | `stat_compare` | title?, labels[], home[], away[], units?[] | one per row (≤ 10) | mirrored bars from the centre, length = value / max of the pair; strings/null: value only |
 | `form_guide` | home[], away[] of W/D/L, most recent last | home row, away row | chips centred, latest outlined, points from last N (W3 D1) |
 | `h2h_strip` | results[{date, home, away, score}] | one per meeting | newest first (ISO dates); wins/draws summary when names match the theme; landscape tiles, else rows; loser dimmed |
-| `lineup_board` | home[], away[] {name, number, position G/D/M/F}, home_/away_formation? | home, away | mini vertical pitches (stacked in portrait); rows from the formation if it sums to the outfield count, else from positions (rows > 5 split) |
-| `team_news` | home[], away[] {player, reason, status?} | home, away | max 6 rows (5 + "+N more"); out = warn ✕, doubt = accent ?; "No reported absences" |
+| `lineup_board` | home[], away[] {name, number, position G/D/M/F, line?, y?}, home_/away_formation? | home, away | mini vertical pitches (stacked in portrait), own goal at the bottom; rows and sides from the tactic spec, matched by shirt number (`line`, `y`, smallest y on the left); if any player of a team has no match, that team uses the formation if it sums to the outfield count, else positions (rows > 5 split) |
+| `team_news` | home[], away[] {player, reason, status?} | home, away | max 6 rows (5 + "+N more"); out = warn ✕, doubt = accent ?, pill on the name line; reasons wrap to 2 lines; "No reported absences" |
 | `key_player_duel` | title, home_player, away_player {name, number}, why?, home_stats[], away_stats[] {label, value} | cards, stats, why | jersey with the shirt number in team colours; stats ≤ 5 rows aligned by index |
 | `probability_bar` | home, draw, away (0–1) | home, draw, away segment | kicker "Model probabilities"; `largestRemainder` → integers summing to 100 |
-| `scoreline_grid` | scorelines[{home, away, p}] | one per tile (rank order) | top 6 tiles + 0–4 × 0–4 heat grid when ≥ 6 entries, else ≤ 5 tiles |
+| `scoreline_grid` | scorelines[{home, away, p}] | one per tile (rank order) | top 6 tiles + 0–4 × 0–4 heat grid when ≥ 6 entries, with a note saying how many scores it shows, else ≤ 5 tiles |
 | `prediction_card` | result home/draw/away, scoreline, confidence low/medium/high, note? | result, score, confidence+note | footer "Statistical analysis, not betting advice" ALWAYS rendered (`PREDICTION_DISCLAIMER`) |
 
 Fixtures: `tests/fixtures/graphics/<template>.json` (Real Madrid v Arsenal, 90 frames, pitch hidden, one graphic over
