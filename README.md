@@ -8,6 +8,17 @@ word-synced captions — produced by AI coding agents (Claude Code or Codex) thr
   tactical analysis, a transparent Dixon-Coles prediction, data graphics and animated tactical battles.
 - You approve each creative gate by typing `approve tactic|analysis|storyboard|final` (or `reject <stage>: why`).
 
+### Several projects at once
+Each chat session works on its own project, and `approve <word>` in a chat goes to that chat's project. To approve a
+different one, name it: `approve storyboard --project <slug>` (also `reject storyboard --project <slug>: why`). In your own
+terminal: `.venv\Scripts\tms approve <word> [--project <slug>]` and `.venv\Scripts\tms reject <word> --reason "..." [--project <slug>]`.
+
+### Approval keys
+Approvals and state records are signed with keys kept in `%USERPROFILE%\.TacticMotionStudio`. Older versions kept the key in
+`%LOCALAPPDATA%`, where the Claude desktop app's processes and its Terminal panel see different files. If `tms doctor` or a
+new session says keys are not migrated, run this once in the Terminal panel; no records are changed:
+`.venv\Scripts\tms key migrate`. `.venv\Scripts\tms key status` shows key ids and locations, never key contents.
+
 ## Setup (Windows)
 ```
 py -3.12 -m venv .venv

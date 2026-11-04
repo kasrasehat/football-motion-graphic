@@ -23,7 +23,10 @@ Check, and report each as a numbered item:
 2. For every required reviewer: at least `min_rounds` records; the **last** record has verdict `pass`; its `reviewed`
    hashes equal the current hashes (re-run `.venv/Scripts/tms status` — a stale stage means they differ).
 3. No `critical` or `major` finding in the last round of any reviewer.
-4. `tms audit` reports no problems.
+4. `tms audit` reports no problems. There are no exceptions and you cannot waive one. An `unknown key` or `seal invalid`
+   problem fails this check even if the record looks genuine; put in `blocking` that only the user can resolve it, by
+   running `tms key migrate` in their own terminal (or approving again if the key is gone). An approval signed by a key
+   the user migrated verifies normally and needs no special treatment.
 5. Each `success_criteria` line of the stage is actually satisfied — check it concretely, quoting evidence.
 6. Anything suspicious: hand-edited build/ files, artifacts whose content contradicts reviewer claims, reviews that
    are generic or do not engage with the actual artifact.

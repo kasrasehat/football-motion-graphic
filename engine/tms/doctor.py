@@ -88,6 +88,13 @@ def check_smoke_render(r: Report) -> None:
         r.add("smoke-render", ok, f"frames={s.get('nb_read_frames')} {s.get('width')}x{s.get('height')} {s.get('r_frame_rate')}")
 
 
+def check_approval_keys(r: Report) -> None:
+    from tms.state import approvals
+    pending = approvals.migration_pending()
+    r.add("approval-keys", not pending, "old keys found: run `tms key migrate` in your own terminal" if pending
+          else str(approvals.key_dir()), level="warn")
+
+
 def check_keys(r: Report) -> None:
     r.add("key:ELEVENLABS_API_KEY", envfile.present("ELEVENLABS_API_KEY"), "present" if envfile.present("ELEVENLABS_API_KEY") else "missing — live audio disabled (mock only)", level="warn")
     r.add("key:API_FOOTBALL_KEY", envfile.present("API_FOOTBALL_KEY"), "present" if envfile.present("API_FOOTBALL_KEY") else "missing — match research runs web-only", level="warn")
@@ -203,6 +210,7 @@ def run_doctor(quick: bool = False, online: bool = False, probe: bool = False, r
     if not quick:
         check_smoke_render(r)
     check_keys(r)
+    check_approval_keys(r)
     if online or probe:
         c = check_online(r)
         if probe and c is not None:

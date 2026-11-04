@@ -1,4 +1,4 @@
-"""Project + stage lifecycle commands: init, use, status, next, stage, approve, qa, decision, validate, audit."""
+"""Project + stage lifecycle commands: init, use, status, next, stage, approve, reject, key, qa, decision, validate, audit."""
 from __future__ import annotations
 
 import json
@@ -8,7 +8,7 @@ from pathlib import Path
 from tms import jsonio, manifest
 from tms import validate as V
 from tms.commands.common import add_project_arg, emit, handled
-from tms.state import approve_flow, audit as audit_mod, machine, project as P
+from tms.state import approvals, approve_flow, audit as audit_mod, machine, project as P
 
 
 @handled
@@ -22,7 +22,7 @@ def cmd_init(a):
 def cmd_use(a):
     P.load(a.slug)
     P.set_active(a.slug)
-    print(f"active project: {a.slug}")
+    print(f"{'this session' if P.current_session() else 'this terminal'} now uses project: {a.slug}")
 
 
 def _status_text(pr) -> str:
@@ -74,9 +74,33 @@ def cmd_stage(a):
 
 @handled
 def cmd_approve(a):
-    pr = P.load(a.project)
+    pr = approve_flow.tty_project(a.word, a.project)
     rec = approve_flow.approve_tty(pr, a.word)
-    print(f"approved: {rec['id']} stage={rec['stage']}")
+    print(f"approved: {rec['id']} project={pr.id} stage={rec['stage']} key_id={rec['key_id']}")
+
+
+@handled
+def cmd_reject(a):
+    pr = approve_flow.tty_project(a.word, a.project)
+    stage = approve_flow.reject_tty(pr, a.word, a.reason)
+    print(f"rejected: project={pr.id} stage={stage}")
+
+
+@handled
+def cmd_key(a):
+    if a.key_action == "migrate":
+        res = approve_flow.migrate_keys_tty()
+        print(f"migrated: signing key {res['signing_key_id']} in {res['key_dir']}; "
+              f"newly trusted: {', '.join(res['imported']) or 'none'}")
+        print("every process now uses this location. Check a project with: tms audit -p <slug>")
+        return
+    st = approvals.key_status()
+    emit(st, a.json, "\n".join([
+        f"key dir : {st['key_dir']}", f"signing : {st['signing'] or '(none yet)'}  {st['signing_file'] or ''}",
+        f"trusted : {', '.join(st['trusted']) or '(none)'}",
+        *[f"old key : {p}" for p in st["old_keys_found"]],
+        "migration pending: the user runs `tms key migrate` in their own terminal" if st["migration_pending"]
+        else "migration: not needed"]))
 
 
 @handled
@@ -189,6 +213,17 @@ def register(sub) -> None:
     p.add_argument("word", help="tactic | analysis | storyboard | final | package")
     add_project_arg(p)
     p.set_defaults(func=cmd_approve)
+
+    p = sub.add_parser("reject", help="USER ONLY: reject a stage from your own interactive terminal")
+    p.add_argument("word", help="tactic | analysis | storyboard | final | package")
+    p.add_argument("--reason", required=True, help="what to change")
+    add_project_arg(p)
+    p.set_defaults(func=cmd_reject)
+
+    p = sub.add_parser("key", help="approval keys: status (read-only, ids only) or migrate (USER ONLY)")
+    p.add_argument("key_action", choices=["status", "migrate"])
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_key)
 
     p = sub.add_parser("qa", help="record a reviewer subagent's qa_review (binds it to current artifact hashes)")
     qsub = p.add_subparsers(dest="qa_action", required=True)

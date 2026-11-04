@@ -218,4 +218,4 @@ def test_reopening_upstream_without_changes_makes_downstream_stale(tmp_projects)
 def test_key_rotation_is_diagnosed_precisely(tmp_projects, tmp_path, monkeypatch):
     pr = _approved(tmp_projects)
     monkeypatch.setenv("TMS_KEY_DIR", str(tmp_path / "rotated"))
-    assert any("different key" in p for p in audit.audit(pr))
+    assert any("unknown key" in p for p in audit.audit(pr))

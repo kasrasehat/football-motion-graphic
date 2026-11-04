@@ -17,7 +17,14 @@ This file is the complete operating contract for Claude Code and Codex. Architec
   only when the **user** types `approve <word>` in chat (recorded by the UserPromptSubmit hook) or runs
   `.venv/Scripts/tms approve <word>` in their own terminal. There is no flag that approves. After
   `tms stage submit` reports `awaiting_human`: present the summary and preview files, ask the user to type
-  `approve <word>` (or `reject <word>: <reason>`), then **end your turn**.
+  `approve <word>` (or `reject <word>: <reason>`), then **end your turn**. `tms reject` and `tms key migrate` are
+  user-only in the same way.
+- **One session, one project.** `tms init` / `tms use` bind the project to *this session*; other sessions are unaffected,
+  and a chat `approve <word>` / `reject <word>` goes to the typing session's project. If a command says the session is not
+  bound, run `tms use <slug>` for the project you are working on (never guess). The user can name a project explicitly with
+  `approve <word> --project <slug>`; only they may type that. Your own `-p <slug>` commands do not change the binding.
+- **Approval keys are off-limits.** They live outside the repo; never read, copy or replace them. If `tms audit` reports an
+  unknown key or invalid seals, stop and tell the user (see `skills/verification-protocol/SKILL.md`).
 - **Never edit** `projects/*/state/**`, `projects/*/history/**`, `projects/*/build/**`, `projects/*/project.json`,
   `.env*`, or the generated mirrors (`.claude/skills|agents`, `.agents/skills`, `.codex/agents`). Edit the canonical
   source (`skills/`, `agents/`) and run `.venv/Scripts/tms sync-harness`.

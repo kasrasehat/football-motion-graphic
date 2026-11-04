@@ -29,10 +29,15 @@ deny_read:
   - pattern: ".env.local"
     why: "secrets"
 
-# Regexes applied to shell commands (Bash / PowerShell / Codex shell).
+# The approval keys live outside the repo, so the repo globs above cannot cover them. Applies to Read/Write-style tools.
+key_path_regex: '(?i)TacticMotionStudio|approval\.key'
+
+# Regexes applied to shell commands (Bash / PowerShell / Codex shell / the Terminal-panel tool).
 deny_commands:
-  - regex: '(?i)\btms(\.exe|\.cmd)?["'']?\s+approve\b|-m\s+tms\s+approve\b'
-    why: "approvals come only from the user (type `approve <stage>` in chat, or run it in their own terminal)"
+  - regex: '(?i)\btms(\.exe|\.cmd)?["'']?\s+(approve|reject)\b|-m\s+tms\s+(approve|reject)\b'
+    why: "approvals and rejections come only from the user (type them in chat, or run them in their own terminal)"
+  - regex: '(?i)\btms(\.exe|\.cmd)?["'']?\s+key\s+migrate\b|-m\s+tms\s+key\s+migrate\b'
+    why: "which approval keys are trusted is the user's decision; they run `tms key migrate` themselves"
   - regex: '(?i)(^|[\s;&|(''"])python(3)?(\.exe)?\s'
     why: "bare `python` is Python 3.8 on this machine; use .venv/Scripts/python.exe or .venv/Scripts/tms"
   - regex: '(?i)api\.elevenlabs\.io|api-sports\.io|api-football\.com'

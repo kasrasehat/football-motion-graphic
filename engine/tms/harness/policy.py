@@ -48,7 +48,16 @@ class Verdict:
     reason: str = ""
 
 
+KEY_OFF_LIMITS = "the approval key directory is off-limits"
+
+
+def _key_path(p: str | Path) -> bool:
+    return bool(re.search(config()["key_path_regex"], str(p)))
+
+
 def check_write(p: str | Path) -> Verdict:
+    if _key_path(p):
+        return Verdict(True, KEY_OFF_LIMITS)
     rel = rel_posix(p)
     if rel is None:
         return Verdict(False)
@@ -59,6 +68,8 @@ def check_write(p: str | Path) -> Verdict:
 
 
 def check_read(p: str | Path) -> Verdict:
+    if _key_path(p):
+        return Verdict(True, KEY_OFF_LIMITS)
     rel = rel_posix(p)
     if rel is None:
         return Verdict(False)

@@ -9,7 +9,7 @@ from tms.state.project import GateViolation, ProjectError
 
 
 def add_project_arg(p) -> None:
-    p.add_argument("--project", "-p", metavar="SLUG", help="project slug (default: the active project)")
+    p.add_argument("--project", "-p", metavar="SLUG", help="project slug (default: this session's project)")
 
 
 def handled(fn):
@@ -22,6 +22,9 @@ def handled(fn):
             return 2
         except ProjectError as e:
             print(f"ERROR: {e}", file=sys.stderr)
+            return 1
+        except FileNotFoundError as e:
+            print(f"ERROR: file not found: {e.filename or e}", file=sys.stderr)
             return 1
     return wrapper
 
