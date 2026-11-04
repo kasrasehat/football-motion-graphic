@@ -59,6 +59,19 @@ def resolve_ref(ref: str, dossier: dict | None, prediction: dict | None):
     return None
 
 
+def _spec_lineup(players, team: dict | None):
+    """Copies of `players` with their line and team-normalized y from the tactic spec, matched by shirt number.
+    `players` itself unless every one has exactly one match; the board then keeps its position-based rows."""
+    if not team or not isinstance(players, list):
+        return players
+    by_number = {p["number"]: p for p in team["players"]}
+    numbers = [p.get("number") if isinstance(p, dict) else None for p in players]
+    if (len(by_number) != len(team["players"]) or not all(isinstance(n, int) and n in by_number for n in numbers)
+            or len(set(numbers)) != len(numbers)):
+        return players
+    return [{**p, "line": by_number[n]["line"], "y": by_number[n]["pos"][1]} for p, n in zip(players, numbers)]
+
+
 def _graphic_data(scene: dict, dossier: dict | None, prediction: dict | None, analysis: dict | None = None,
                   spec: dict | None = None) -> dict:
     """Resolve a graphic scene's bind slots into the template data contract (see skills/stage-storyboard)."""
@@ -86,7 +99,21 @@ def _graphic_data(scene: dict, dossier: dict | None, prediction: dict | None, an
             if data[side] and not isinstance(data[side][0], dict):
                 it = data[side]
                 data[side] = [{"label": str(it[i]), "value": it[i + 1]} for i in range(0, len(it) - 1, 2)]
+    if scene["template"] == "lineup_board":
+        teams = (spec or {}).get("teams", {})
+        for slot, side in (("home", "H"), ("away", "A")):
+            if slot in data:
+                data[slot] = _spec_lineup(data[slot], teams.get(side))
     return data
+
+
+def _overlay_style(o: dict, plan_scene: dict) -> dict:
+    """A run arrow takes the running player's team colour (the action handle starts with the player id)."""
+    if o["kind"] != "run_arrow":
+        return o["style"]
+    src = next((x for x in plan_scene.get("overlays", []) if f"{plan_scene['id']}:{x['id']}" == o["id"]), {})
+    team = src.get("action", "")[:1]
+    return {**o["style"], "color": team} if team in ("H", "A") else o["style"]
 
 
 def build(choreo: dict, tl: dict, brief: dict, narration: dict, plan: dict, spec: dict, *, scale: float = 1.0,
@@ -127,9 +154,7 @@ def build(choreo: dict, tl: dict, brief: dict, narration: dict, plan: dict, spec
                 reveals.append({"id": r["id"], "frame": s["from"] + int(round(off))})
             graphics.append({"id": s["id"], "template": ps["template"], "from": s["from"], "to": s["to"],
                              "data": _graphic_data(ps, dossier, prediction, analysis, spec), "reveals": reveals})
-        for (t0, f0), (t1, f1) in zip(s["warp"], s["warp"][1:]):
-            if t1 == t0 and f1 > f0:
-                freeze.append([s["from"] + int(f0), s["from"] + int(f1)])
+        freeze += _freeze_spans(s, kind)
     # pitch also visible under the title and end cards
     intro, outro = tl["intro"], tl["outro"]
     if intro["to"] > intro["from"]:
@@ -151,7 +176,7 @@ def build(choreo: dict, tl: dict, brief: dict, narration: dict, plan: dict, spec
             geom = {"perFrame": [pf[min(max(int(round(fm[g])) - o["frame_in"], 0), len(pf) - 1)] for g in range(a, b)]}
         ina, outa = ANIM[o["kind"]]
         overlays.append({"id": o["id"], "kind": o["kind"], "from": a, "to": b, "inAnim": ina, "outAnim": outa,
-                         "geom": geom, "style": o["style"], "label": o.get("label")})
+                         "geom": geom, "style": _overlay_style(o, plan_scenes[o["scene"]]), "label": o.get("label")})
 
     words = {w["i"]: w for w in tl["words"]}
     captions = []
@@ -185,6 +210,14 @@ def build(choreo: dict, tl: dict, brief: dict, narration: dict, plan: dict, spec
 
 def _in_scene(g: int, s: dict) -> bool:
     return s["from"] <= g < s["to"]
+
+
+def _freeze_spans(s: dict, kind: str) -> list[list[int]]:
+    """Spans for the "paused" treatment: real pauses on the pitch only. A beat under a second isn't one, and a card has nothing to pause."""
+    if kind != "pitch":
+        return []
+    return [[s["from"] + int(f0), s["from"] + int(f1)]
+            for (t0, f0), (t1, f1) in zip(s["warp"], s["warp"][1:]) if t1 == t0 and f1 - f0 >= FPS]
 
 
 def _merge(spans):

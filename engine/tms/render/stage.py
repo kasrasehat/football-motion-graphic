@@ -18,6 +18,7 @@ from tms.validate.colour import delta_e2000
 from tms.timeline import FPS
 
 QA_TARGETS = {"lufs": (-15.0, -13.0), "tp_max": -1.0, "lra_max": 11.0, "margin_min": 9.0, "bitrate": (4e6, 20e6)}
+CAPTION_BOX_TOP = 0.815  # top edge of a two-line bottom caption, as a share of the frame height
 
 
 def _h(pr, *names):
@@ -36,14 +37,15 @@ def build_render_props(pr, scale: float = 1.0) -> dict:
 
 
 def caption_place(props: dict, cap: dict) -> str:
-    """Move a caption to the top when the ball sits in the bottom 30% of the frame during it."""
-    mid = (cap["from"] + cap["to"]) // 2
+    """Move a caption to the top only if the ball enters the bottom caption box while it is up. A top caption covers
+    whatever the camera has framed there, so a ball merely low in the frame is not reason enough."""
     from tms.render.projection import project_ball
+    frames = [f for f in range(cap["from"], cap["to"], 3) if any(a <= f < b for a, b in props["pitchVisible"])]
     try:
-        _, sy = project_ball(props, mid, 1.0)
+        lowest = max((project_ball(props, f, 1.0)[1] for f in frames), default=0.0)
     except Exception:  # noqa: BLE001 — placement is cosmetic; never fail the render on it
         return "bottom"
-    return "top" if sy > props["height"] * 0.70 and any(a <= mid < b for a, b in props["pitchVisible"]) else "bottom"
+    return "top" if lowest > props["height"] * CAPTION_BOX_TOP else "bottom"
 
 
 def srt(timeline: dict) -> str:

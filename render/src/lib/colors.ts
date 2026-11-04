@@ -36,14 +36,24 @@ export function luminance(hex: string): number {
   return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 }
 
+/** WCAG contrast ratio of two colours (1..21). */
+export function contrastRatio(a: string, b: string): number {
+  const la = luminance(a);
+  const lb = luminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
 /** Pick whichever of `dark` / `light` contrasts better with `bg`. */
 export function readableOn(bg: string, dark: string, light: string): string {
-  const L = luminance(bg);
-  const cr = (x: string) => {
-    const l2 = luminance(x);
-    return (Math.max(L, l2) + 0.05) / (Math.min(L, l2) + 0.05);
-  };
-  return cr(dark) >= cr(light) ? dark : light;
+  return contrastRatio(bg, dark) >= contrastRatio(bg, light) ? dark : light;
+}
+
+/**
+ * Casing for a team-coloured stroke on the pitch (`extra` = px at 1080p added to the stroke width): a colour that
+ * stands off the grass gets a firm dark edge, one close to the grass in brightness a light halo so it still reads.
+ */
+export function pitchCasing(color: string, grass: string): { color: string; extra: number } {
+  return contrastRatio(color, grass) < 3 ? { color: "rgba(255,255,255,0.85)", extra: 5 } : { color: "rgba(0,0,0,0.5)", extra: 4 };
 }
 
 /** Hex -> [hue 0..360, saturation 0..1, lightness 0..1]. */

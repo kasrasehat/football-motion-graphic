@@ -4,6 +4,7 @@ import {
   contentRect,
   ellipsize,
   fitName,
+  fitWrappedSize,
   formatMatchDay,
   formatValue,
   formPoints,
@@ -11,6 +12,7 @@ import {
   layoutMode,
   lineupRows,
   nameCandidates,
+  newsRowLayout,
   normLineup,
   normResults,
   parseFormation,
@@ -19,10 +21,12 @@ import {
   REVEAL_STAGGER,
   revealFrame,
   revealProgress,
+  scoreGridNote,
   shellLayout,
   splitRow,
   surname,
   teamSide,
+  wrapText,
   type LineupPlayer,
 } from "../src/lib/graphics";
 import { estimateTextWidth } from "../src/lib/layout";
@@ -187,6 +191,125 @@ describe("line-ups", () => {
       { name: "B", number: null, position: "F" },
     ]);
     expect(normLineup(Array.from({ length: 15 }, () => ({ name: "x" }))).length).toBe(11);
+  });
+});
+
+describe("line-up rows from the tactic spec", () => {
+  // Dossier order and position tags, with the line and y the engine adds from the spec. The tags alone give wrong rows.
+  const S = (name: string, position: string, line: number, y: number) => ({ name, number: 1, position, line, y });
+  const MADRID = [
+    S("Courtois", "G", 0, 34),
+    S("Dumfries", "D", 1, 64),
+    S("Rüdiger", "D", 1, 43),
+    S("Huijsen", "D", 1, 25),
+    S("Carreras", "D", 1, 4),
+    S("Camavinga", "M", 2, 41.2),
+    S("Bernardo Silva", "M", 2, 26.8),
+    S("Bellingham", "M", 3, 34),
+    S("Brahim", "F", 3, 61.6),
+    S("Vinícius", "F", 3, 6.4),
+    S("Mbappé", "F", 4, 34),
+  ];
+  const AEK = [
+    S("Brignoli", "G", 0, 34.3),
+    S("Rota", "D", 1, 57.1),
+    S("Moukoudi", "D", 1, 41.7),
+    S("Relvas", "D", 1, 28.5),
+    S("Pilios", "D", 1, 13.1),
+    S("Majer", "M", 2, 57.1),
+    S("Marin", "M", 2, 41.2),
+    S("Vitális", "M", 2, 28.9),
+    S("Koïta", "M", 2, 13.1),
+    S("Varga", "F", 3, 39.9),
+    S("Jović", "F", 3, 30.2),
+  ];
+  const names = (rows: LineupPlayer[][]) => rows.map((r) => r.map((p) => p.name));
+  const MADRID_ROWS = [["Courtois"], ["Carreras", "Huijsen", "Rüdiger", "Dumfries"], ["Bernardo Silva", "Camavinga"], ["Vinícius", "Bellingham", "Brahim"], ["Mbappé"]];
+
+  it("rows follow the spec lines, keeper first, each ordered by y with the smallest on the left", () => {
+    expect(names(lineupRows(normLineup(MADRID), "4-2-3-1"))).toEqual(MADRID_ROWS);
+    expect(names(lineupRows(normLineup(AEK), "4-4-2"))).toEqual([
+      ["Brignoli"],
+      ["Pilios", "Relvas", "Moukoudi", "Rota"],
+      ["Koïta", "Vitális", "Marin", "Majer"],
+      ["Jović", "Varga"],
+    ]);
+  });
+  it("does not depend on the list order, the tags or the formation", () => {
+    expect(names(lineupRows(normLineup([...MADRID].reverse())))).toEqual(MADRID_ROWS);
+    expect(names(lineupRows(normLineup(MADRID.map((p) => ({ ...p, position: "M" }))), "4-4-2"))).toEqual(MADRID_ROWS);
+  });
+  it("falls back to the position rows when any player has no spec slot", () => {
+    const tagRows = [["Courtois"], ["Dumfries", "Rüdiger", "Huijsen", "Carreras"], ["Camavinga", "Bernardo Silva"], ["Bellingham", "Brahim", "Vinícius"], ["Mbappé"]];
+    const missing = MADRID.map((p, i) => (i === 7 ? { name: p.name, number: p.number, position: p.position } : p));
+    expect(names(lineupRows(normLineup(missing), "4-2-3-1"))).toEqual(tagRows);
+    const junk = MADRID.map((p, i) => (i === 3 ? { ...p, y: "wide" } : p));
+    expect(names(lineupRows(normLineup(junk), "4-2-3-1"))).toEqual(tagRows);
+    const noneAtAll = MADRID.map(({ name, number, position }) => ({ name, number, position }));
+    expect(names(lineupRows(normLineup(noneAtAll), "4-2-3-1"))).toEqual(tagRows);
+  });
+  it("normLineup keeps line and y only when both are numbers", () => {
+    expect(normLineup([{ name: "A", line: 1, y: 2.5 }])[0]).toMatchObject({ line: 1, y: 2.5 });
+    expect(normLineup([{ name: "A", line: 1 }])[0]).not.toHaveProperty("line");
+    expect(normLineup([{ name: "A", line: "1", y: 2 }])[0]).not.toHaveProperty("y");
+  });
+});
+
+describe("wrapped team-news reasons", () => {
+  // The longest real strings from a dry run: all of them must survive at 1920x1080 with six rows.
+  const REASONS = [
+    "Knee, cruciate ligament injury; not expected back before late December",
+    "Leg, tibia stress fracture after surgery; expected back in January",
+    "Not on the UEFA league-phase list; also recovering from surgery on 11 May (sources name the thigh or hip)",
+    "Left out of the squad; reported as rest and workload management (FotMob lists physical discomfort)",
+    "Hamstring; returned to training and named in the squad, start uncertain",
+  ];
+  it("wrapText breaks on words, keeps every word and reports a cut", () => {
+    const { lines, cut } = wrapText(REASONS[3]!, 650, 22, 2);
+    expect(cut).toBe(false);
+    expect(lines.length).toBe(2);
+    expect(lines.join(" ")).toBe(REASONS[3]);
+    for (const l of lines) expect(estimateTextWidth(l, 22, "body")).toBeLessThanOrEqual(650);
+    const short = wrapText(REASONS[3]!, 200, 22, 2);
+    expect(short.cut).toBe(true);
+    expect(short.lines.length).toBe(2);
+    expect(short.lines[1]!.endsWith("…")).toBe(true);
+    expect(estimateTextWidth(short.lines[1]!, 22, "body")).toBeLessThanOrEqual(200);
+    expect(wrapText("   ", 200, 22)).toEqual({ lines: [], cut: false });
+  });
+  it("fitWrappedSize shrinks only as far as needed and stops at the floor", () => {
+    expect(fitWrappedSize(["Short"], 500, 23, 18)).toBe(23);
+    const s = fitWrappedSize([REASONS[2]!], 560, 23, 18);
+    expect(s).toBeLessThan(23);
+    expect(s).toBeGreaterThan(18);
+    expect(wrapText(REASONS[2]!, 560, s).cut).toBe(false);
+    expect(fitWrappedSize([REASONS[2]!], 100, 23, 18)).toBe(18);
+    expect(fitWrappedSize([], 100, 15, 18)).toBe(15);
+  });
+  it("six long rows at 1920x1080: nothing is cut, the type stays legible and the text stays inside the row", () => {
+    const L = newsRowLayout(REASONS, 714, 89.25, 1); // TeamNews column and row room at 1080p
+    expect(L.rowH).toBeCloseTo(89.25, 6);
+    expect(L.reasonFs).toBeGreaterThanOrEqual(20);
+    expect(L.nameFs).toBeGreaterThanOrEqual(26);
+    expect(L.nameLine + 2 * L.reasonLine).toBeLessThanOrEqual(L.rowH);
+    for (const r of REASONS) {
+      const w = wrapText(r, L.reasonW, L.reasonFs);
+      expect(w.cut, r).toBe(false);
+      expect(w.lines.join(" ")).toBe(r);
+    }
+  });
+  it("short reasons keep the compact one-line row", () => {
+    const L = newsRowLayout(["pneumonia, in hospital"], 714, 89.25, 1);
+    expect(L.rowH).toBe(80);
+    expect(L.reasonFs).toBe(23);
+  });
+});
+
+describe("scoreline grid note", () => {
+  it("names how many scores are listed, and nothing that reads as a statistic", () => {
+    expect(scoreGridNote(6)).toBe("Six likeliest scores only");
+    expect(scoreGridNote(20)).toBe("20 likeliest scores only");
+    expect(scoreGridNote(6)).not.toMatch(/\d|%/);
   });
 });
 

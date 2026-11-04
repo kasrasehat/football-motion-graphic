@@ -78,6 +78,7 @@ export const StrokePath: React.FC<StrokePathProps> = ({
         />
       ) : null}
       {d ? <path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" {...dashProps} /> : null}
+      {casing > 0 && headPoly ? <polygon points={headPoly} fill="none" stroke={casingColor} strokeWidth={Math.max(1, width * 0.35) + casing} strokeLinejoin="round" /> : null}
       {headPoly ? (
         <polygon
           points={headPoly}

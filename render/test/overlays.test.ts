@@ -8,7 +8,7 @@ import { playerAt, cameraAt } from "../src/lib/tracks";
 import { tokenRadiusPx, worldToScreen } from "../src/lib/projection";
 import { safeArea } from "../src/lib/layout";
 import { distanceText, overlayPoints, OVER_KINDS, UNDER_KINDS } from "../src/lib/overlays";
-import { resolveColor } from "../src/lib/colors";
+import { contrastRatio, pitchCasing, readableOn, resolveColor } from "../src/lib/colors";
 import { fixture } from "./helpers";
 
 const ov = (id: string): Overlay => fixture().overlays.find((o) => o.id === id)!;
@@ -89,6 +89,17 @@ describe("overlay geometry", () => {
     expect(resolveColor(t, "accent")).toBe(t.accent);
     expect(resolveColor(t, "warn")).toBe(t.warn);
     expect(resolveColor(t, "ink")).toBe(t.ink);
+  });
+  it("run arrow casing keeps a team colour legible on the grass", () => {
+    const GRASS = "#1f5f2c";
+    const dark = "rgba(0,0,0,0.5)";
+    const light = "rgba(255,255,255,0.85)";
+    for (const stands of ["#f5f5f5", "#f2c80f", "#ffffff"]) expect(pitchCasing(stands, GRASS).color).toBe(dark);
+    for (const close of ["#00843d", "#1d428a", "#c8102e", "#111111", GRASS]) expect(pitchCasing(close, GRASS).color).toBe(light);
+    expect(contrastRatio("#000000", "#ffffff")).toBeCloseTo(21, 6);
+    expect(contrastRatio(GRASS, GRASS)).toBe(1);
+    expect(readableOn("#ffffff", "#000000", "#ffffff")).toBe("#000000");
+    expect(readableOn("#000000", "#000000", "#ffffff")).toBe("#ffffff");
   });
   it("curved paths pass through every control point; draw-on sub-paths have the right length", () => {
     const pts: P2[] = [[0, 0], [100, 50], [200, 0]];

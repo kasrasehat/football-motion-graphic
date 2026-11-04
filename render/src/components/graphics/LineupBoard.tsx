@@ -76,7 +76,7 @@ function place(rows: LineupPlayer[][], w: number, h: number, r: number, nameH: n
   return out;
 }
 
-/** lineup_board: {home: [{name, number, position}], away: [...], home_formation?, away_formation?}. */
+/** lineup_board: {home: [{name, number, position, line?, y?}], away: [...], home_formation?, away_formation?}. */
 export const LineupBoard: React.FC<GraphicProps> = (gp) => {
   const { g, props, frame } = gp;
   const { width, height, theme, fps } = props;
@@ -188,7 +188,7 @@ export const LineupBoard: React.FC<GraphicProps> = (gp) => {
   };
 
   return (
-    <Shell gp={gp} L={L} kicker="Team sheets" title={pickString(d, ["title", "headline"]) || "Line-ups"}>
+    <Shell gp={gp} L={L} kicker="Line-ups" title={pickString(d, ["title", "headline"]) || "Expected line-ups"}>
       {team("H", 0)}
       {team("A", 1)}
     </Shell>

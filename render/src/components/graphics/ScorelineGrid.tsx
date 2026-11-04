@@ -3,12 +3,13 @@ import type { Theme } from "../../generated/render_props";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { mix, readableOn, rgba } from "../../lib/colors";
-import { asNumber, layoutMode, percentText, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
+import { asNumber, layoutMode, percentText, revealFrame, revealProgress, scoreGridNote, shellLayout } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asArray, asRecord, EmptyNote, neutral, pickString, Shell, Txt, type GraphicProps } from "./common";
 
 const GRID_N = 5; // 0..4 goals each way
 const GRID_MIN_ENTRIES = 6;
+const GRID_NOTE_H = 40; // room for the note under the grid, at 1080p
 
 interface Scoreline {
   home: number;
@@ -106,7 +107,7 @@ const Tile: React.FC<TileProps> = ({ theme, u, s, rank, maxP, x, y, w, h, p }) =
   );
 };
 
-/** 0-4 x 0-4 probability heat grid (home goals down, away goals across). */
+/** 0-4 x 0-4 probability heat grid (home goals down, away goals across), with its note just below `size`. */
 const HeatGrid: React.FC<{ theme: Theme; u: number; list: Scoreline[]; size: number; x: number; y: number; frame: number; at: number }> = ({
   theme,
   u,
@@ -175,6 +176,17 @@ const HeatGrid: React.FC<{ theme: Theme; u: number; list: Scoreline[]; size: num
           </div>
         );
       })}
+      <Txt
+        text={scoreGridNote(list.length)}
+        w={cs * GRID_N}
+        size={24 * u}
+        weight={600}
+        ls={0.1}
+        upper
+        color={rgba(theme.ink, 0.78)}
+        align="center"
+        style={{ ...abs(gx, size + 8 * u), opacity: revealProgress(frame, at, 10) }}
+      />
     </div>
   );
 };
@@ -190,6 +202,7 @@ export const ScorelineGrid: React.FC<GraphicProps> = (gp) => {
   const grid = list.length >= GRID_MIN_ENTRIES;
   const maxP = Math.max(0, ...list.map((s) => s.p ?? 0));
   const gap = 18 * u;
+  const noteH = GRID_NOTE_H * u;
 
   const probe = shellLayout(width, height, { panelW: mode === "landscape" ? 1560 * u : undefined });
   const bw = probe.bodyW;
@@ -199,30 +212,30 @@ export const ScorelineGrid: React.FC<GraphicProps> = (gp) => {
   if (grid) {
     const shown = 6;
     if (mode === "landscape") {
-      const gs = Math.min(probe.maxBodyH, 540 * u);
+      const gs = Math.min(probe.maxBodyH - noteH, 540 * u);
       const tw = bw - gs - 48 * u;
-      const th = (gs - 2 * gap) / 3;
+      const th = (gs + noteH - 2 * gap) / 3;
       const cw = (tw - gap) / 2;
       tiles = Array.from({ length: shown }, (_, i) => ({ x: (i % 2) * (cw + gap), y: Math.floor(i / 2) * (th + gap), w: cw, h: th }));
       gridBox = { x: bw - gs, y: 0, s: gs };
-      bodyH = gs;
+      bodyH = gs + noteH;
     } else if (mode === "portrait") {
       const th = 136 * u;
       const cw = (bw - gap) / 2;
       tiles = Array.from({ length: shown }, (_, i) => ({ x: (i % 2) * (cw + gap), y: Math.floor(i / 2) * (th + gap), w: cw, h: th }));
       const ty = 3 * th + 2 * gap + 36 * u;
-      const gs = Math.min(bw * 0.8, probe.maxBodyH - ty);
+      const gs = Math.min(bw * 0.8, probe.maxBodyH - ty - noteH);
       gridBox = { x: (bw - gs) / 2, y: ty, s: gs };
-      bodyH = ty + gs;
+      bodyH = ty + gs + noteH;
     } else {
       // square: a full-height column of 6 tiles, the grid beside it (vertically centred)
       bodyH = probe.maxBodyH;
-      const gs = Math.min(bodyH, bw * 0.44);
+      const gs = Math.min(bodyH - noteH, bw * 0.44);
       const tw = bw - gs - 32 * u;
       const tg = 12 * u;
       const th = (bodyH - 5 * tg) / 6;
       tiles = Array.from({ length: shown }, (_, i) => ({ x: 0, y: i * (th + tg), w: tw, h: th }));
-      gridBox = { x: bw - gs, y: (bodyH - gs) / 2, s: gs };
+      gridBox = { x: bw - gs, y: (bodyH - gs - noteH) / 2, s: gs };
     }
   } else {
     const n = Math.min(5, list.length);

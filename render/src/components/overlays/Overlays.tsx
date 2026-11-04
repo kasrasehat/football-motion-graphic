@@ -1,7 +1,7 @@
 import React from "react";
 import type { Overlay, Pt, RenderProps, Theme } from "../../generated/render_props";
 import { animState, clamp01, pulsePhase, type AnimState } from "../../lib/anim";
-import { luminance, mix, readableOn, resolveColor, rgba } from "../../lib/colors";
+import { luminance, mix, pitchCasing, readableOn, resolveColor, rgba } from "../../lib/colors";
 import { catmullRom, pathD, pointAt, polyLength, subPath, type P2 } from "../../lib/geometry";
 import { clampBox, estimateTextWidth } from "../../lib/layout";
 import { areaAnchor, chooseAreaLabelUV, choosePathSlot, PATH_SLOTS, pathLabelOffset, pathSlotPoint } from "../../lib/labels";
@@ -82,6 +82,7 @@ const RunArrow: React.FC<KindProps> = (k) => {
   const u = k.pj.u;
   const path = routePoints(k, true);
   if (k.layer === "over") return <>{pathLabel(k, true)}</>;
+  const casing = pitchCasing(k.color, k.theme.pitch.grass);
   return (
     <StrokePath
       pts={path}
@@ -92,8 +93,8 @@ const RunArrow: React.FC<KindProps> = (k) => {
       drawTo={k.st.drawTo}
       arrow={30 * u}
       glowId={k.glowId}
-      casing={3 * u}
-      casingColor={casingColor(k.color)}
+      casing={casing.extra * u}
+      casingColor={casing.color}
     />
   );
 };

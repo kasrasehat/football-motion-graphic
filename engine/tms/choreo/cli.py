@@ -89,6 +89,9 @@ def preview(pr, scale: float = 0.5, render: bool = True) -> dict:
     props = build_props(doc, tl, brief, narration, plan, spec, scale=scale,
                         dossier=pr.load_artifact("match_dossier"), prediction=pr.load_artifact("prediction"),
                         analysis=pr.load_artifact("match_analysis"))
+    from tms.render.stage import caption_place  # same placement as the final render, or reviewers can't see it
+    for c in props["captions"]:
+        c["place"] = caption_place(props, c)
     pdir = pr.dir / "renders" / "preview"
     jsonio.write_json(pdir / "props.json", props, compact=True)
     jsonio.write_json(pdir / "timeline.json", tl)

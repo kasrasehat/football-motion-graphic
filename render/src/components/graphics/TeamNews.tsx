@@ -3,7 +3,7 @@ import type { Theme } from "../../generated/render_props";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { layoutMode, resultColors, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
+import { layoutMode, NEWS_REASON_LINES, newsRowLayout, resultColors, revealFrame, revealProgress, shellLayout, wrapText } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asArray, asRecord, pickString, Shell, str, Swatch, Txt, type GraphicProps, type Side } from "./common";
 
@@ -60,17 +60,16 @@ export const TeamNews: React.FC<GraphicProps> = (gp) => {
     { side: "A", list: absences(d.away) },
   ];
   const shownRows = (list: Absence[]) => (list.length === 0 ? 1 : Math.min(MAX_ROWS, list.length));
+  const listedRows = (list: Absence[]) => (list.length > MAX_ROWS ? list.slice(0, MAX_ROWS - 1) : list);
   const headH = 62 * u;
-  const idealRow = 80 * u;
   const gap = (stacked ? 34 : 44) * u;
   const rowsNeeded = stacked ? shownRows(cols[0]!.list) + shownRows(cols[1]!.list) : Math.max(shownRows(cols[0]!.list), shownRows(cols[1]!.list));
   const fixed = stacked ? 2 * (headH + 12 * u) + gap : headH + 12 * u;
   const probe = shellLayout(width, height, { panelW: mode === "landscape" ? 1560 * u : undefined });
-  const rowH = Math.min(idealRow, (probe.maxBodyH - fixed) / Math.max(1, rowsNeeded));
+  const colW = stacked ? probe.bodyW : (probe.bodyW - gap) / 2;
+  const reasons = cols.flatMap(({ list }) => listedRows(list).map((a) => a.reason)).filter(Boolean);
+  const { rowH, k, iconS, textX, nameFs, nameLine, reasonW, reasonFs, reasonLine } = newsRowLayout(reasons, colW, (probe.maxBodyH - fixed) / Math.max(1, rowsNeeded), u);
   const L = shellLayout(width, height, { panelW: mode === "landscape" ? 1560 * u : undefined, bodyH: fixed + rowsNeeded * rowH });
-  const bw = L.bodyW;
-  const colW = stacked ? bw : (bw - gap) / 2;
-  const k = Math.min(1, rowH / idealRow);
 
   let yCursor = 0;
   return (
@@ -84,14 +83,13 @@ export const TeamNews: React.FC<GraphicProps> = (gp) => {
         const p = revealProgress(frame, at, 12);
         if (p <= 0) return null;
         const overflow = list.length > MAX_ROWS;
-        const rows = overflow ? list.slice(0, MAX_ROWS - 1) : list;
+        const rows = listedRows(list);
         const nOut = list.filter((a) => a.status === "out").length;
         const nDoubt = list.length - nOut;
         const summary = list.length === 0 ? "" : [nOut ? `${nOut} out` : "", nDoubt ? `${nDoubt} doubt${nDoubt > 1 ? "s" : ""}` : ""].filter(Boolean).join(" · ");
         const sumW = summary ? 210 * u : 0;
-        const iconS = 42 * u * Math.max(0.75, k);
         const pillW = 112 * u;
-        const textX = iconS + 18 * u;
+        const pillH = 36 * u * Math.max(0.8, k);
         const textW = colW - textX - pillW - 20 * u;
         return (
           <div key={side} style={{ ...abs(x, y, colW, headH + 12 * u + nRows * rowH), opacity: clamp01(p * 1.4) }}>
@@ -114,19 +112,21 @@ export const TeamNews: React.FC<GraphicProps> = (gp) => {
               if (rp <= 0) return null;
               const ry = headH + 12 * u + i * rowH;
               const tone = a.status === "out" ? theme.warn : theme.accent;
+              const reason = wrapText(a.reason, reasonW, reasonFs, NEWS_REASON_LINES).lines;
+              const top = (rowH - nameLine - reason.length * reasonLine) / 2;
               return (
                 <div key={i} style={{ ...abs(0, ry, colW, rowH), opacity: clamp01(rp * 1.5), transform: `translateX(${(1 - rp) * 20 * u}px)` }}>
                   {i > 0 ? <div style={{ ...abs(textX, 0, colW - textX, Math.max(1, u)), background: rgba(theme.ink, 0.06) }} /> : null}
                   <div style={{ ...abs(0, (rowH - iconS) / 2, iconS, iconS) }}>
                     <StatusIcon kind={a.status} size={iconS} theme={theme} />
                   </div>
-                  <div style={{ ...abs(textX, 0, textW, rowH), display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                    <Txt text={a.player} w={textW} size={30 * u * k} min={22 * u * k} family="body" weight={700} color={theme.ink} lh={1.2} />
-                    {a.reason ? <Txt text={a.reason} w={textW} size={23 * u * k} min={18 * u * k} family="body" weight={500} color={rgba(theme.ink, 0.62)} lh={1.25} /> : null}
-                  </div>
+                  <Txt text={a.player} w={textW} size={nameFs} min={22 * u * k} family="body" weight={700} color={theme.ink} lh={1.2} style={abs(textX, top)} />
+                  {reason.map((line, j) => (
+                    <Txt key={j} text={line} w={reasonW} size={reasonFs} min={reasonFs} family="body" weight={500} color={rgba(theme.ink, 0.72)} lh={reasonLine / reasonFs} style={abs(textX, top + nameLine + j * reasonLine)} />
+                  ))}
                   <div
                     style={{
-                      ...abs(colW - pillW, (rowH - 36 * u * Math.max(0.8, k)) / 2, pillW, 36 * u * Math.max(0.8, k)),
+                      ...abs(colW - pillW, top + (nameLine - pillH) / 2, pillW, pillH),
                       border: `${Math.max(1, 2 * u)}px solid ${tone}`,
                       borderRadius: 6 * u,
                       boxSizing: "border-box",

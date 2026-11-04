@@ -198,6 +198,36 @@ describe("reveal gating in the markup", () => {
     expect(render(p, 29)).not.toContain("4-2-3-1");
     expect(render(p, 30)).toContain("4-2-3-1");
   });
+  it("lineup_board draws the rows from the spec line and y when the props carry them", () => {
+    const P = (name: string, position: string, line: number, y: number) => ({ name, number: 1, position, line, y });
+    const home = [P("Keeper", "G", 0, 34), P("Rightback", "D", 1, 60), P("Rightcentre", "D", 1, 40), P("Leftcentre", "D", 1, 28), P("Leftback", "D", 1, 8), P("Striker", "M", 2, 34)];
+    const html = render(withData("lineup_board", { home, away: [] }), 89);
+    const at = ["KEEPER", "LEFTBACK", "LEFTCENTRE", "RIGHTCENTRE", "RIGHTBACK", "STRIKER"].map((n) => html.indexOf(n));
+    expect(at.every((i) => i > -1)).toBe(true);
+    expect([...at].sort((a, b) => a - b)).toEqual(at);
+  });
+  it("team_news shows the longest reasons whole at 1920x1080 with six rows", () => {
+    const reasons = [
+      "Knee, cruciate ligament injury; not expected back before late December",
+      "Leg, tibia stress fracture after surgery; expected back in January",
+      "Not on the UEFA league-phase list; also recovering from surgery on 11 May (sources name the thigh or hip)",
+      "Left out of the squad; reported as rest and workload management (FotMob lists physical discomfort)",
+      "Left out of the squad; reported as rest and workload management (FotMob lists physical discomfort)",
+      "Hamstring; returned to training and named in the squad, start uncertain",
+    ];
+    const away = reasons.map((reason, i) => ({ player: `Player ${i}`, reason, status: i === 5 ? "doubt" : "out" }));
+    const html = render(withData("team_news", { home: [], away }), 89);
+    const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    for (const r of reasons) expect(text).toContain(r);
+    expect(text).not.toContain("…");
+  });
+  it("scoreline_grid carries the note only when it draws the grid", () => {
+    const six = Array.from({ length: 6 }, (_, i) => ({ home: i % 3, away: i % 2, p: 0.1 - i * 0.01 }));
+    for (const size of SIZES) {
+      expect(render({ ...withData("scoreline_grid", { scorelines: six }), ...size }, 89)).toContain("SIX LIKELIEST SCORES ONLY");
+      expect(render({ ...withData("scoreline_grid", { scorelines: six.slice(0, 5) }), ...size }, 89)).not.toContain("LIKELIEST SCORES ONLY");
+    }
+  });
   it("h2h_strip lists meetings newest first", () => {
     const html = render(fx("h2h_strip"), 75);
     const i2025 = html.indexOf("16 APR 2025");

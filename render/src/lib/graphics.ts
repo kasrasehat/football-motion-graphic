@@ -259,6 +259,9 @@ export interface LineupPlayer {
   name: string;
   number: number | null;
   position: Position;
+  /** tactic-spec line (0 = keeper) and team-normalized y, present when the engine matched the player to the spec */
+  line?: number;
+  y?: number;
 }
 
 const POS_ORDER: Record<Position, number> = { G: 0, D: 1, M: 2, F: 3 };
@@ -280,7 +283,9 @@ export function normLineup(v: unknown, max = 11): LineupPlayer[] {
     const o = x as Record<string, unknown>;
     const name = typeof o.name === "string" ? o.name.trim() : "";
     const num = asNumber(o.number);
-    out.push({ name, number: num === null ? null : Math.round(num), position: normPosition(o.position) });
+    const line = asNumber(o.line);
+    const y = asNumber(o.y);
+    out.push({ name, number: num === null ? null : Math.round(num), position: normPosition(o.position), ...(line !== null && y !== null ? { line, y } : {}) });
     if (out.length >= max) break;
   }
   return out;
@@ -311,11 +316,21 @@ export function splitRow<T>(row: T[], max = 5): T[][] {
   return out;
 }
 
+/** Rows from the tactic spec, when every player has a line and y: one per line, each ordered by y (smallest first). */
+function specRows(players: ReadonlyArray<LineupPlayer>): LineupPlayer[][] | null {
+  if (players.length === 0 || players.some((p) => p.line === undefined || p.y === undefined)) return null;
+  const lines = Array.from(new Set(players.map((p) => p.line))).sort((a, b) => a! - b!);
+  return lines.map((l) => players.filter((p) => p.line === l).sort((a, b) => a.y! - b.y!));
+}
+
 /**
- * Token rows from the goalkeeper (index 0) to the most advanced line. The formation is used when it accounts for
- * every outfield player; otherwise rows come from the position counts (G, D, M, F), long rows split at 5.
+ * Token rows from the goalkeeper (index 0) to the most advanced line, each row from the viewer's left to right. Rows
+ * follow the tactic spec when the props carry it. Otherwise the formation is used when it accounts for every outfield
+ * player, else the position counts (G, D, M, F), long rows split at 5.
  */
 export function lineupRows(players: ReadonlyArray<LineupPlayer>, formation?: unknown): LineupPlayer[][] {
+  const fromSpec = specRows(players);
+  if (fromSpec) return fromSpec;
   const sorted = players
     .map((p, i) => ({ p, i }))
     .sort((a, b) => POS_ORDER[a.p.position] - POS_ORDER[b.p.position] || a.i - b.i)
@@ -340,6 +355,17 @@ export function lineupRows(players: ReadonlyArray<LineupPlayer>, formation?: unk
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+// Scoreline grid
+// ---------------------------------------------------------------------------------------------------------------
+
+const COUNT_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+
+/** The heat grid only has values for the listed scorelines; this note stops its empty cells reading as zero. */
+export function scoreGridNote(listed: number): string {
+  return `${COUNT_WORDS[listed] ?? listed} likeliest scores only`;
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 // Text
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -356,7 +382,73 @@ export function ellipsize(text: string, maxWidth: number, fontSize: number, fami
   return "…";
 }
 
-const PARTICLE = /^(de|da|di|do|dos|das|del|della|van|von|der|den|le|la|el|al|ter|ten|mac|st\.?)$/i;
+/**
+ * Greedy word wrap using the generous width estimates, so the browser never needs more room than this.
+ * Text past `maxLines` is cut with an ellipsis on the last line, and `cut` is true.
+ */
+export function wrapText(text: string, maxWidth: number, fontSize: number, maxLines = 2, family: Family = "body"): { lines: string[]; cut: boolean } {
+  const lines: string[] = [];
+  let cur = "";
+  for (const word of text.trim().split(/\s+/).filter(Boolean)) {
+    const next = cur ? `${cur} ${word}` : word;
+    if (cur && estimateTextWidth(next, fontSize, family) > maxWidth) {
+      lines.push(cur);
+      cur = word;
+    } else {
+      cur = next;
+    }
+  }
+  if (cur) lines.push(cur);
+  if (lines.length <= maxLines) return { lines, cut: false };
+  const rest = lines.slice(maxLines - 1).join(" ");
+  return { lines: [...lines.slice(0, maxLines - 1), ellipsize(rest, maxWidth, fontSize, family)], cut: true };
+}
+
+/** Largest size in [min, size] at which no text needs more than `maxLines`; `min` when some text never fits. */
+export function fitWrappedSize(texts: ReadonlyArray<string>, maxWidth: number, size: number, min: number, maxLines = 2, family: Family = "body"): number {
+  const step = (size - min) / 20;
+  for (let s = size; step > 0 && s > min; s -= step) {
+    if (texts.every((t) => !wrapText(t, maxWidth, s, maxLines, family).cut)) return s;
+  }
+  return Math.min(size, min);
+}
+
+export interface NewsRowLayout {
+  rowH: number;
+  /** scale of the row against its ideal height */
+  k: number;
+  iconS: number;
+  textX: number;
+  nameFs: number;
+  nameLine: number;
+  reasonW: number;
+  reasonFs: number;
+  reasonLine: number;
+}
+
+export const NEWS_REASON_LINES = 2;
+const NEWS_REASON_LH = 1.18;
+
+/**
+ * team_news row metrics at 1080p x `u`. Rows grow when a reason needs a second line; reasons sit under the name and the
+ * status pill so they get the full text width, in one shared size. `maxRowH` is the most the panel can give each row.
+ */
+export function newsRowLayout(reasons: ReadonlyArray<string>, colW: number, maxRowH: number, u: number): NewsRowLayout {
+  const twoLines = reasons.some((r) => wrapText(r, colW - 60 * u, 23 * u, 1).cut);
+  const ideal = (twoLines ? 96 : 80) * u;
+  const rowH = Math.min(ideal, maxRowH);
+  const k = Math.min(1, rowH / ideal);
+  const iconS = 42 * u * Math.max(0.75, k);
+  const textX = iconS + 18 * u;
+  const reasonW = colW - textX;
+  const nameFs = 30 * u * k;
+  const nameLine = nameFs * 1.2;
+  const room = (rowH - 4 * u - nameLine) / ((twoLines ? NEWS_REASON_LINES : 1) * NEWS_REASON_LH);
+  const reasonFs = fitWrappedSize(reasons, reasonW, Math.min(23 * u, room), 18 * u, NEWS_REASON_LINES);
+  return { rowH, k, iconS, textX, nameFs, nameLine, reasonW, reasonFs, reasonLine: reasonFs * NEWS_REASON_LH };
+}
+
+const PARTICLE =/^(de|da|di|do|dos|das|del|della|van|von|der|den|le|la|el|al|ter|ten|mac|st\.?)$/i;
 const SUFFIX = /^(jr\.?|junior|júnior|sr\.?|ii|iii|iv|neto|filho)$/i;
 
 /** Shirt-style short name: last word, keeping particles ("de Jong") and suffixes ("Vinicius Jr."). */
