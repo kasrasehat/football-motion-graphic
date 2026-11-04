@@ -27,7 +27,8 @@ from tms.harness import policy
 EDIT_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit", "apply_patch"}
 SHELL_TOOLS = {"Bash", "PowerShell", "shell", "local_shell", "exec_command"}
 READ_TOOLS = {"Read"}
-APPROVAL_RE = re.compile(r"^\s*(approve|reject)\s+[a-z]+\b", re.I)
+# Cheap pre-filter so ordinary prompts skip the imports. Deliberately not anchored: approve_flow decides what counts.
+APPROVAL_RE = re.compile(r"\b(approve|reject)\s+[a-z]+\b", re.I)
 
 
 @dataclass
@@ -40,6 +41,7 @@ class Call:
     prompt: str = ""
     session_id: str = ""
     stop_hook_active: bool = False
+    log_reason: str = ""  # a fixed code for hooks.log, never prompt content
 
 
 def normalise(payload: dict) -> Call:
@@ -47,7 +49,10 @@ def normalise(payload: dict) -> Call:
     if not isinstance(ti, dict):
         ti = {"command": ti}
     tool = payload.get("tool_name") or ""
-    call = Call(event=payload.get("hook_event_name", ""), tool=tool, prompt=payload.get("prompt") or "",
+    prompt = payload.get("prompt") or ""
+    if not isinstance(prompt, str):  # never a whole message: JSON keeps it from matching the approval pattern
+        prompt = json.dumps(prompt)
+    call = Call(event=payload.get("hook_event_name", ""), tool=tool, prompt=prompt,
                 session_id=str(payload.get("session_id") or ""), stop_hook_active=bool(payload.get("stop_hook_active")))
     if tool == "apply_patch":
         call.writes = policy.patch_paths(_as_text(ti.get("command") or ti.get("patch") or ti.get("input")))
@@ -172,14 +177,26 @@ def stop(call: Call) -> tuple[int, dict | None, str]:
 
 
 def user_prompt_submit(call: Call) -> tuple[int, dict | None, str]:
-    if not APPROVAL_RE.match(call.prompt or ""):
+    found = APPROVAL_RE.search(call.prompt or "")
+    if not found:
         return 0, None, ""
-    from tms.state import approve_flow, project as P
+    verb = found.group(1).upper()
     try:
-        pr = P.load(None)
-    except P.ProjectError as e:
-        return 0, _ctx("UserPromptSubmit", f"[tms] approval not recorded: {e}"), ""
-    msg = approve_flow.handle_prompt(pr, call.prompt, call.session_id)
+        from tms.state import approve_flow, project as P
+        if not (approve_flow.LOOKS_LIKE.match(call.prompt) or approve_flow.embedded_decision(call.prompt)):
+            return 0, None, ""  # ordinary prose such as "reject this idea"
+        verb = approve_flow.embedded_decision(call.prompt) or verb
+        try:
+            pr = P.load(None)
+        except P.ProjectError as e:
+            call.log_reason = "project_unavailable"
+            return 0, _ctx("UserPromptSubmit", f"[tms] {verb} NOT RECORDED: {e}"), ""
+        msg, reason = approve_flow.handle_prompt_detail(pr, call.prompt, call.session_id)
+        call.log_reason = reason or ""
+    except Exception as e:  # noqa: BLE001 — a lost decision must never be silent
+        call.log_reason = f"internal_error:{type(e).__name__}"
+        msg = (f"[tms] {verb} NOT RECORDED: the hook failed ({type(e).__name__}). "
+               f"The user can run `.venv/Scripts/tms approve <word>` in their own terminal.")
     return 0, (_ctx("UserPromptSubmit", msg) if msg else None), ""
 
 
@@ -236,7 +253,10 @@ def main(argv: list[str]) -> int:
         sys.stderr.write(err + "\n")
     log = paths.scratch_dir() / "hooks.log"
     with open(log, "a", encoding="utf-8") as f:
-        f.write(json.dumps({"event": argv[0], "tool": call.tool, "code": code,
-                            "decision": (out or {}).get("hookSpecificOutput", {}).get("permissionDecision") or (out or {}).get("decision"),
-                            "ms": round((time.perf_counter() - t0) * 1000)}) + "\n")
+        entry = {"event": argv[0], "tool": call.tool, "code": code,
+                 "decision": (out or {}).get("hookSpecificOutput", {}).get("permissionDecision") or (out or {}).get("decision"),
+                 "ms": round((time.perf_counter() - t0) * 1000)}
+        if call.log_reason:
+            entry["reason"] = call.log_reason
+        f.write(json.dumps(entry) + "\n")
     return code
