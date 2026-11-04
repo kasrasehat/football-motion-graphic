@@ -37,15 +37,13 @@ class Tracks:
         return any(abs(f - c) <= w for c in self.cuts)
 
 
-_cache: dict[int, Tracks] = {}
+_cache: list = [None, None]  # [document, its Tracks]; holding the document keeps its id() from being reused
 
 
 def T(doc) -> Tracks:
-    key = id(doc)
-    if key not in _cache:
-        _cache.clear()
-        _cache[key] = Tracks(doc)
-    return _cache[key]
+    if _cache[0] is not doc:
+        _cache[:] = [doc, Tracks(doc)]
+    return _cache[1]
 
 
 def _report(doc, rid):
