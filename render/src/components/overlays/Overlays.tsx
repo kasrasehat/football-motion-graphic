@@ -5,7 +5,7 @@ import { luminance, mix, readableOn, resolveColor, rgba } from "../../lib/colors
 import { catmullRom, pathD, pointAt, polyLength, subPath, type P2 } from "../../lib/geometry";
 import { clampBox, estimateTextWidth } from "../../lib/layout";
 import { areaAnchor, chooseAreaLabelUV, choosePathSlot, PATH_SLOTS, pathLabelOffset, pathSlotPoint } from "../../lib/labels";
-import { distanceText, overlayPoints, type Layer } from "../../lib/overlays";
+import { distanceText, overlayPoints, RING_CASING_1080, ringRadiusPx, type Layer } from "../../lib/overlays";
 import { playerAt } from "../../lib/tracks";
 import { TITLE_STACK } from "../../fonts";
 import { useProjector, type Projector } from "../CameraRig";
@@ -212,7 +212,7 @@ const Ring: React.FC<KindProps> = (k) => {
   const u = k.pj.u;
   const op = reveal(k.st);
   if (k.layer === "under") return null;
-  const base = Math.max(k.pj.tokenR * 1.6, 22 * u) * k.st.scale;
+  const base = ringRadiusPx(k.pj.tokenR, u) * k.st.scale;
   const ph = pulsePhase(k.st.local, 36);
   const rMain = base * (1 + 0.035 * Math.sin(2 * Math.PI * ph));
   const rEcho = base * (1 + 0.6 * ph);
@@ -223,7 +223,7 @@ const Ring: React.FC<KindProps> = (k) => {
         <g key={i}>
           {k.o.style.fill ? <circle cx={p[0]} cy={p[1]} r={rMain} fill={rgba(k.color, 0.18)} /> : null}
           <circle cx={p[0]} cy={p[1]} r={rEcho} fill="none" stroke={k.color} strokeWidth={3 * u * (1 - ph)} opacity={0.6 * (1 - ph)} />
-          <circle cx={p[0]} cy={p[1]} r={rMain} fill="none" stroke="#000" strokeOpacity={0.3} strokeWidth={7 * u} />
+          <circle cx={p[0]} cy={p[1]} r={rMain} fill="none" stroke="#000" strokeOpacity={0.3} strokeWidth={2 * RING_CASING_1080 * u} />
           <circle
             cx={p[0]}
             cy={p[1]}

@@ -20,6 +20,19 @@ export const OVER_KINDS: ReadonlySet<OverlayKind> = new Set(["spotlight", "ring"
 /** Kinds whose "draw" animation reveals a path progressively. */
 export const PATH_KINDS: ReadonlySet<OverlayKind> = new Set(["run_arrow", "pass_line", "line", "polygon", "distance"]);
 
+/** Radius in px of a ring overlay around a token. */
+export function ringRadiusPx(tokenR: number, u: number): number {
+  return Math.max(tokenR * 1.6, 22 * u);
+}
+
+/** Half the width of the ring's dark casing stroke, in px at 1080p. */
+export const RING_CASING_1080 = 3.5;
+
+/** Outer edge in px of a ring, casing included. Twin of ring_outer_radius_px in engine/tms/render/projection.py. */
+export function ringOuterRadiusPx(tokenR: number, u: number): number {
+  return ringRadiusPx(tokenR, u) + RING_CASING_1080 * u;
+}
+
 /** Euclidean distance (metres) between the first two points, formatted like "12.3 m". */
 export function distanceText(points: Pt[], label: string | null): string {
   const a = points[0];

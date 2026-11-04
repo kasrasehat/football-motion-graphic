@@ -1,10 +1,9 @@
 import React from "react";
 import type { RenderProps } from "../generated/render_props";
+import { ballRadiusPx } from "../lib/projection";
 import { ballAt } from "../lib/tracks";
 import { useProjector } from "./CameraRig";
 
-const BALL_DIAMETER_M = 0.7; // exaggerated (real ball is 0.22 m) so it reads at full-pitch zoom
-const BALL_MIN_R_1080 = 8;
 
 /**
  * White ball with a seam hint, drawn at its ground point. Height z (cm in props) only moves/softens the shadow and
@@ -17,7 +16,7 @@ export const Ball: React.FC<{ props: RenderProps; frame: number }> = ({ props, f
   const [x, y, z] = b;
   const [sx, sy] = pj.project(x, y);
   const zc = Math.max(0, z);
-  const r = Math.max((BALL_DIAMETER_M / 2) * pj.s, BALL_MIN_R_1080 * pj.u) * (1 + Math.min(zc, 12) * 0.035);
+  const r = ballRadiusPx(pj.s, pj.u) * (1 + Math.min(zc, 12) * 0.035);
   // shadow falls down-right of the ball and drifts further / fades / blurs as the ball rises
   const off = (0.12 + zc * 0.3) * pj.s;
   const shadowScale = 1 + Math.min(zc, 12) * 0.05;

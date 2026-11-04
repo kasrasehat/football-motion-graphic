@@ -44,6 +44,7 @@ export interface RenderProps {
   captions: Caption[];
   titleCard: null | TitleCard;
   endCard: null | EndCard;
+  principleRail?: PrincipleRail;
   debug: {
     overlay: boolean;
   };
@@ -174,4 +175,28 @@ export interface EndCard {
   from: number;
   to: number;
   text: string;
+}
+/**
+ * Key panel of the one-frame tactic still (never in a video): the whole principle titles and the players each one involves, beside the pitch so they cannot collide with it. rect = [x0,y0,x1,y1] in output px; the camera leaves that part of the frame free.
+ */
+export interface PrincipleRail {
+  /**
+   * @minItems 4
+   * @maxItems 4
+   */
+  rect: [number, number, number, number];
+  title: string;
+  ball: {
+    team: "H" | "A";
+    number: number;
+    name: string | null;
+  };
+  principles: {
+    id: string;
+    name: string;
+    players: {
+      team: "H" | "A";
+      number: number;
+    }[];
+  }[];
 }

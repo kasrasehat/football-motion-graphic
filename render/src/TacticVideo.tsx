@@ -9,6 +9,7 @@ import { DebugOverlay, FreezeVignette } from "./components/Hud";
 import { Overlays } from "./components/overlays/Overlays";
 import { Pitch } from "./components/Pitch";
 import { PlayerLabels, Players } from "./components/Players";
+import { PrincipleRailPanel } from "./components/PrincipleRail";
 import { SceneTitle } from "./components/SceneTitle";
 import { loadFonts } from "./fonts";
 import type { RenderProps } from "./generated/render_props";
@@ -50,6 +51,7 @@ export const TacticVideo: React.FC<TacticVideoProps> = (props) => {
           </CameraRig>
         </AbsoluteFill>
       ) : null}
+      <PrincipleRailPanel props={p} />
       <Graphics props={p} frame={frame} />
       <FreezeVignette props={p} frame={frame} />
       <SceneTitle props={p} frame={frame} />

@@ -10,7 +10,7 @@ import pytest
 from tms import jsonio, paths, schema
 from tms.choreo.cli import preview
 from tms.state import approve_flow, machine, project as P
-from tms.tactic.still import short_label, still_props
+from tms.tactic.still import still_props
 from tests.helpers import fixture, place
 
 pytestmark = pytest.mark.fast
@@ -22,14 +22,7 @@ def test_still_props_schema_valid(aspect):
     b["aspect"] = aspect
     props = still_props(fixture("tactic_spec"), b)
     assert schema.validate_artifact("render_props", props) == []
-    assert all(len(o["label"]) <= 28 for o in props["overlays"] if o["label"])
     assert props["camera"][2] >= 10500  # full pitch fits, never cropped
-
-
-def test_short_label():
-    assert short_label("P3", "Five pin four") == "P3 Five pin four"
-    out = short_label("P2", "Eights live in the half-spaces")
-    assert len(out) <= 28 and out.endswith("…") and " " not in out[-2:]
 
 
 def _storyboard_project():

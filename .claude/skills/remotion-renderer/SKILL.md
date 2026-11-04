@@ -23,7 +23,7 @@ fixture changes, run `npm --prefix render run sync:fixture`).
 | `camera` `[cx,cy,w]` cm | `components/CameraRig.tsx` → `useProjector()` | `w` = visible extent along pitch x |
 | `orientation` | `lib/projection.ts` | landscape/square: x→right; portrait: home attacks UP, pitch y→screen right |
 | `theme.pitch` | `components/Pitch.tsx` | FIFA markings in metres under an SVG matrix; 18 mowing stripes; 6 m striped run-off |
-| `entities` + `tracks.players` | `components/Players.tsx` `PlayerToken`, `PlayerLabels` | 2.0 m diameter, never < 26 px at 1080p (`tokenRadiusPx`); `label` as a pill below the token |
+| `entities` + `tracks.players` | `components/Players.tsx` `PlayerToken`, `PlayerLabels` | 2.0 m diameter, never < 26 px at 1080p (`tokenRadiusPx`); `label` as a pill placed by `lib/playerLabels.ts` (see "Player labels") |
 | `tracks.ball` `[x,y,z]` | `components/Ball.tsx` | drawn at ground point; z moves/softens the shadow |
 | `pitchVisible` | `TacticVideo.tsx` | world layer hidden outside spans (6-frame fade at inner span edges) |
 | `overlays` | `components/overlays/Overlays.tsx` | see below |
@@ -32,10 +32,11 @@ fixture changes, run `npm --prefix render run sync:fixture`).
 | `titleCard` / `endCard` | `components/Cards.tsx` | full-screen, null = none |
 | `freeze` | `components/Hud.tsx` `FreezeVignette` | edge vignette + PAUSED badge (tracks are already frozen by the engine) |
 | `graphics` | `components/graphics/registry.tsx` | all 11 templates implemented; see "Graphic templates" below |
+| `principleRail` | `components/PrincipleRail.tsx`, `lib/rail.ts` | tactic still only: key panel in `rect` (title, teams, ball holder, whole principle names, players as chips); type sized to fit (`railMetrics`) |
 | `debug.overlay` | `components/Hud.tsx` `DebugOverlay` | frame / camera readout + safe-area guide |
 
 Z-order: pitch → overlays "under" (zone, polygon, line, pass_line, run_arrow, distance) → players → ball → overlays
-"over" (spotlight first, then ring, label callouts and every overlay's label pill) → player labels → graphics → freeze →
+"over" (spotlight first, then ring, label callouts and every overlay's label pill) → player labels → key panel → graphics → freeze →
 scene title →
 title/end card → captions → debug.
 
@@ -62,6 +63,21 @@ glow, arrowhead), `pass_line` (dashed, arrowhead, trimmed to the token edge when
 Label pills are placed by `lib/labels.ts`: a slot is chosen once per overlay over its whole window so the label never
 jumps, minimising overlap with player tokens and HUD boxes (`lib/hud.ts hudRects`). Zone/polygon labels sit on the
 visible part of the area.
+
+## Player labels
+`lib/playerLabels.ts` `placePlayerLabels(props, frame)` is the only source of pill positions:
+- **Video** (`durationInFrames > 1`): always straight below the token, whatever is there. A pill that changed side as
+  players move would be worse than a passing overlap (pinned by `render/test/player-labels.test.ts`).
+- **One-frame still** (`durationInFrames === 1`, i.e. `tms tactic still`): the whole set is solved at once. Every pill
+  clears every token and ring, the ball, every other pill and the key panel; it stays against its token if it can and
+  takes a leader line if not. The search counts nodes, so a still is reproducible.
+
+The still's frame comes from `engine/tms/tactic/still.py`: the camera leaves `principleRail.rect` free, the principle
+titles live in the panel (never as `label` overlays on the pitch), and the ball sits fully outside the holder's token
+and ring, clear of other players, so it is never covered (rings draw over the ball). `ball_radius_px` and
+`ring_outer_radius_px` in `engine/tms/render/projection.py` are twins of `ballRadiusPx` and `ringOuterRadiusPx`.
+Dense fixture: `tests/fixtures/still/` (regenerate the `props.*.json` with
+`.venv/Scripts/python.exe tests/render/gen_still_fixtures.py`).
 
 ## Add things
 - **Component**: pure props in, `useCurrentFrame()` only at the top (`TacticVideo.tsx` passes `frame`); world-space

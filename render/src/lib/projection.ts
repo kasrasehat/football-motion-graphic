@@ -20,6 +20,9 @@ export const PITCH_WIDTH_M = 68;
 /** Physical token diameter (metres) and its floor in px at 1080p (scaled by min(width,height)/1080). */
 export const TOKEN_DIAMETER_M = 2.0;
 export const TOKEN_MIN_DIAMETER_PX_1080 = 26;
+/** Ball size on the ground: exaggerated (a real ball is 0.22 m) so it reads at full-pitch zoom. */
+export const BALL_DIAMETER_M = 0.7;
+export const BALL_MIN_R_PX_1080 = 8;
 
 /** Pixels per metre for this camera / output. */
 export function pxPerMetre(w: number, width: number, height: number, orientation: Orientation): number {
@@ -84,4 +87,9 @@ export function screenAngle(dx: number, dy: number, orientation: Orientation): n
 export function tokenRadiusPx(w: number, width: number, height: number, orientation: Orientation): number {
   const s = pxPerMetre(w, width, height, orientation);
   return Math.max((TOKEN_DIAMETER_M / 2) * s, (TOKEN_MIN_DIAMETER_PX_1080 / 2) * resolutionFactor(width, height));
+}
+
+/** Ball radius in px on the ground (`s` px per metre, `u` 1080p size factor). Twin of ball_radius_px in projection.py. */
+export function ballRadiusPx(s: number, u: number): number {
+  return Math.max((BALL_DIAMETER_M / 2) * s, BALL_MIN_R_PX_1080 * u);
 }
