@@ -112,9 +112,9 @@ stages:
     gate: human
     approval_word: storyboard
     qa:
-      - {agent: tactics-critic, min_rounds: 1, max_rounds: 3, blocking: true}
-      - {agent: script-editor, min_rounds: 1, max_rounds: 3, blocking: true}
-      - {agent: visual-qa, min_rounds: 1, max_rounds: 3, blocking: true}
+      - {agent: tactics-critic, min_rounds: 1, max_rounds: 4, blocking: true}
+      - {agent: script-editor, min_rounds: 1, max_rounds: 4, blocking: true}
+      - {agent: visual-qa, min_rounds: 1, max_rounds: 4, blocking: true}
       - {agent: fact-checker, min_rounds: 1, max_rounds: 2, blocking: true, modes: [match_preview]}
     review_focus:
       - every principle / battle is visibly demonstrated
