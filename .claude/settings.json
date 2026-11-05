@@ -34,7 +34,13 @@
       "Write(./.codex/agents/**)",
       "Bash(.venv/Scripts/tms approve:*)",
       "Bash(.venv/Scripts/tms.exe approve:*)",
-      "Bash(./tms.cmd approve:*)"
+      "Bash(./tms.cmd approve:*)",
+      "Bash(.venv/Scripts/tms reject:*)",
+      "Bash(.venv/Scripts/tms.exe reject:*)",
+      "Bash(./tms.cmd reject:*)",
+      "Bash(.venv/Scripts/tms key migrate:*)",
+      "Bash(.venv/Scripts/tms.exe key migrate:*)",
+      "Bash(./tms.cmd key migrate:*)"
     ]
   },
   "hooks": {
@@ -55,7 +61,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Read|Bash|PowerShell",
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Read|Bash|PowerShell|mcp__terminal__run_in_terminal",
         "hooks": [
           {"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" \"$CLAUDE_PROJECT_DIR/hooks/dispatch.py\" pre-tool-use", "timeout": 30}
         ]

@@ -54,14 +54,27 @@ Launch the `gate-verifier` subagent with the project slug and stage. It re-runs 
   1. a short summary of what was produced and the key decisions,
   2. validator warnings and any reviewer findings you chose not to apply (with reasons),
   3. paths to preview files (stills, animatic, contact sheet, final video),
-  4. the exact words to type: `approve <word>` or `reject <word>: <what to change>`.
-  Then **end your turn**. Never type or simulate the approval; never run `tms approve` yourself.
+  4. the project slug and the exact words to type: `approve <word>` or `reject <word>: <what to change>`.
+  Then **end your turn**. Never type or simulate the approval; never run `tms approve` or `tms reject` yourself.
 
 ## 6. After the user answers
-The UserPromptSubmit hook records it and tells you `APPROVAL RECORDED` or `REJECTION RECORDED` (with the feedback).
-On rejection the stage is back `in_progress`: address the feedback, re-validate, re-review, resubmit.
+The UserPromptSubmit hook records it and tells you `APPROVAL RECORDED` or `REJECTION RECORDED` (with the feedback), naming
+the project. On rejection the stage is back `in_progress`: address the feedback, re-validate, re-review, resubmit.
+
+If it says `NOT RECORDED`, nothing happened. Relay the reason to the user, including any project it says is waiting for
+that word and the explicit form (`approve <word> --project <slug>`), and end your turn. Only the user types that form.
+
+## 7. When `tms audit` reports a key problem
+`unknown key` or `seal invalid` means a record does not verify against the trusted keys. It may be harmless (the record
+was signed in another environment before keys were migrated) or it may be tampering, and you cannot tell which.
+- Do not submit, do not edit records, do not touch the key directory. The problem is not waivable by any agent.
+- Tell the user, and ask them to run `.venv\Scripts\tms key migrate` in the app's Terminal panel. It shows which keys it
+  will trust and asks them to type a code. Then re-run `tms audit`.
+- If the problem remains, the key is gone or the record was changed. An approval that does not verify never counts: the
+  user approves again. Report any other invalid record to the user; do not continue past the gate on your own.
 
 ## Never
-- Edit `state/`, `history/`, `build/`, `project.json` or `.env`, or run `tms approve`.
+- Edit `state/`, `history/`, `build/`, `project.json` or `.env`, run `tms approve`, `tms reject` or `tms key migrate`, or
+  access the approval key directory.
 - Mark something done because it "looks fine". Evidence is the CLI status, nothing else.
 - Skip a reviewer, reuse an old review for a changed artifact, or summarise a reviewer's output instead of recording it.

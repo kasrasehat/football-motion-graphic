@@ -32,7 +32,7 @@ def audit(project: Project) -> list[str]:
                     continue
             elif not approvals.seal_ok(rec):
                 problems.append(f"{kind}[{i}] ({rec.get('id', rec.get('type'))}): seal invalid — record edited, "
-                                "not written by tms, or the approval key was replaced")
+                                "not written by tms, or sealed with a key not yet brought in by `tms key migrate`")
                 continue
             ok.append(rec)
         good[kind] = ok

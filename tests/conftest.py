@@ -15,6 +15,9 @@ def _isolate_runtime(tmp_path, monkeypatch):
     """Every test gets its own scratch dir (active project, dirty marker, hook log) and approval key dir."""
     monkeypatch.setenv("TMS_SCRATCH_DIR", str(tmp_path / "scratch"))
     monkeypatch.setenv("TMS_KEY_DIR", str(tmp_path / "keys"))
+    # The suite is often launched from inside a harness session; its identity must not leak into the tests.
+    for var in ("TMS_SESSION_ID", "CLAUDE_CODE_SESSION_ID", "CODEX_THREAD_ID"):
+        monkeypatch.delenv(var, raising=False)
 
 
 @pytest.fixture

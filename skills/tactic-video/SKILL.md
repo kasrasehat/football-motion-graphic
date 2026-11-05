@@ -10,8 +10,9 @@ harness:
 Arguments: the user's tactic description or topic, optionally `--dry-run` (mock voice/music, zero cost) and a slug.
 
 ## Start
-1. If `.venv/Scripts/tms status` shows an active project in mode `tactic` that is not finished and the user did not ask
-   for a new video, **resume** it: go to the loop below.
+1. If `.venv/Scripts/tms status` shows this session's project in mode `tactic`, not finished, and the user did not ask
+   for a new video, **resume** it: go to the loop below. If it says the session is not bound, it lists the projects: when
+   the user clearly means one of them, run `.venv/Scripts/tms use <slug>`; if unclear, ask.
 2. Otherwise create a project. Pick a short slug from the topic (lowercase, hyphens), then:
    ```
    .venv/Scripts/tms init <slug> --mode tactic --title "<working title>" [--dry-run]

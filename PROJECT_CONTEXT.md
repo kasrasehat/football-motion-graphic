@@ -56,6 +56,15 @@ One-page orientation. The binding rules live in [`AGENTS.md`](AGENTS.md).
 - **IDs**: players `H1–H11` / `A1–A11`; scenes `S01…`; events `E01…` (scene-local); overlays `N01…`;
   holds `h1…`; reveals `R1…`; principles `P1…`; web claims `W-001…`; dossier claims `C-001…`;
   QA records `Q-001…`; approvals `A-001…`; decisions `d-001…`.
+- **Project selection**: inside a harness session a command without `--project` means the project bound to that session
+  (`.tms/sessions/<session id>`, written by `tms init` / `tms use`). The session id comes from the hook payload and, for
+  shell tools, the environment (`project.SESSION_VARS`). Outside a session (your terminal) it means the pointer in
+  `.tms/active_project`, which sessions never read or move. Chat approvals use the session's project or the one named
+  in the message, and an unbound session with several projects is refused rather than guessed.
+- **Signing keys**: in the home directory, not AppData, because desktop-app processes get a private overlay over AppData
+  (`state/approvals.py` explains). A record is valid if a key in the ring verifies it: the signing key plus verify-only
+  keys under `trusted/`, added only by the user's `tms key migrate`. A record no ring key verifies never counts and is
+  flagged by `tms audit`; there is no waiver.
 - **Artifacts**: agent-authored in `artifacts/`, engine-built in `build/` (never edited by hand). Every artifact
   carries `version` and `project_id`; engine artifacts carry `inputs` (sha256 provenance).
 - **Facts**: `match_dossier.facts` keys like `H.goals_for_avg`, `A.injuries`, `fixture.kickoff_utc` are the only

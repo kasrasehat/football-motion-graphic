@@ -11,7 +11,9 @@ disable-model-invocation: true
 Arguments: the fixture text (e.g. `"Real Madrid vs Arsenal tonight"`), optionally `--dry-run` and a slug.
 
 ## Start
-1. Resume an unfinished `match_preview` project if `.venv/Scripts/tms status` shows one and the user did not ask for a new one.
+1. Resume this session's unfinished `match_preview` project if `.venv/Scripts/tms status` shows one and the user did not ask
+   for a new one. If it says the session is not bound, it lists the projects: when the user clearly means one of them, run
+   `.venv/Scripts/tms use <slug>`; if unclear, ask.
 2. Else: `.venv/Scripts/tms init <home>-<away>-<yyyymmdd> --mode match_preview --title "<Home> v <Away>" [--dry-run]`.
 
 ## Loop (`.venv/Scripts/tms next` each time; follow the named skill + `skills/verification-protocol/SKILL.md`)

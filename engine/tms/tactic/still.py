@@ -10,6 +10,7 @@ from pathlib import Path
 
 from tms import jsonio, remotion, theme
 from tms.render.projection import ball_radius_px, px_per_metre, resolution_factor, ring_outer_radius_px, token_radius_px
+from tms.state.project import ProjectError
 from tms.tactic.geometry import LENGTH, WIDTH, dist, to_abs
 
 # Panel thickness at 1080p: its width in landscape (pitch beside it), its height otherwise (pitch above it).
@@ -122,6 +123,10 @@ def still_props(spec: dict, brief: dict, scale: float = 1.0) -> dict:
 
 
 def render_still(project_dir: Path, out: Path | None = None) -> Path:
+    missing = [n for n in ("tactic_spec", "brief") if not (project_dir / "artifacts" / f"{n}.json").is_file()]
+    if missing:
+        raise ProjectError(f"project {project_dir.name} has no {' or '.join(missing)} yet, so there is no tactic still "
+                           "to render. If this is the wrong project, pass --project <slug>.")
     spec = jsonio.read_json(project_dir / "artifacts" / "tactic_spec.json")
     brief = jsonio.read_json(project_dir / "artifacts" / "brief.json")
     props = still_props(spec, brief)
