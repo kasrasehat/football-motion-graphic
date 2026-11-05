@@ -316,7 +316,7 @@
     {
      "kind": "api",
      "endpoint": "/coachs",
-     "field_path": "response[0].name",
+     "field_path": "response[career.team.id=541, career.end=null].name",
      "retrieved_at": "2026-11-02T12:10:00Z"
     }
    ],
@@ -522,7 +522,7 @@
     {
      "kind": "api",
      "endpoint": "/coachs",
-     "field_path": "response[0].name",
+     "field_path": "response[career.team.id=42, career.end=null].name",
      "retrieved_at": "2026-11-02T12:10:00Z"
     }
    ],

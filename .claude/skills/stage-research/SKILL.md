@@ -14,7 +14,7 @@ Read `skills/match-data-sources/SKILL.md` (and `skills/api-football/SKILL.md` wh
 1. `.venv/Scripts/tms fixture resolve "<the user's fixture text>"`
    - mode `api` with exactly one candidate → use it (`resolution.method = "api"`, `fixture_id`, kickoff, venue).
    - several or none → ask the user which match they mean; never guess.
-   - mode `web` → find the fixture on the competition's or club's official site plus one more independent source;
+   - mode `web` (no key, API unavailable, or `api_status: "plan_restricted"`) → find the fixture on the competition's or club's official site plus one more independent source;
      `resolution.method = "web"`, `fixture_id: null`, ≥ 2 sources (`BR-09`).
 2. Fill `brief.match` (home = the team playing at home; kickoff in UTC; `local_timezone` = the user's, e.g. `Asia/Tehran`),
    `teams.H` = home colours, `teams.A` = away colours (distinct, `BR-02`), `focus_team: "both"`, `show_names: true`.

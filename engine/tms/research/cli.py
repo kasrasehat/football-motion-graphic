@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+from pathlib import Path
 
 from tms import envfile, jsonio
 from tms import validate as V
@@ -10,6 +11,10 @@ from tms.commands.common import add_project_arg, handled
 from tms.research import api_football as AF
 from tms.research.dossier import merge, now_iso, parse_query
 from tms.state import machine, project as P
+
+
+WEB_FALLBACK = ("Resolve the fixture by web search (official competition/club site + one more independent source); fill "
+                "brief.match with resolution.method='web', fixture_id null and >= 2 sources.")
 
 
 def _client(pr=None) -> AF.Client:
@@ -36,10 +41,18 @@ def cmd_resolve(a):
     else:
         try:
             out["candidates"] = AF.resolve(c, q["home"], q["away"], q["date_from"], q["date_to"])
+        except AF.PlanRestricted as e:
+            out["mode"] = "web"
+            out["api_status"] = "plan_restricted"
+            out["api_message"] = str(e)
+            out["instructions"] = WEB_FALLBACK
         except AF.ApiError as e:
             out["mode"] = "web"
             out["instructions"] = f"API unavailable ({e}); resolve via web search with >= 2 sources."
     print(json.dumps(out, indent=2, ensure_ascii=False))
+    if out.get("api_status") == "plan_restricted":
+        print(f"Your API-Football plan cannot access this fixture: {out['api_message']}")
+        print("This is a limit of the plan, not an error in tms. Resolve the fixture by web search instead.")
     if out["mode"] == "api" and len(out["candidates"]) != 1:
         print(f"{len(out['candidates'])} candidates — ask the user which fixture they mean" if out["candidates"]
               else "no matching fixture in that window — check spelling/date with the user")
@@ -57,18 +70,51 @@ def cmd_api(a):
     if not c.available:
         raise P.ProjectError("no API_FOOTBALL_KEY — web-only research: skip this command")
     if fid is None:
+        if brief["match"]["resolution"]["method"] == "web":
+            print("Fixture was resolved by web search, so there is no API fixture to pull. Nothing to do here: "
+                  "continue with web research; the dossier builds without API claims.")
+            return 0
         raise P.ProjectError("brief.match.fixture_id is empty — resolve the fixture via the API first")
     try:
         claims, raw = AF.pull(c, int(fid), now_iso())
     except AF.QuotaExceeded as e:
         raise P.GateViolation(str(e))
+    except AF.PlanRestricted as e:
+        print(f"Your API-Football plan cannot access fixture {fid}: {e}")
+        print("This is a limit of the plan, not an error in tms. No API claims were written: continue with web research; "
+              "the dossier builds without them.")
+        return 0
     except AF.ApiError as e:
         raise P.ProjectError(str(e))
     rdir = pr.dir / "media" / "research"
     for k, v in raw.items():
         jsonio.write_json(rdir / "api_raw" / f"{k}.json", v, compact=True)
     jsonio.write_json(rdir / "api_claims.json", {"claims": claims, "pulled_at": now_iso()})
+    for part, why in raw.get("_plan_refused", {}).items():
+        print(f"  plan refused {part}: {why}")
     print(f"API-Football: {len(claims)} claims from {c.calls} new calls (project total {c._used()}) -> media/research/api_claims.json")
+
+
+@handled
+def cmd_inspect(a):
+    """Pull one fixture's bundle without a project, to check the parsing against live answers or record them for tests."""
+    c = _client()
+    if not c.available:
+        raise P.ProjectError("no API_FOOTBALL_KEY — nothing to inspect")
+    try:
+        claims, raw = AF.pull(c, a.fixture_id, now_iso())
+    except AF.QuotaExceeded as e:
+        raise P.GateViolation(str(e))
+    except AF.ApiError as e:
+        raise P.ProjectError(str(e))
+    for k, v in raw.items():
+        if k != "_plan_refused":
+            print(f"  {k}: results={v.get('results')}")
+        if a.out:
+            jsonio.write_json(Path(a.out) / f"{k}.json", v)
+    for part, why in raw.get("_plan_refused", {}).items():
+        print(f"  plan refused {part}: {why}")
+    print(f"{len(claims)} claims from {c.calls} new calls: {', '.join(sorted(x['fact_key'] for x in claims))}")
 
 
 def build(pr) -> list:
@@ -108,6 +154,10 @@ def register(sub) -> None:
     r = fsub.add_parser("resolve", help="'<home> vs <away> [tonight|tomorrow|YYYY-MM-DD]' -> candidate fixtures (API) or web instructions")
     r.add_argument("query")
     r.set_defaults(func=cmd_resolve)
+    i = fsub.add_parser("inspect", help="development aid: pull one fixture's bundle without a project (cached, uses the daily quota)")
+    i.add_argument("fixture_id", type=int)
+    i.add_argument("--out", help="write the raw responses to this directory")
+    i.set_defaults(func=cmd_inspect)
     p = sub.add_parser("research", help="match research: API pull and dossier build")
     rsub = p.add_subparsers(dest="research_action", required=True)
     x = rsub.add_parser("api", help="pull the standard API-Football bundle for brief.match.fixture_id (cached, budgeted)")
