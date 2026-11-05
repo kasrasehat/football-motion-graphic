@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "match_data_collector result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "query", "collected_at", "facts", "gaps", "sources"],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "collected_at": {"type": "string"},
+    "query": {
+      "type": "object",
+      "required": ["home", "away"],
+      "properties": {
+        "home": {"type": "string"}, "away": {"type": "string"}, "date": {"type": ["string", "null"]},
+        "competition": {"type": ["string", "null"]}, "home_league": {"type": ["string", "null"]},
+        "away_league": {"type": ["string", "null"]}, "ids": {"type": "object"}
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "value", "statement", "source", "unit", "as_of", "confidence"],
+        "properties": {
+          "key": {"type": "string", "minLength": 1},
+          "value": {},
+          "statement": {"type": "string", "minLength": 1},
+          "unit": {"type": ["string", "null"]},
+          "as_of": {"type": ["string", "null"]},
+          "confidence": {"enum": ["low", "medium", "high"]},
+          "source": {
+            "type": "object",
+            "required": ["adapter", "kind", "retrieved_at"],
+            "properties": {"adapter": {"type": "string"}, "kind": {"enum": ["web", "api", "agent"]}, "retrieved_at": {"type": "string"}}
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["adapter", "need", "reason", "detail"],
+        "properties": {
+          "adapter": {"type": "string"},
+          "need": {"type": "string"},
+          "reason": {"enum": ["not_permitted", "blocked", "robots_disallowed", "not_covered", "not_found", "ambiguous", "parse_mismatch", "plan_limited", "quota", "unavailable", "invalid_input"]},
+          "detail": {"type": "string"}
+        }
+      }
+    },
+    "sources": {"type": "array", "items": {"type": "object"}}
+  }
+}

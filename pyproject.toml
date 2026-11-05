@@ -24,6 +24,9 @@ tms = "tms.cli:main"
 [tool.setuptools.packages.find]
 where = ["engine"]
 
+[tool.setuptools.package-data]
+match_data_collector = ["schema/*.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
