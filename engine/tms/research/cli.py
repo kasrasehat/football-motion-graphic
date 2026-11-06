@@ -117,6 +117,17 @@ def cmd_inspect(a):
     print(f"{len(claims)} claims from {c.calls} new calls: {', '.join(sorted(x['fact_key'] for x in claims))}")
 
 
+@handled
+def cmd_collect(a):
+    from match_data_collector.__main__ import emit, query_from, web_adapters
+    from match_data_collector.collector import Collector
+    from tms import paths
+    from tms.research.collect import ApiFootballAdapter
+    adapters = [ApiFootballAdapter(_client()), *web_adapters(a, paths.scratch_dir() / "cache" / "collector")]
+    emit(Collector(adapters).collect(query_from(a, api_football_fixture=a.fixture_id)).to_dict(), a.out)
+    return 0
+
+
 def build(pr) -> list:
     machine.require_active(pr, "research")
     brief = pr.load_artifact("brief")
@@ -163,6 +174,11 @@ def register(sub) -> None:
     x = rsub.add_parser("api", help="pull the standard API-Football bundle for brief.match.fixture_id (cached, budgeted)")
     add_project_arg(x)
     x.set_defaults(func=cmd_api)
+    from match_data_collector.__main__ import add_query_args
+    k = rsub.add_parser("collect", help="sourced facts and explicit gaps for one match from every permitted source (no project needed)")
+    add_query_args(k)
+    k.add_argument("--fixture-id", type=int, help="API-Football fixture id, if known")
+    k.set_defaults(func=cmd_collect)
     b = rsub.add_parser("build", help="merge API claims + artifacts/web_claims.json -> build/match_dossier.json, then MD validation")
     add_project_arg(b)
     b.set_defaults(func=cmd_build)

@@ -1,0 +1,58 @@
+---
+name: match-data-collector
+description: How to collect sourced football match data through the standalone match_data_collector package - its contract, adapters, source policies and the rules for blocks - and how to add a source or wrap it as an MCP. Use when gathering match data, adding a data source, or reusing the collector in another project.
+---
+
+# Match data collector
+
+`engine/match_data_collector/` has no dependency on `tms`, so it can move to another project or sit behind an MCP.
+`engine/tms/research/collect.py` adds API-Football through tms's cached, budgeted client.
+
+## Run it
+```
+.venv/Scripts/tms research collect --home "Arsenal" --away "Real Madrid" --date 2026-12-09 \
+    --competition "UEFA Champions League" --home-league "Premier League" --away-league "La Liga" [--fixture-id N] \
+    [--agent-facts facts.json] [--out result.json]
+```
+No project is needed, and the command writes nothing to one. Outside this repo: `python -m match_data_collector collect ...`
+(web adapters only), and `python -m match_data_collector sources` lists each source's policy.
+
+## The result
+`{schema_version, query, collected_at, facts[], gaps[], sources[]}`, with its schema in `schema/result.schema.json`.
+- **Fact:** `key`, `value`, `statement`, `unit`, `as_of`, `confidence`, and `source` (adapter, kind, url or endpoint, quote, retrieved_at).
+- **Gap:** `adapter`, `need`, `reason`, `detail`. Reasons are in `GAP_REASONS` in `contract.py`.
+
+`--agent-facts` takes `{"facts": [...], "gaps": [...]}` in the same shape. A fact without a url and quote becomes an `invalid_input` gap.
+
+## Sources
+| source | status | gives |
+|---|---|---|
+| API-Football | allowed, your key | fixture, managers, head-to-head, line-ups, odds; on Free, season stats are refused |
+| ballhelper | allowed, low trust | current domestic table with home/away splits, and which half each team outscored recently |
+| agent research | per each site's rules | news, tactics, anything else with a source |
+| Soccerway | **needs permission** | its terms bar scraping; no adapter exists |
+| Sofascore | **needs permission** | no public API; human-verification page; no adapter exists |
+
+ballhelper covers domestic leagues only, so European matches still need each team's league. Its "Last updated: 11.5.2026"
+is ambiguous between day and month order, so it stays a note and never becomes `as_of`. Facts from it have `confidence: low`:
+corroborate before they reach a video.
+
+## Blocks are answers
+`PoliteFetcher` is the only way an adapter reaches the web. It sends one honest user agent, obeys robots.txt, paces per host,
+caches, refuses hosts without an `allowed` policy, and stops using a host for the run after a block status or a verification
+page. It has no proxy, cookie, header or retry option, and none should be added.
+
+## Add a source
+1. Read its terms and robots.txt, then add a `SourcePolicy` to `policy.py` with the evidence URLs. `allowed` means the rules
+   permit it, or you hold recorded permission: record where in `reason`.
+2. Add `adapters/<name>.py` with `name` and `collect(query, now_iso) -> (facts, gaps)`. Fetch only through `PoliteFetcher`.
+3. Validate what you parse, as ballhelper's `row_adds_up` does. A shifted column must become a `parse_mismatch` gap, not a fact.
+4. Test against saved HTML with `httpx.MockTransport`, including a block and a changed layout.
+
+## Wrap as an MCP
+Expose `Collector(adapters).collect(MatchQuery(...)).to_dict()` as one tool, with `MatchQuery`'s fields as its input and
+`schema/result.schema.json` as its output. No collector code needs to change.
+
+## Not wired in yet
+The research stage doesn't use this automatically, and its facts have different keys from `config/facts.yaml`. Mapping them
+into `web_claims` is a later step.
