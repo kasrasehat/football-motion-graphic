@@ -19,3 +19,7 @@ projects/*
 .tms/
 # claude local overrides only (settings.json IS committed)
 .claude/settings.local.json
+
+# Left by pip install of the vendored collector
+vendor/*/build/
+vendor/*/*.egg-info/
