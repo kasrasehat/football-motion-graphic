@@ -19,7 +19,7 @@ from tms.state import project as P
 from tms.state.project import GateViolation
 from tms.timeline.build import TimelineError, build_timeline, solve_scene
 from tms.validate.registry import Context
-from tests.helpers import FIX, expect_clean, expect_violation, fixture, place
+from tests.helpers import FIX, expect_clean, expect_violation, findings, fixture, place
 
 pytestmark = pytest.mark.fast
 
@@ -173,6 +173,22 @@ def test_VO05_rate(ap):
     for k, w in enumerate(c["words"]):
         w["start_s"], w["end_s"] = round(0.1 + 0.1 * k, 3), round(0.18 + 0.1 * k, 3)
     expect_violation("VO-05", "voiceover_manifest", d, ctx(ap))
+
+
+def _too_fast(ap, provider):
+    d = doc(ap, "voiceover_manifest")
+    d["provider"] = provider
+    for k, w in enumerate(d["clips"][0]["words"]):
+        w["start_s"], w["end_s"] = round(0.1 + 0.1 * k, 3), round(0.18 + 0.1 * k, 3)
+    return [f for f in findings("voiceover_manifest", d, ctx(ap)) if f.rule == "VO-05"]
+
+
+def test_VO05_out_of_range_only_warns_for_the_mock_voice(ap):
+    assert {f.severity for f in _too_fast(ap, "mock_flite")} == {"warning"}
+
+
+def test_VO05_out_of_range_is_an_error_for_a_real_voice(ap):
+    assert "error" in {f.severity for f in _too_fast(ap, "elevenlabs")}
 
 
 def test_VO06_stale_after_narration_edit(ap):

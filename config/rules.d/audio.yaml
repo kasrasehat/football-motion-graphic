@@ -4,7 +4,7 @@ rules:
   VO-02: {artifact: voiceover_manifest, severity: error, text: "clip words map 1:1 onto the narration line's tokens"}
   VO-03: {artifact: voiceover_manifest, severity: warning, text: "speech onset differs from the first aligned word by > 40 ms (error > 120 ms)", params: {warn_s: 0.04, max_s: 0.12}}
   VO-04: {artifact: voiceover_manifest, severity: error, text: "clip files exist, are 48 kHz mono, sample counts match, trailing silence <= 0.3 s", params: {tail_s: 0.3}}
-  VO-05: {artifact: voiceover_manifest, severity: warning, text: "speaking rate 120-190 wpm (error outside 100-220)", params: {lo: 120, hi: 190, min: 100, max: 220}}
+  VO-05: {artifact: voiceover_manifest, severity: warning, text: "speaking rate 120-190 wpm (error outside 100-220; the mock voice only warns)", params: {lo: 120, hi: 190, min: 100, max: 220}}
   VO-06: {artifact: voiceover_manifest, severity: error, text: "each clip's request hash matches the current narration and voice settings (no stale audio)"}
   TL-01: {artifact: timeline, severity: error, text: "intro, scenes and outro are contiguous and sum to `frames`"}
   TL-02: {artifact: timeline, severity: error, text: "each voice clip sits inside its scene; clips never overlap"}
