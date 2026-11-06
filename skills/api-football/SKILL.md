@@ -10,8 +10,9 @@ curl — use the commands below (cached, budgeted, logged). Optional proxy: `TMS
 
 | command | calls | gives |
 |---|---|---|
-| `.venv/Scripts/tms fixture resolve "<home> vs <away> <when>"` | ~3 | candidate fixtures (id, kickoff, venue, competition) |
-| `.venv/Scripts/tms research api` | ~12 | fixture, last-5 form ×2, season stats ×2, managers ×2, standings, H2H, injuries, line-ups (≈1 h before KO), odds |
+| `.venv/Scripts/tms fixture resolve "<home> vs <away> <when>"` | ~3–4 | candidate fixtures (id, kickoff, venue, competition), or a plain statement that the plan cannot access them |
+| `.venv/Scripts/tms research api` | ~14 | fixture, last-5 form ×2, season stats ×2, managers ×2, standings, H2H, injuries, line-ups (≈1 h before KO), odds |
+| `.venv/Scripts/tms fixture inspect <id> [--out DIR]` | ~14 | development aid: the same bundle without a project (daily quota only), to check parsing or record responses |
 
 Every claim it produces carries `{"kind":"api","endpoint":"/teams/statistics","field_path":"response.goals.for.average.total"}`
 as its source and is trusted as authoritative for numbers (it wins conflicts with web claims).
@@ -21,6 +22,18 @@ as its source and is trusted as authoritative for numbers (it wins conflicts wit
   usage is tracked in `projects/<slug>/media/research/api_usage.json`.
 - Responses are cached (fixtures/injuries 30 min, line-ups 10 min, stats 12 h, teams 30 days): re-running is free.
 - Exit 2 = budget or daily quota reached → continue web-only for the rest, and tell the user.
+
+## What the Free plan gives (checked live 2026-11-05)
+- **Current season:** fixture lookup and details, managers, H2H, line-ups and odds (the last two only near or after kick-off). `/injuries` is not refused, but it returned no rows on the two current-season fixtures tried, one of them already played, so do not rely on it.
+- **Refused for the current season:** season stats and standings (only 2022–2024 are open), and last-5 form (the `last` parameter is refused for every season). Research these on the web.
+- **Rate limit:** 10 requests a minute. A pull needs more, so `tms` waits about a minute when it hits the limit; re-runs are served from the cache.
+- **No injury rows** means nothing is filed yet, not that nobody is injured, so no claim is written: research injuries on the web.
+
+## When the plan refuses a request
+The API answers `errors.plan` for what a plan cannot read. That is a limit of the plan, not an error in tms, and retrying cannot help:
+- `fixture resolve` reports `mode: "web"` with `api_status: "plan_restricted"`: resolve the fixture by web search (`resolution.method = "web"`, `fixture_id: null`).
+- `research api` exits 0 with no API claims if the fixture itself is refused or was resolved by web. Continue with web research.
+- If only some endpoints are refused, it keeps the rest and prints `plan refused <part>`: research those facts on the web.
 
 ## Not covered by the API (always web research)
 xG for/against, tactical tendencies (`T.tactics.*`), predicted XIs before line-ups are published, stakes/news context.

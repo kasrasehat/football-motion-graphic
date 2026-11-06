@@ -41,6 +41,13 @@ def stats(gf, ga, gfh, gah, gfa, gaa, cs, formation):
             "clean_sheet": {"total": cs}, "lineups": [{"formation": formation, "played": 9}, {"formation": "4-4-2", "played": 2}]}
 
 
+def coaches(team: int, current: str) -> list:
+    """Shape of the real /coachs answer: past managers come first and only the current one has an open spell."""
+    return [{"name": "P. Predecessor", "career": [{"team": {"id": team}, "start": "2015-07-01", "end": "2021-05-01"}]},
+            {"name": current, "career": [{"team": {"id": team}, "start": "2021-06-01", "end": None},
+                                         {"team": {"id": 1}, "start": "2010-07-01", "end": "2015-06-30"}]}]
+
+
 def cassette() -> dict:
     madrid, arsenal = (RMA, "Real Madrid"), (ARS, "Arsenal")
     other = [(529, "Barcelona"), (530, "Atletico Madrid"), (40, "Liverpool"), (50, "Manchester City"), (33, "Manchester United")]
@@ -63,14 +70,14 @@ def cassette() -> dict:
         f"/fixtures?last=5&team={RMA}": wrap(last_h), f"/fixtures?last=5&team={ARS}": wrap(last_a),
         f"/teams/statistics?league={LEAGUE}&season={SEASON}&team={RMA}": wrap(stats(2.3, 1.0, 2.6, 0.8, 2.0, 1.2, 4, "4-3-3")),
         f"/teams/statistics?league={LEAGUE}&season={SEASON}&team={ARS}": wrap(stats(1.9, 0.9, 2.2, 0.6, 1.6, 1.2, 5, "4-3-3")),
-        f"/coachs?team={RMA}": wrap([{"name": "M. Coach"}]), f"/coachs?team={ARS}": wrap([{"name": "A. Manager"}]),
+        f"/coachs?team={RMA}": wrap(coaches(RMA, "M. Coach")), f"/coachs?team={ARS}": wrap(coaches(ARS, "A. Manager")),
         f"/standings?league={LEAGUE}&season={SEASON}": wrap(standings),
-        f"/fixtures/headtohead?h2h={RMA}-{ARS}&last=5": wrap(h2h),
+        f"/fixtures/headtohead?h2h={RMA}-{ARS}": wrap(h2h),
         f"/injuries?fixture={FID}": wrap(injuries), f"/fixtures/lineups?fixture={FID}": wrap(lineups),
         f"/odds?bookmaker=8&fixture={FID}": wrap(odds),
         "/teams?search=Real Madrid": wrap([{"team": {"id": RMA, "name": "Real Madrid"}}]),
         "/teams?search=Arsenal": wrap([{"team": {"id": ARS, "name": "Arsenal"}}]),
-        f"/fixtures?next=10&team={RMA}": wrap([fx(FID, "2026-11-02T20:00:00+00:00", madrid, arsenal, None, None)]),
+        f"/fixtures/headtohead?from=2026-11-02&h2h={RMA}-{ARS}&to=2026-11-03": wrap([fx(FID, "2026-11-02T20:00:00+00:00", madrid, arsenal, None, None)]),
     }
 
 

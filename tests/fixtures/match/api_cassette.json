@@ -517,14 +517,42 @@
   "get": "",
   "parameters": {},
   "errors": [],
-  "results": 1,
+  "results": 2,
   "paging": {
    "current": 1,
    "total": 1
   },
   "response": [
    {
-    "name": "M. Coach"
+    "name": "P. Predecessor",
+    "career": [
+     {
+      "team": {
+       "id": 541
+      },
+      "start": "2015-07-01",
+      "end": "2021-05-01"
+     }
+    ]
+   },
+   {
+    "name": "M. Coach",
+    "career": [
+     {
+      "team": {
+       "id": 541
+      },
+      "start": "2021-06-01",
+      "end": null
+     },
+     {
+      "team": {
+       "id": 1
+      },
+      "start": "2010-07-01",
+      "end": "2015-06-30"
+     }
+    ]
    }
   ]
  },
@@ -532,14 +560,42 @@
   "get": "",
   "parameters": {},
   "errors": [],
-  "results": 1,
+  "results": 2,
   "paging": {
    "current": 1,
    "total": 1
   },
   "response": [
    {
-    "name": "A. Manager"
+    "name": "P. Predecessor",
+    "career": [
+     {
+      "team": {
+       "id": 42
+      },
+      "start": "2015-07-01",
+      "end": "2021-05-01"
+     }
+    ]
+   },
+   {
+    "name": "A. Manager",
+    "career": [
+     {
+      "team": {
+       "id": 42
+      },
+      "start": "2021-06-01",
+      "end": null
+     },
+     {
+      "team": {
+       "id": 1
+      },
+      "start": "2010-07-01",
+      "end": "2015-06-30"
+     }
+    ]
    }
   ]
  },
@@ -585,7 +641,7 @@
    }
   ]
  },
- "/fixtures/headtohead?h2h=541-42&last=5": {
+ "/fixtures/headtohead?h2h=541-42": {
   "get": "",
   "parameters": {},
   "errors": [],
@@ -821,7 +877,7 @@
    }
   ]
  },
- "/fixtures?next=10&team=541": {
+ "/fixtures/headtohead?from=2026-11-02&h2h=541-42&to=2026-11-03": {
   "get": "",
   "parameters": {},
   "errors": [],
