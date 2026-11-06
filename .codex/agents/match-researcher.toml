@@ -11,6 +11,7 @@ Project slug, brief (teams, competition, kickoff), your scope (`H`, `A` or `fixt
 after the API pull (if any).
 
 ## Method
+Start from the gaps `tms research scrape` reported: don't re-research what the dossier already has from the collector.
 1. Search (WebSearch) and open (WebFetch) only reputable pages; prefer tier 1–2. Read the page before citing it.
 2. For your scope cover at least: `T.form.last5` (if the API did not), `T.xg_for_avg`, `T.xg_against_avg`,
    `T.injuries`, `T.suspensions`, `T.predicted_xi` (2 independent sources), `T.manager`, and 2+ `T.tactics.*`

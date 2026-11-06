@@ -1,0 +1,462 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "Candidate": {
+      "properties": {
+        "source_id": {
+          "title": "Source Id",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "home": {
+          "title": "Home",
+          "type": "string"
+        },
+        "away": {
+          "title": "Away",
+          "type": "string"
+        },
+        "kickoff": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kickoff"
+        },
+        "source_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Date"
+        },
+        "date_basis": {
+          "default": "timestamp",
+          "title": "Date Basis",
+          "type": "string"
+        },
+        "competition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Competition"
+        },
+        "confidence": {
+          "default": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "date_verified": {
+          "default": false,
+          "title": "Date Verified",
+          "type": "boolean"
+        },
+        "raw": {
+          "additionalProperties": true,
+          "title": "Raw",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source_id",
+        "url",
+        "home",
+        "away"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "Coverage": {
+      "properties": {
+        "status": {
+          "default": "not_discovered",
+          "enum": [
+            "collected",
+            "not_discovered",
+            "unavailable",
+            "blocked",
+            "disabled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "detail": {
+          "default": "No corresponding data was discovered within the collection scope.",
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "title": "Coverage",
+      "type": "object"
+    },
+    "Evidence": {
+      "properties": {
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "fetched_at": {
+          "format": "date-time",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "status_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Code"
+        },
+        "content_type": {
+          "default": "",
+          "title": "Content Type",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "artifact": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact"
+        },
+        "cached": {
+          "default": false,
+          "title": "Cached",
+          "type": "boolean"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "MatchQuery": {
+      "additionalProperties": false,
+      "properties": {
+        "opponent_a": {
+          "maxLength": 120,
+          "minLength": 2,
+          "title": "Opponent A",
+          "type": "string"
+        },
+        "opponent_b": {
+          "maxLength": 120,
+          "minLength": 2,
+          "title": "Opponent B",
+          "type": "string"
+        },
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "timezone": {
+          "default": "UTC",
+          "title": "Timezone",
+          "type": "string"
+        },
+        "aliases_a": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Aliases A",
+          "type": "array"
+        },
+        "aliases_b": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Aliases B",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "enum": [
+              "soccerway",
+              "ballhelper",
+              "sofascore"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "seed_urls": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "propertyNames": {
+            "enum": [
+              "soccerway",
+              "ballhelper",
+              "sofascore"
+            ]
+          },
+          "title": "Seed Urls",
+          "type": "object"
+        },
+        "include_news": {
+          "default": true,
+          "title": "Include News",
+          "type": "boolean"
+        },
+        "news_days": {
+          "default": 7,
+          "maximum": 90,
+          "minimum": 0,
+          "title": "News Days",
+          "type": "integer"
+        },
+        "browser": {
+          "default": true,
+          "title": "Browser",
+          "type": "boolean"
+        },
+        "max_pages_per_source": {
+          "default": 30,
+          "maximum": 300,
+          "minimum": 2,
+          "title": "Max Pages Per Source",
+          "type": "integer"
+        },
+        "max_news": {
+          "default": 15,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Max News",
+          "type": "integer"
+        },
+        "ballhelper_timezone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ballhelper Timezone"
+        }
+      },
+      "required": [
+        "opponent_a",
+        "opponent_b",
+        "date"
+      ],
+      "title": "MatchQuery",
+      "type": "object"
+    },
+    "SourceReport": {
+      "properties": {
+        "source": {
+          "enum": [
+            "soccerway",
+            "ballhelper",
+            "sofascore"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "status": {
+          "default": "not_found",
+          "enum": [
+            "partial",
+            "not_found",
+            "ambiguous",
+            "unverified",
+            "blocked",
+            "error"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "match": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Candidate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/Candidate"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "data": {
+          "additionalProperties": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "title": "Data",
+          "type": "object"
+        },
+        "coverage": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "title": "Coverage",
+          "type": "object"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "limits": {
+          "additionalProperties": true,
+          "title": "Limits",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "title": "SourceReport",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "query": {
+      "$ref": "#/$defs/MatchQuery"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finished At"
+    },
+    "status": {
+      "default": "running",
+      "title": "Status",
+      "type": "string"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceReport"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "conflicts": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Conflicts",
+      "type": "array"
+    },
+    "scope": {
+      "default": "A bounded snapshot of discovered match pages, data responses, tabs and related news. Unknown fields and raw responses are retained. No guarantee of exhaustive website coverage.",
+      "title": "Scope",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "query"
+  ],
+  "title": "CollectionReport",
+  "type": "object"
+}

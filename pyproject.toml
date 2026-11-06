@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.3,<9", "hypothesis>=6.100,<7"]
+dev = ["pytest>=8.3,<9", "hypothesis>=6.100,<7", "pytest-asyncio>=0.25,<2"]
 
 [project.scripts]
 tms = "tms.cli:main"
@@ -28,7 +28,9 @@ where = ["engine"]
 match_data_collector = ["schema/*.json"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "vendor/match-collector/tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 addopts = "-q"
 markers = [
   "fast: quick unit tests run by the Stop hook",

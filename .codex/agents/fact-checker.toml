@@ -12,6 +12,8 @@ Stage (`research`, `analysis` or `storyboard`), project slug, and the artifact p
 For every claim in `artifacts/web_claims.json` (all key facts, and at least 10 others chosen at random): open the URL
 (WebFetch), confirm the quote is on the page and that it supports the value, the date is current enough, the tier is
 honest. Verdict per claim: `verified`, `corrected` (give the right value), `unverifiable`, `refuted`, `stale`.
+Claims with `origin: collector` have no quote: follow `run_id` and `field_path` into `media/research/collector/runs/<run_id>/report.json`, check the value
+and its sample, and open a sample of their URLs. A blocked page is `unverifiable`; don't work around it.
 Also read `build/match_dossier.json`: conflicts resolved sensibly, key facts corroborated.
 
 ## Analysis stage

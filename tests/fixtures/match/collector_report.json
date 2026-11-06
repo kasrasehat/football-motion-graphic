@@ -1,0 +1,1164 @@
+{
+ "schema_version": "1.0",
+ "run_id": "d2fe53f7d6f44443a6b3a6a4f11269a2",
+ "query": {
+  "opponent_a": "Newcastle",
+  "opponent_b": "Everton",
+  "date": "2026-11-02",
+  "timezone": "UTC",
+  "aliases_a": [],
+  "aliases_b": [],
+  "sources": [
+   "soccerway",
+   "ballhelper",
+   "sofascore"
+  ],
+  "seed_urls": {
+   "soccerway": [
+    "https://us.soccerway.com/game/newcastle-utd-p6ahwuwJ/everton-KluSTr9s/?mid=YceoIxQh"
+   ]
+  },
+  "include_news": true,
+  "news_days": 7,
+  "browser": true,
+  "max_pages_per_source": 30,
+  "max_news": 15,
+  "ballhelper_timezone": null
+ },
+ "started_at": "2026-11-06T11:30:15.730154Z",
+ "finished_at": "2026-11-06T11:32:03.883885Z",
+ "status": "partial",
+ "sources": [
+  {
+   "source": "soccerway",
+   "status": "partial",
+   "match": {
+    "source_id": "YceoIxQh",
+    "url": "https://us.soccerway.com/game/everton-KluSTr9s/newcastle-utd-p6ahwuwJ/?mid=YceoIxQh",
+    "home": "Newcastle",
+    "away": "Everton",
+    "kickoff": "2026-11-02T20:00:00Z",
+    "source_date": null,
+    "date_basis": "timestamp",
+    "competition": "Premier League - Round 9",
+    "confidence": 1.0,
+    "date_verified": true,
+    "raw": {}
+   },
+   "candidates": [],
+   "data": {
+    "summary": [],
+    "statistics": [],
+    "lineups": [],
+    "incidents": [],
+    "players": [],
+    "recent_player_form": [],
+    "team_analysis": [
+     {
+      "source_url": "https://us.soccerway.com/england/premier-league/results/",
+      "relation": "prior_competition_results",
+      "value": {
+       "stage_id": "CfoA8Dmm",
+       "before_kickoff": "2026-11-02T20:00:00+00:00",
+       "games": [
+        {
+         "event_id": "fXmefEGl",
+         "kickoff": "2026-10-25T14:00:00+00:00",
+         "home": "Crystal Palace",
+         "away": "Newcastle",
+         "home_id": "AovF1Mia",
+         "away_id": "p6ahwuwJ",
+         "ft": [
+          0,
+          2
+         ],
+         "ht": [
+          0,
+          0
+         ]
+        },
+        {
+         "event_id": "G0XLh1up",
+         "kickoff": "2026-10-24T14:00:00+00:00",
+         "home": "Arsenal",
+         "away": "Everton",
+         "home_id": "hA1Zm19f",
+         "away_id": "KluSTr9s",
+         "ft": [
+          2,
+          0
+         ],
+         "ht": [
+          1,
+          0
+         ]
+        },
+        {
+         "event_id": "KdQz25Ic",
+         "kickoff": "2026-10-17T16:30:00+00:00",
+         "home": "Newcastle",
+         "away": "Aston Villa",
+         "home_id": "p6ahwuwJ",
+         "away_id": "W00wmLO0",
+         "ft": [
+          0,
+          1
+         ],
+         "ht": [
+          0,
+          1
+         ]
+        },
+        {
+         "event_id": "2wo3m634",
+         "kickoff": "2026-10-17T11:30:00+00:00",
+         "home": "Everton",
+         "away": "Chelsea",
+         "home_id": "KluSTr9s",
+         "away_id": "4fGZN2oK",
+         "ft": [
+          0,
+          2
+         ],
+         "ht": [
+          0,
+          0
+         ]
+        },
+        {
+         "event_id": "tW4rOkzg",
+         "kickoff": "2026-10-12T19:00:00+00:00",
+         "home": "Coventry",
+         "away": "Newcastle",
+         "home_id": "GOvB22xg",
+         "away_id": "p6ahwuwJ",
+         "ft": [
+          4,
+          1
+         ],
+         "ht": [
+          1,
+          0
+         ]
+        },
+        {
+         "event_id": "dMBbK7ZH",
+         "kickoff": "2026-10-11T13:00:00+00:00",
+         "home": "Hull",
+         "away": "Everton",
+         "home_id": "S66R0t75",
+         "away_id": "KluSTr9s",
+         "ft": [
+          2,
+          2
+         ],
+         "ht": [
+          0,
+          0
+         ]
+        },
+        {
+         "event_id": "rDKcFLiL",
+         "kickoff": "2026-09-19T14:00:00+00:00",
+         "home": "Everton",
+         "away": "Ipswich",
+         "home_id": "KluSTr9s",
+         "away_id": "thqhB2MB",
+         "ft": [
+          1,
+          0
+         ],
+         "ht": [
+          1,
+          0
+         ]
+        },
+        {
+         "event_id": "nTaVTK6E",
+         "kickoff": "2026-09-19T14:00:00+00:00",
+         "home": "Newcastle",
+         "away": "Hull",
+         "home_id": "p6ahwuwJ",
+         "away_id": "S66R0t75",
+         "ft": [
+          2,
+          1
+         ],
+         "ht": [
+          2,
+          0
+         ]
+        },
+        {
+         "event_id": "Q1TGrNGq",
+         "kickoff": "2026-09-14T19:00:00+00:00",
+         "home": "Leeds",
+         "away": "Newcastle",
+         "home_id": "tUxUbLR2",
+         "away_id": "p6ahwuwJ",
+         "ft": [
+          4,
+          1
+         ],
+         "ht": [
+          3,
+          0
+         ]
+        },
+        {
+         "event_id": "K2LQ0MxS",
+         "kickoff": "2026-09-12T16:30:00+00:00",
+         "home": "Tottenham",
+         "away": "Everton",
+         "home_id": "UDg08Ohm",
+         "away_id": "KluSTr9s",
+         "ft": [
+          0,
+          0
+         ],
+         "ht": [
+          0,
+          0
+         ]
+        },
+        {
+         "event_id": "QsyJgS7m",
+         "kickoff": "2026-09-06T13:00:00+00:00",
+         "home": "Everton",
+         "away": "Manchester Utd",
+         "home_id": "KluSTr9s",
+         "away_id": "ppjDR086",
+         "ft": [
+          2,
+          2
+         ],
+         "ht": [
+          0,
+          0
+         ]
+        },
+        {
+         "event_id": "A7Ob65ig",
+         "kickoff": "2026-09-05T11:30:00+00:00",
+         "home": "Newcastle",
+         "away": "Bournemouth",
+         "home_id": "p6ahwuwJ",
+         "away_id": "OtpNdwrc",
+         "ft": [
+          2,
+          2
+         ],
+         "ht": [
+          1,
+          2
+         ]
+        },
+        {
+         "event_id": "ry1ouThf",
+         "kickoff": "2026-08-29T16:30:00+00:00",
+         "home": "Tottenham",
+         "away": "Newcastle",
+         "home_id": "UDg08Ohm",
+         "away_id": "p6ahwuwJ",
+         "ft": [
+          0,
+          2
+         ],
+         "ht": [
+          0,
+          0
+         ]
+        },
+        {
+         "event_id": "UgOYDjfe",
+         "kickoff": "2026-08-29T14:00:00+00:00",
+         "home": "Bournemouth",
+         "away": "Everton",
+         "home_id": "OtpNdwrc",
+         "away_id": "KluSTr9s",
+         "ft": [
+          1,
+          1
+         ],
+         "ht": [
+          1,
+          0
+         ]
+        },
+        {
+         "event_id": "4xKntFxe",
+         "kickoff": "2026-08-23T15:30:00+00:00",
+         "home": "Newcastle",
+         "away": "Liverpool",
+         "home_id": "p6ahwuwJ",
+         "away_id": "lId4TMwf",
+         "ft": [
+          2,
+          2
+         ],
+         "ht": [
+          1,
+          0
+         ]
+        },
+        {
+         "event_id": "rN3wkk4S",
+         "kickoff": "2026-08-22T14:00:00+00:00",
+         "home": "Everton",
+         "away": "Crystal Palace",
+         "home_id": "KluSTr9s",
+         "away_id": "AovF1Mia",
+         "ft": [
+          2,
+          0
+         ],
+         "ht": [
+          1,
+          0
+         ]
+        }
+       ],
+       "results_urls": [
+        "https://us.soccerway.com/england/premier-league/results/"
+       ],
+       "scope": "Completed regulation-time games in the loaded competition results for this stage before kickoff. Counts describe this sample; older rounds can be absent.",
+       "perspective": "W/D/L and HT/FT are relative to the named team. Double-chance counts overlap. Historical counts are not bookmaker prices.",
+       "teams": [
+        {
+         "team": "Newcastle",
+         "team_id": "p6ahwuwJ",
+         "splits": {
+          "overall": {
+           "played": 8,
+           "wdl": {
+            "W": 3,
+            "D": 2,
+            "L": 3
+           },
+           "points": 11,
+           "goals_for": 12,
+           "goals_against": 14,
+           "average_total_goals": 3.25,
+           "form_newest_first": [
+            "W",
+            "L",
+            "L",
+            "W",
+            "L",
+            "D",
+            "W",
+            "D"
+           ],
+           "btts": {
+            "yes": 5,
+            "no": 3
+           },
+           "double_chance": {
+            "win_or_draw": 5,
+            "win_or_loss": 6,
+            "draw_or_loss": 5
+           },
+           "goal_lines": {
+            "0.5": {
+             "over": 8,
+             "under": 0
+            },
+            "1.5": {
+             "over": 7,
+             "under": 1
+            },
+            "2.5": {
+             "over": 5,
+             "under": 3
+            },
+            "3.5": {
+             "over": 4,
+             "under": 4
+            },
+            "4.5": {
+             "over": 2,
+             "under": 6
+            },
+            "5.5": {
+             "over": 0,
+             "under": 8
+            },
+            "6.5": {
+             "over": 0,
+             "under": 8
+            }
+           },
+           "ht_ft_sample": 8,
+           "ht_ft": {
+            "W/W": 1,
+            "W/D": 1,
+            "W/L": 0,
+            "D/W": 2,
+            "D/D": 0,
+            "D/L": 0,
+            "L/W": 0,
+            "L/D": 1,
+            "L/L": 3
+           },
+           "event_ids": [
+            "fXmefEGl",
+            "KdQz25Ic",
+            "tW4rOkzg",
+            "nTaVTK6E",
+            "Q1TGrNGq",
+            "A7Ob65ig",
+            "ry1ouThf",
+            "4xKntFxe"
+           ]
+          },
+          "home": {
+           "played": 4,
+           "wdl": {
+            "W": 1,
+            "D": 2,
+            "L": 1
+           },
+           "points": 5,
+           "goals_for": 6,
+           "goals_against": 6,
+           "average_total_goals": 3.0,
+           "form_newest_first": [
+            "L",
+            "W",
+            "D",
+            "D"
+           ],
+           "btts": {
+            "yes": 3,
+            "no": 1
+           },
+           "double_chance": {
+            "win_or_draw": 3,
+            "win_or_loss": 2,
+            "draw_or_loss": 3
+           },
+           "goal_lines": {
+            "0.5": {
+             "over": 4,
+             "under": 0
+            },
+            "1.5": {
+             "over": 3,
+             "under": 1
+            },
+            "2.5": {
+             "over": 3,
+             "under": 1
+            },
+            "3.5": {
+             "over": 2,
+             "under": 2
+            },
+            "4.5": {
+             "over": 0,
+             "under": 4
+            },
+            "5.5": {
+             "over": 0,
+             "under": 4
+            },
+            "6.5": {
+             "over": 0,
+             "under": 4
+            }
+           },
+           "ht_ft_sample": 4,
+           "ht_ft": {
+            "W/W": 1,
+            "W/D": 1,
+            "W/L": 0,
+            "D/W": 0,
+            "D/D": 0,
+            "D/L": 0,
+            "L/W": 0,
+            "L/D": 1,
+            "L/L": 1
+           },
+           "event_ids": [
+            "KdQz25Ic",
+            "nTaVTK6E",
+            "A7Ob65ig",
+            "4xKntFxe"
+           ]
+          },
+          "away": {
+           "played": 4,
+           "wdl": {
+            "W": 2,
+            "D": 0,
+            "L": 2
+           },
+           "points": 6,
+           "goals_for": 6,
+           "goals_against": 8,
+           "average_total_goals": 3.5,
+           "form_newest_first": [
+            "W",
+            "L",
+            "L",
+            "W"
+           ],
+           "btts": {
+            "yes": 2,
+            "no": 2
+           },
+           "double_chance": {
+            "win_or_draw": 2,
+            "win_or_loss": 4,
+            "draw_or_loss": 2
+           },
+           "goal_lines": {
+            "0.5": {
+             "over": 4,
+             "under": 0
+            },
+            "1.5": {
+             "over": 4,
+             "under": 0
+            },
+            "2.5": {
+             "over": 2,
+             "under": 2
+            },
+            "3.5": {
+             "over": 2,
+             "under": 2
+            },
+            "4.5": {
+             "over": 2,
+             "under": 2
+            },
+            "5.5": {
+             "over": 0,
+             "under": 4
+            },
+            "6.5": {
+             "over": 0,
+             "under": 4
+            }
+           },
+           "ht_ft_sample": 4,
+           "ht_ft": {
+            "W/W": 0,
+            "W/D": 0,
+            "W/L": 0,
+            "D/W": 2,
+            "D/D": 0,
+            "D/L": 0,
+            "L/W": 0,
+            "L/D": 0,
+            "L/L": 2
+           },
+           "event_ids": [
+            "fXmefEGl",
+            "tW4rOkzg",
+            "Q1TGrNGq",
+            "ry1ouThf"
+           ]
+          }
+         }
+        },
+        {
+         "team": "Everton",
+         "team_id": "KluSTr9s",
+         "splits": {
+          "overall": {
+           "played": 8,
+           "wdl": {
+            "W": 2,
+            "D": 4,
+            "L": 2
+           },
+           "points": 10,
+           "goals_for": 8,
+           "goals_against": 9,
+           "average_total_goals": 2.125,
+           "form_newest_first": [
+            "L",
+            "L",
+            "D",
+            "W",
+            "D",
+            "D",
+            "D",
+            "W"
+           ],
+           "btts": {
+            "yes": 3,
+            "no": 5
+           },
+           "double_chance": {
+            "win_or_draw": 6,
+            "win_or_loss": 4,
+            "draw_or_loss": 6
+           },
+           "goal_lines": {
+            "0.5": {
+             "over": 7,
+             "under": 1
+            },
+            "1.5": {
+             "over": 6,
+             "under": 2
+            },
+            "2.5": {
+             "over": 2,
+             "under": 6
+            },
+            "3.5": {
+             "over": 2,
+             "under": 6
+            },
+            "4.5": {
+             "over": 0,
+             "under": 8
+            },
+            "5.5": {
+             "over": 0,
+             "under": 8
+            },
+            "6.5": {
+             "over": 0,
+             "under": 8
+            }
+           },
+           "ht_ft_sample": 8,
+           "ht_ft": {
+            "W/W": 2,
+            "W/D": 0,
+            "W/L": 0,
+            "D/W": 0,
+            "D/D": 3,
+            "D/L": 1,
+            "L/W": 0,
+            "L/D": 1,
+            "L/L": 1
+           },
+           "event_ids": [
+            "G0XLh1up",
+            "2wo3m634",
+            "dMBbK7ZH",
+            "rDKcFLiL",
+            "K2LQ0MxS",
+            "QsyJgS7m",
+            "UgOYDjfe",
+            "rN3wkk4S"
+           ]
+          },
+          "home": {
+           "played": 4,
+           "wdl": {
+            "W": 2,
+            "D": 1,
+            "L": 1
+           },
+           "points": 7,
+           "goals_for": 5,
+           "goals_against": 4,
+           "average_total_goals": 2.25,
+           "form_newest_first": [
+            "L",
+            "W",
+            "D",
+            "W"
+           ],
+           "btts": {
+            "yes": 1,
+            "no": 3
+           },
+           "double_chance": {
+            "win_or_draw": 3,
+            "win_or_loss": 3,
+            "draw_or_loss": 2
+           },
+           "goal_lines": {
+            "0.5": {
+             "over": 4,
+             "under": 0
+            },
+            "1.5": {
+             "over": 3,
+             "under": 1
+            },
+            "2.5": {
+             "over": 1,
+             "under": 3
+            },
+            "3.5": {
+             "over": 1,
+             "under": 3
+            },
+            "4.5": {
+             "over": 0,
+             "under": 4
+            },
+            "5.5": {
+             "over": 0,
+             "under": 4
+            },
+            "6.5": {
+             "over": 0,
+             "under": 4
+            }
+           },
+           "ht_ft_sample": 4,
+           "ht_ft": {
+            "W/W": 2,
+            "W/D": 0,
+            "W/L": 0,
+            "D/W": 0,
+            "D/D": 1,
+            "D/L": 1,
+            "L/W": 0,
+            "L/D": 0,
+            "L/L": 0
+           },
+           "event_ids": [
+            "2wo3m634",
+            "rDKcFLiL",
+            "QsyJgS7m",
+            "rN3wkk4S"
+           ]
+          },
+          "away": {
+           "played": 4,
+           "wdl": {
+            "W": 0,
+            "D": 3,
+            "L": 1
+           },
+           "points": 3,
+           "goals_for": 3,
+           "goals_against": 5,
+           "average_total_goals": 2.0,
+           "form_newest_first": [
+            "L",
+            "D",
+            "D",
+            "D"
+           ],
+           "btts": {
+            "yes": 2,
+            "no": 2
+           },
+           "double_chance": {
+            "win_or_draw": 3,
+            "win_or_loss": 1,
+            "draw_or_loss": 4
+           },
+           "goal_lines": {
+            "0.5": {
+             "over": 3,
+             "under": 1
+            },
+            "1.5": {
+             "over": 3,
+             "under": 1
+            },
+            "2.5": {
+             "over": 1,
+             "under": 3
+            },
+            "3.5": {
+             "over": 1,
+             "under": 3
+            },
+            "4.5": {
+             "over": 0,
+             "under": 4
+            },
+            "5.5": {
+             "over": 0,
+             "under": 4
+            },
+            "6.5": {
+             "over": 0,
+             "under": 4
+            }
+           },
+           "ht_ft_sample": 4,
+           "ht_ft": {
+            "W/W": 0,
+            "W/D": 0,
+            "W/L": 0,
+            "D/W": 0,
+            "D/D": 2,
+            "D/L": 0,
+            "L/W": 0,
+            "L/D": 1,
+            "L/L": 1
+           },
+           "event_ids": [
+            "G0XLh1up",
+            "dMBbK7ZH",
+            "K2LQ0MxS",
+            "UgOYDjfe"
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "h2h": [
+     {
+      "source_url": "https://us.soccerway.com/game/everton-KluSTr9s/newcastle-utd-p6ahwuwJ/h2h/?mid=YceoIxQh",
+      "acquisition": "rendered_tab",
+      "value": {
+       "rows": [
+        {
+         "text": "Nov 02, 2026 PL Newcastle Everton 0 1 L"
+        },
+        {
+         "text": "Oct 29, 2026 EFL Everton Advancing to next round: Everton Newcastle 3 1 L"
+        },
+        {
+         "text": "Oct 25, 2026 PL Crystal Palace Newcastle 0 2 W"
+        },
+        {
+         "text": "Oct 17, 2026 PL Newcastle Aston Villa 0 1 L"
+        },
+        {
+         "text": "Oct 12, 2026 PL Coventry Newcastle 4 1 L"
+        },
+        {
+         "text": "Nov 02, 2026 PL Newcastle Everton 0 1 W"
+        },
+        {
+         "text": "Oct 29, 2026 EFL Everton Advancing to next round: Everton Newcastle 3 1 W"
+        },
+        {
+         "text": "Oct 24, 2026 PL Arsenal Everton 2 0 L"
+        },
+        {
+         "text": "Oct 17, 2026 PL Everton Chelsea 0 2 L"
+        },
+        {
+         "text": "Oct 11, 2026 PL Hull Everton 2 2 T"
+        },
+        {
+         "text": "Nov 02, 2026 PL Newcastle Everton 0 1"
+        },
+        {
+         "text": "Oct 29, 2026 EFL Everton Advancing to next round: Everton Newcastle 3 1"
+        },
+        {
+         "text": "Aug 12, 2026 CF Newcastle Everton 1 3"
+        },
+        {
+         "text": "Feb 28, 2026 PL Newcastle Everton 2 3"
+        },
+        {
+         "text": "Nov 29, 2025 PL Everton Newcastle 1 4"
+        }
+       ]
+      }
+     }
+    ],
+    "standings": [
+     {
+      "source_url": "https://us.soccerway.com/game/everton-KluSTr9s/newcastle-utd-p6ahwuwJ/standings/?mid=YceoIxQh",
+      "acquisition": "rendered_tab",
+      "value": {
+       "rows": [
+        {
+         "text": "1. Arsenal 9 8 0 1 14:5 9 24 ? W W W W L"
+        },
+        {
+         "text": "2. Manchester City 9 7 0 2 20:10 10 21 ? L L W W W"
+        },
+        {
+         "text": "3. Brighton 9 6 1 2 24:7 17 19 ? W L W W W"
+        },
+        {
+         "text": "4. Chelsea 9 5 1 3 19:15 4 16 ? W L W W L"
+        },
+        {
+         "text": "5. Liverpool 9 4 3 2 11:9 2 15 ? L W W L W"
+        },
+        {
+         "text": "6. Brentford 9 3 5 1 16:9 7 14 ? W T L T W"
+        },
+        {
+         "text": "7. Everton 9 3 4 2 9:9 0 13 ? W L L T W"
+        },
+        {
+         "text": "8. Bournemouth 9 3 3 3 14:13 1 12 ? W W W L L"
+        },
+        {
+         "text": "9. Tottenham 9 3 3 3 10:10 0 12 ? W W W T L"
+        },
+        {
+         "text": "10. Aston Villa 9 3 3 3 10:13 -3 12 ? T W W T W"
+        },
+        {
+         "text": "11. Hull 9 2 5 2 11:10 1 11 ? T T L T L"
+        },
+        {
+         "text": "12. Leeds 9 2 5 2 9:8 1 11 ? L T T L T"
+        },
+        {
+         "text": "13. Newcastle 9 3 2 4 12:15 -3 11 ? L W L L W"
+        },
+        {
+         "text": "14. Ipswich 9 3 2 4 14:18 -4 11 ? T T L W L"
+        },
+        {
+         "text": "15. Fulham 9 2 3 4 9:11 -2 9 ? T W W L T"
+        },
+        {
+         "text": "16. Coventry 9 3 0 6 9:16 -7 9 ? W L L W W"
+        },
+        {
+         "text": "17. Manchester Utd 9 1 4 4 10:15 -5 7 ? L L T T T"
+        },
+        {
+         "text": "18. Crystal Palace 9 2 1 6 9:21 -12 7 ? L L L W T"
+        },
+        {
+         "text": "19. Nottingham 9 1 3 5 6:12 -6 6 ? L T L L L"
+        },
+        {
+         "text": "20. Sunderland 9 1 2 6 7:17 -10 5 ? L T L L L"
+        }
+       ]
+      }
+     }
+    ],
+    "odds": [],
+    "news": [],
+    "extra": []
+   },
+   "coverage": {
+    "summary": {
+     "status": "collected",
+     "detail": "See source records and evidence."
+    },
+    "statistics": {
+     "status": "collected",
+     "detail": "Rendered tab content captured; see raw text/tables and response evidence."
+    },
+    "lineups": {
+     "status": "collected",
+     "detail": "Rendered tab content captured; see raw text/tables and response evidence."
+    },
+    "incidents": {
+     "status": "collected",
+     "detail": "Rendered tab content captured; see raw text/tables and response evidence."
+    },
+    "players": {
+     "status": "collected",
+     "detail": "See source records and evidence."
+    },
+    "recent_player_form": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "team_analysis": {
+     "status": "collected",
+     "detail": "See source records and evidence."
+    },
+    "h2h": {
+     "status": "collected",
+     "detail": "Rendered tab content captured; see raw text/tables and response evidence."
+    },
+    "standings": {
+     "status": "collected",
+     "detail": "Rendered tab content captured; see raw text/tables and response evidence."
+    },
+    "odds": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "news": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "extra": {
+     "status": "collected",
+     "detail": "See source records and evidence."
+    }
+   },
+   "evidence": [],
+   "warnings": [
+    "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched."
+   ],
+   "limits": {
+    "pages_attempted": 24,
+    "page_budget": 30,
+    "news_limit": 15,
+    "browser_enabled": true
+   }
+  },
+  {
+   "source": "ballhelper",
+   "status": "not_found",
+   "match": null,
+   "candidates": [],
+   "data": {
+    "summary": [],
+    "statistics": [],
+    "lineups": [],
+    "incidents": [],
+    "players": [],
+    "recent_player_form": [],
+    "team_analysis": [],
+    "h2h": [],
+    "standings": [],
+    "odds": [],
+    "news": [],
+    "extra": []
+   },
+   "coverage": {
+    "summary": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "statistics": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "lineups": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "incidents": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "players": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "recent_player_form": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "team_analysis": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "h2h": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "standings": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "odds": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "news": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    },
+    "extra": {
+     "status": "not_discovered",
+     "detail": "No corresponding data was discovered within the collection scope."
+    }
+   },
+   "evidence": [],
+   "warnings": [
+    "Ballhelper is served over unencrypted HTTP; HTTPS currently has a hostname certificate mismatch.",
+    "Ballhelper's automatic discovery covers its current weekly window and supplied league/result URLs. No full historical index is exposed here.",
+    "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched."
+   ],
+   "limits": {
+    "pages_attempted": 3,
+    "page_budget": 30,
+    "news_limit": 15,
+    "browser_enabled": true
+   }
+  },
+  {
+   "source": "sofascore",
+   "status": "blocked",
+   "match": null,
+   "candidates": [],
+   "data": {
+    "summary": [],
+    "statistics": [],
+    "lineups": [],
+    "incidents": [],
+    "players": [],
+    "recent_player_form": [],
+    "team_analysis": [],
+    "h2h": [],
+    "standings": [],
+    "odds": [],
+    "news": [],
+    "extra": []
+   },
+   "coverage": {
+    "summary": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "statistics": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "lineups": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "incidents": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "players": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "recent_player_form": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "team_analysis": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "h2h": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "standings": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "odds": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "news": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    },
+    "extra": {
+     "status": "blocked",
+     "detail": "HTTP 403"
+    }
+   },
+   "evidence": [],
+   "warnings": [
+    "HTTP 403: https://www.sofascore.com/robots.txt"
+   ],
+   "limits": {
+    "pages_attempted": 1,
+    "page_budget": 30,
+    "news_limit": 15,
+    "browser_enabled": true
+   }
+  }
+ ],
+ "conflicts": [],
+ "scope": "A bounded snapshot of discovered match pages, data responses, tabs and related news. Unknown fields and raw responses are retained. No guarantee of exhaustive website coverage."
+}

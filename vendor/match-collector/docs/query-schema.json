@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "opponent_a": {
+      "maxLength": 120,
+      "minLength": 2,
+      "title": "Opponent A",
+      "type": "string"
+    },
+    "opponent_b": {
+      "maxLength": 120,
+      "minLength": 2,
+      "title": "Opponent B",
+      "type": "string"
+    },
+    "date": {
+      "format": "date",
+      "title": "Date",
+      "type": "string"
+    },
+    "timezone": {
+      "default": "UTC",
+      "title": "Timezone",
+      "type": "string"
+    },
+    "aliases_a": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Aliases A",
+      "type": "array"
+    },
+    "aliases_b": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Aliases B",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "enum": [
+          "soccerway",
+          "ballhelper",
+          "sofascore"
+        ],
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "seed_urls": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "propertyNames": {
+        "enum": [
+          "soccerway",
+          "ballhelper",
+          "sofascore"
+        ]
+      },
+      "title": "Seed Urls",
+      "type": "object"
+    },
+    "include_news": {
+      "default": true,
+      "title": "Include News",
+      "type": "boolean"
+    },
+    "news_days": {
+      "default": 7,
+      "maximum": 90,
+      "minimum": 0,
+      "title": "News Days",
+      "type": "integer"
+    },
+    "browser": {
+      "default": true,
+      "title": "Browser",
+      "type": "boolean"
+    },
+    "max_pages_per_source": {
+      "default": 30,
+      "maximum": 300,
+      "minimum": 2,
+      "title": "Max Pages Per Source",
+      "type": "integer"
+    },
+    "max_news": {
+      "default": 15,
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Max News",
+      "type": "integer"
+    },
+    "ballhelper_timezone": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ballhelper Timezone"
+    }
+  },
+  "required": [
+    "opponent_a",
+    "opponent_b",
+    "date"
+  ],
+  "title": "MatchQuery",
+  "type": "object"
+}

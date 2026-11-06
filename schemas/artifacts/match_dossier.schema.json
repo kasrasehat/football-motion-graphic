@@ -27,7 +27,7 @@
         "required": ["id", "origin", "web_id", "fact_key", "category", "statement", "value", "unit", "as_of", "sources", "confidence"],
         "properties": {
           "id": {"type": "string", "pattern": "^C-\\d{3,4}$"},
-          "origin": {"enum": ["api", "web"]},
+          "origin": {"enum": ["api", "web", "collector"]},
           "web_id": {"type": ["string", "null"], "pattern": "^W-\\d{3,4}$"},
           "fact_key": {"anyOf": [{"$ref": "../defs.schema.json#/$defs/fact_key"}, {"type": "null"}]},
           "category": {"type": "string"},

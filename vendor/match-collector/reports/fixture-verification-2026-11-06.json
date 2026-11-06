@@ -1,0 +1,366 @@
+{
+  "test_date": "2026-11-06",
+  "fixtures": [
+    {
+      "fixture": "Ipswich vs Bournemouth",
+      "job": "8d2be23afbb94556834343f450459016",
+      "prior_games": 18,
+      "published_rows": 42,
+      "checks": {
+        "download": {
+          "checked": 1,
+          "matched": 1
+        },
+        "fixture": {
+          "checked": 2,
+          "matched": 2
+        },
+        "history": {
+          "checked": 1,
+          "matched": 1
+        },
+        "historical scores": {
+          "checked": 36,
+          "matched": 36
+        },
+        "team statistics": {
+          "checked": 72,
+          "matched": 72
+        },
+        "published totals": {
+          "checked": 43,
+          "matched": 43
+        },
+        "published goal pairs": {
+          "checked": 42,
+          "matched": 42
+        },
+        "published last five": {
+          "checked": 42,
+          "matched": 42
+        },
+        "player metrics": {
+          "checked": 2,
+          "matched": 2
+        },
+        "player ratings": {
+          "checked": 2,
+          "matched": 2
+        },
+        "player value counts": [
+          [
+            "4OEL1HuC",
+            4120,
+            30
+          ],
+          [
+            "nJY69nUb",
+            4429,
+            31
+          ]
+        ],
+        "roster": {
+          "checked": 2,
+          "matched": 2
+        },
+        "preview": {
+          "checked": 2,
+          "matched": 2
+        },
+        "rendered standings": {
+          "checked": 20,
+          "matched": 20
+        },
+        "rendered h2h": {
+          "checked": 15,
+          "matched": 15
+        }
+      },
+      "discrepancies": [],
+      "sources": {
+        "soccerway": {
+          "status": "partial",
+          "categories": {
+            "summary": 1,
+            "statistics": 1,
+            "players": 1,
+            "recent_player_form": 2,
+            "team_analysis": 5,
+            "h2h": 1,
+            "standings": 1,
+            "news": 1,
+            "extra": 67
+          },
+          "warnings": [
+            "HTTP 404: https://2035.ds.lsapp.eu/pq_graphql?_hash=epmsse&eventId=2sa6AoOq&projectId=2035",
+            "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched."
+          ]
+        },
+        "ballhelper": {
+          "status": "unverified",
+          "categories": {
+            "summary": 1,
+            "statistics": 6,
+            "standings": 1
+          },
+          "warnings": [
+            "Ballhelper is served over unencrypted HTTP; HTTPS currently has a hostname certificate mismatch.",
+            "Relevant fixture found, but Ballhelper does not advertise a timezone. Its date cannot be verified as UTC. Set ballhelper_timezone only after establishing the site's convention.",
+            "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched."
+          ]
+        },
+        "sofascore": {
+          "status": "blocked",
+          "categories": {},
+          "warnings": [
+            "HTTP 403: https://www.sofascore.com/robots.txt"
+          ]
+        }
+      }
+    },
+    {
+      "fixture": "Villarreal vs Getafe",
+      "job": "ad976bf83c554d4096b1e7f082f6d7f6",
+      "prior_games": 22,
+      "published_rows": 42,
+      "checks": {
+        "download": {
+          "checked": 1,
+          "matched": 1
+        },
+        "fixture": {
+          "checked": 2,
+          "matched": 2
+        },
+        "history": {
+          "checked": 1,
+          "matched": 1
+        },
+        "historical scores": {
+          "checked": 44,
+          "matched": 44
+        },
+        "team statistics": {
+          "checked": 72,
+          "matched": 72
+        },
+        "published totals": {
+          "checked": 43,
+          "matched": 43
+        },
+        "published goal pairs": {
+          "checked": 42,
+          "matched": 42
+        },
+        "published last five": {
+          "checked": 42,
+          "matched": 42
+        },
+        "player metrics": {
+          "checked": 2,
+          "matched": 2
+        },
+        "player ratings": {
+          "checked": 2,
+          "matched": 2
+        },
+        "player value counts": [
+          [
+            "Y7dW9kaT",
+            4326,
+            32
+          ],
+          [
+            "GzzIQlbK",
+            4429,
+            29
+          ]
+        ],
+        "roster": {
+          "checked": 2,
+          "matched": 2
+        },
+        "preview": {
+          "checked": 2,
+          "matched": 2
+        },
+        "rendered standings": {
+          "checked": 20,
+          "matched": 20
+        },
+        "rendered h2h": {
+          "checked": 15,
+          "matched": 15
+        }
+      },
+      "discrepancies": [],
+      "sources": {
+        "soccerway": {
+          "status": "partial",
+          "categories": {
+            "summary": 1,
+            "statistics": 1,
+            "players": 1,
+            "recent_player_form": 2,
+            "team_analysis": 5,
+            "h2h": 1,
+            "standings": 1,
+            "news": 1,
+            "extra": 67
+          },
+          "warnings": [
+            "HTTP 404: https://2035.ds.lsapp.eu/pq_graphql?_hash=epmsse&eventId=xts7rDX9&projectId=2035",
+            "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched.",
+            "Page budget exhausted; undiscovered pages may contain additional data."
+          ]
+        },
+        "ballhelper": {
+          "status": "unverified",
+          "categories": {
+            "summary": 1,
+            "statistics": 6,
+            "standings": 1
+          },
+          "warnings": [
+            "Ballhelper is served over unencrypted HTTP; HTTPS currently has a hostname certificate mismatch.",
+            "Relevant fixture found, but Ballhelper does not advertise a timezone. Its date cannot be verified as UTC. Set ballhelper_timezone only after establishing the site's convention.",
+            "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched."
+          ]
+        },
+        "sofascore": {
+          "status": "blocked",
+          "categories": {},
+          "warnings": [
+            "HTTP 403: https://www.sofascore.com/robots.txt"
+          ]
+        }
+      }
+    },
+    {
+      "fixture": "Newcastle vs Everton",
+      "job": "d2fe53f7d6f44443a6b3a6a4f11269a2",
+      "prior_games": 16,
+      "published_rows": 42,
+      "checks": {
+        "download": {
+          "checked": 1,
+          "matched": 1
+        },
+        "fixture": {
+          "checked": 3,
+          "matched": 3
+        },
+        "history": {
+          "checked": 1,
+          "matched": 1
+        },
+        "historical scores": {
+          "checked": 32,
+          "matched": 32
+        },
+        "team statistics": {
+          "checked": 72,
+          "matched": 72
+        },
+        "published totals": {
+          "checked": 43,
+          "matched": 43
+        },
+        "published goal pairs": {
+          "checked": 42,
+          "matched": 42
+        },
+        "published last five": {
+          "checked": 42,
+          "matched": 42
+        },
+        "player metrics": {
+          "checked": 1,
+          "matched": 1
+        },
+        "player ratings": {
+          "checked": 1,
+          "matched": 1
+        },
+        "player value counts": [
+          [
+            "YceoIxQh",
+            4120,
+            26
+          ]
+        ],
+        "roster": {
+          "checked": 1,
+          "matched": 1
+        },
+        "rendered statistics": {
+          "checked": 45,
+          "matched": 45
+        },
+        "rendered standings": {
+          "checked": 20,
+          "matched": 20
+        },
+        "rendered h2h": {
+          "checked": 15,
+          "matched": 15
+        },
+        "rendered incidents": {
+          "checked": 78,
+          "matched": 78
+        },
+        "lineup": {
+          "checked": 2,
+          "matched": 2
+        }
+      },
+      "discrepancies": [],
+      "sources": {
+        "soccerway": {
+          "status": "partial",
+          "categories": {
+            "summary": 1,
+            "statistics": 1,
+            "lineups": 1,
+            "incidents": 1,
+            "players": 1,
+            "team_analysis": 4,
+            "h2h": 1,
+            "standings": 1,
+            "extra": 47
+          },
+          "warnings": [
+            "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched."
+          ]
+        },
+        "ballhelper": {
+          "status": "not_found",
+          "categories": {},
+          "warnings": [
+            "Ballhelper is served over unencrypted HTTP; HTTPS currently has a hostname certificate mismatch.",
+            "Ballhelper's automatic discovery covers its current weekly window and supplied league/result URLs. No full historical index is exposed here.",
+            "News scope: relevant links on discovered source pages and up to three linked news indexes, within the requested date window. Undated articles are marked unverified; external unlinked news is not searched."
+          ]
+        },
+        "sofascore": {
+          "status": "blocked",
+          "categories": {},
+          "warnings": [
+            "HTTP 403: https://www.sofascore.com/robots.txt"
+          ]
+        }
+      }
+    }
+  ],
+  "comparison_sources": {
+    "Premier League": "http://www.ballhelper.com/soccer-football/england-premier/england-premier-league-fixtures-and-results.php",
+    "LaLiga": "http://www.ballhelper.com/soccer-football/spain1/spain-primera-division-fixtures-and-results.php"
+  },
+  "method": "Compared the set of prior games, half-time and full-time scores, venue splits, derived markets, published goal counts and recent totals sequences to a second site's league results. Player metric values, ratings, rosters and selected rendered rows were compared with saved Soccerway responses. The completed match used an exact Soccerway URL. This comparison cannot establish the correctness of the publishers or verify every field in all reports.",
+  "negative_control": {
+    "opponents": "Newcastle vs Everton",
+    "incorrect_utc_date": "2026-11-03",
+    "status": "no_verified_match",
+    "records_returned": 0
+  }
+}

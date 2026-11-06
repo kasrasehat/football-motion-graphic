@@ -23,6 +23,7 @@ new session says keys are not migrated, run this once in the Terminal panel; no 
 ```
 py -3.12 -m venv .venv
 .venv\Scripts\python -m pip install -e .[dev]
+.venv\Scripts\python -m pip install "./vendor/match-collector[dev]"
 npm --prefix render ci
 .venv\Scripts\tms doctor
 ```
