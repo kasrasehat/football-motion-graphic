@@ -1,0 +1,14 @@
+{
+  "opponent_a": "Arsenal",
+  "opponent_b": "Hull City",
+  "aliases_b": ["Hull"],
+  "date": "2026-11-07",
+  "timezone": "UTC",
+  "sources": ["soccerway", "ballhelper", "sofascore"],
+  "include_news": true,
+  "news_days": 7,
+  "browser": true,
+  "max_pages_per_source": 30,
+  "max_news": 15,
+  "seed_urls": {}
+}

@@ -14,6 +14,8 @@ from tms.validate.registry import rule
 def sources_usable(doc, ctx, p):
     for c in doc["claims"]:
         for s in c["sources"]:
+            if s["kind"] == "collector":
+                yield c["id"], "collector sources come from `tms research scrape`, not from web_claims"
             if s["kind"] == "web" and FX.blocked(s["url"]):
                 yield c["id"], f"{FX.domain(s['url'])} is not an acceptable source (social media / user content)"
             if jsonio.parse_iso(s["retrieved_at"]) > ctx.now + timedelta(minutes=5):
@@ -66,7 +68,7 @@ def key_fact_support(doc, ctx, p):
         cs = [claims[i] for i in f["claim_ids"] if i in claims]
         if any(c["origin"] == "api" for c in cs):
             continue
-        domains = {FX.domain(s["url"]) for c in cs for s in c["sources"] if s["kind"] == "web"}
+        domains = {FX.domain(s["url"]) for c in cs for s in c["sources"] if s["kind"] in ("web", "collector")}
         if len(domains) >= 2:
             continue
         if any(c["web_id"] in flagged for c in cs):

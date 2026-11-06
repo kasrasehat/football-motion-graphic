@@ -64,6 +64,8 @@ def type_problem(key: str, value) -> str | None:
         return f"{key} must be a string"
     if t == "string" and sp.get("pattern") and not re.match(sp["pattern"], value):
         return f"{key}={value!r} does not match {sp['pattern']}"
+    if t == "record" and not isinstance(value, dict):
+        return f"{key} must be an object"
     if t == "form" and (not isinstance(value, list) or not value or any(v not in ("W", "D", "L") for v in value)):
         return f"{key} must be a list of W/D/L"
     if t == "xi":

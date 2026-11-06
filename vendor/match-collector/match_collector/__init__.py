@@ -1,0 +1,1 @@
+"""Match-driven football extraction."""

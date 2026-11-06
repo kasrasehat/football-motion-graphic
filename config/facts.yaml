@@ -1,5 +1,5 @@
 # Fact-key registry for match_dossier.facts. `T` stands for the team prefix H (home) or A (away).
-# type: number | integer | string | list | form | xi | absences | results
+# type: number | integer | string | list | form | xi | absences | results | record
 # freshness: news (<= 48 h old), stats (<= 7 days), static (no limit)
 # key: true => needs >= 2 independent sources (or an API source, or an explicit single_source flag)
 # required: error (MD-06 error when missing) | warning (MD-06 warning) | no (a bare `no` is YAML false; both mean optional)
@@ -38,6 +38,7 @@ facts:
   T.suspensions:           {type: absences, freshness: news, key: true, required: warning}
   T.predicted_xi:          {type: xi, freshness: news, key: true, required: error}
   T.key_players:           {type: list, freshness: stats, key: false, required: warning}
+  T.split:                 {prefix: true, type: record, freshness: stats, key: false, required: no}  # overall/home/away: W/D/L, goals, BTTS, goal lines, HT/FT, with sample sizes
   T.tactics:               {prefix: true, type: string, freshness: stats, key: false, required: error}
 
 # Coverage categories counted in match_dossier.coverage (MD-07 requires at least these many claims).

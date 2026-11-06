@@ -72,6 +72,14 @@ def check_browser(r: Report) -> None:
     r.add("browser", bool(exe) and Path(exe).is_file(), exe or "set TMS_BROWSER_EXECUTABLE (headless-shell download is geo-blocked)")
 
 
+def check_match_collector(r: Report) -> None:
+    try:
+        from match_collector.service import collect  # noqa: F401
+        r.add("match-collector", True, "importable")
+    except ImportError:
+        r.add("match-collector", False, "install it: .venv/Scripts/python.exe -m pip install ./vendor/match-collector", level="warn")
+
+
 def check_smoke_render(r: Report) -> None:
     """60-frame render into a directory whose name contains spaces, then count frames with ffprobe."""
     with tempfile.TemporaryDirectory(prefix="tms doctor ") as td:
@@ -207,6 +215,7 @@ def run_doctor(quick: bool = False, online: bool = False, probe: bool = False, r
     check_node(r)
     check_render_deps(r)
     check_browser(r)
+    check_match_collector(r)
     if not quick:
         check_smoke_render(r)
     check_keys(r)

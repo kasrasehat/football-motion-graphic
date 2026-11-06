@@ -128,6 +128,28 @@ def cmd_collect(a):
     return 0
 
 
+@handled
+def cmd_scrape(a):
+    from tms.research import scrape
+    from tms.research.scrape_map import map_report
+    pr = P.load(a.project)
+    machine.require_active(pr, "research")
+    sources = [s.strip() for s in a.sources.split(",") if s.strip()]
+    if a.replay:
+        scrape.replay(pr, Path(a.replay))
+    else:
+        scrape.collect(pr, sources, browser=not a.no_browser)
+    _, report = scrape.load_latest(pr)
+    print("\n".join(scrape.coverage_lines(report)))
+    mapped = map_report(report, pr.load_artifact("brief"))
+    jsonio.write_json(pr.dir / "media" / "research" / "collector_claims.json", mapped)
+    print(f"mapped {len(mapped['claims'])} claims for the dossier; {len(mapped['gaps'])} gaps for the researchers:")
+    print("\n".join(f"  gap: {g['source']}: {g['need']}: {g['why']}" for g in mapped["gaps"]))
+    machine.log_decision(pr, "data", "agent", f"Collector run {report.run_id} ({'replayed' if a.replay else 'live'}, sources "
+                         f"{', '.join(report.query.sources)}): {report.status}.", "research")
+    return 0
+
+
 def build(pr) -> list:
     machine.require_active(pr, "research")
     brief = pr.load_artifact("brief")
@@ -141,7 +163,11 @@ def build(pr) -> list:
         inputs["web_claims"] = jsonio.sha256_file(pr.artifact_path("web_claims"))
     if api_file.is_file():
         inputs["api_claims"] = jsonio.sha256_file(api_file)
-    doc = merge(pr.id, brief, api_claims, web, now_iso(), inputs, calls)
+    collector_file = pr.dir / "media" / "research" / "collector_claims.json"
+    collector_claims = jsonio.read_json(collector_file)["claims"] if collector_file.is_file() else []
+    if collector_file.is_file():
+        inputs["collector_claims"] = jsonio.sha256_file(collector_file)
+    doc = merge(pr.id, brief, api_claims, web, now_iso(), inputs, calls, collector_claims)
     jsonio.write_json(pr.artifact_path("match_dossier"), doc)
     return V.validate_file(pr.dir, "match_dossier", pr.mode)
 
@@ -179,6 +205,12 @@ def register(sub) -> None:
     add_query_args(k)
     k.add_argument("--fixture-id", type=int, help="API-Football fixture id, if known")
     k.set_defaults(func=cmd_collect)
+    s = rsub.add_parser("scrape", help="run the vendored match collector for the brief's fixture into media/research/collector (or --replay a saved report)")
+    add_project_arg(s)
+    s.add_argument("--sources", default="soccerway,ballhelper,sofascore", help="comma-separated: soccerway, ballhelper, sofascore")
+    s.add_argument("--no-browser", action="store_true", help="plain HTTP only; rendered tabs and published totals may be absent")
+    s.add_argument("--replay", metavar="REPORT", help="use a saved report.json for this fixture, with no network")
+    s.set_defaults(func=cmd_scrape)
     b = rsub.add_parser("build", help="merge API claims + artifacts/web_claims.json -> build/match_dossier.json, then MD validation")
     add_project_arg(b)
     b.set_defaults(func=cmd_build)

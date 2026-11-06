@@ -27,12 +27,16 @@ def _independent_domains(cs: list[dict]) -> set[str]:
 
 
 def merge(project_id: str, brief: dict, api_claims: list[dict], web: dict | None, built_at: str, inputs: dict,
-          api_calls: int) -> dict:
+          api_calls: int, collector_claims: list[dict] | None = None) -> dict:
     claims = []
     n = 0
     for c in api_claims:
         n += 1
         claims.append({"id": f"C-{n:03d}", "origin": "api", "web_id": None, **{k: c[k] for k in
+                       ("fact_key", "category", "statement", "value", "unit", "as_of", "sources", "confidence")}})
+    for c in collector_claims or []:
+        n += 1
+        claims.append({"id": f"C-{n:03d}", "origin": "collector", "web_id": None, **{k: c[k] for k in
                        ("fact_key", "category", "statement", "value", "unit", "as_of", "sources", "confidence")}})
     single = {}
     for w in (web or {}).get("claims", []):

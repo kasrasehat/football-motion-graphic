@@ -8,6 +8,9 @@ Read `skills/football-tactics/SKILL.md`, `skills/prediction-model/SKILL.md`, `sk
 
 ## Inputs
 Project slug; brief, `build/match_dossier.json`, `artifacts/web_claims.json`.
+`H/A.split.overall|home|away` facts hold W/D/L, goals, BTTS, goal lines and HT/FT counts. Use them for when and how teams score and for strengths
+and weaknesses, and always state the sample: rates come from `played`, HT/FT rates from `ht_ft_sample`, and an empty sample is unknown.
+These are historical frequencies, not forecasts.
 
 ## Produce
 1. **tactic_spec** (`focus_team: "both"`): scaffold expected shapes
