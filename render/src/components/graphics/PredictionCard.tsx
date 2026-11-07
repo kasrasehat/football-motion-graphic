@@ -4,7 +4,7 @@ import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
 import { cardTeamFill, cardTeamInk, layoutMode, parseScore, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
 import { estimateTextWidth, unit } from "../../lib/layout";
-import { abs, asRecord, neutral, Para, paraLines, pickString, Shell, str, Swatch, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asRecord, Para, paraLines, pickString, Shell, str, markWidth, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 /** Fixed footer of every prediction card (always rendered, whatever the data). */
 export const PREDICTION_DISCLAIMER = "Statistical analysis, not betting advice";
@@ -82,8 +82,8 @@ export const PredictionCard: React.FC<GraphicProps> = (gp) => {
     <Shell gp={gp} L={L} kicker="The verdict" title={pickString(d, ["title", "headline"]) || "Prediction"}>
       {resultText && p0 > 0 ? (
         <div style={{ ...abs(0, 0, bw, resultH * k), display: "flex", alignItems: "center", justifyContent: "center", gap: 20 * u, opacity: clamp01(p0 * 1.4), transform: `translateY(${(1 - p0) * 20 * u}px)` }}>
-          <Swatch theme={theme} side={side} w={14 * u} h={resultFs * 0.78 * k} u={u} style={isDraw ? { background: neutral(theme) } : undefined} />
-          <Txt text={resultText} w={Math.min(resultMax, resultW + 4 * u)} size={resultFs * k} upper ls={0.02} color={theme.ink} lh={1.1} inline />
+          <TeamMark theme={theme} side={side} h={resultFs * 0.62 * k} u={u} uid={g.id} />
+          <Txt text={resultText} w={Math.min(resultMax - (side ? markWidth(resultFs * 0.62 * k) : 0), resultW + 4 * u)} size={resultFs * k} upper ls={0.02} color={theme.ink} lh={1.1} inline />
         </div>
       ) : null}
       {p1 > 0 ? (

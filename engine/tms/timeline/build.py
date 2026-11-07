@@ -10,6 +10,10 @@ VO_TAIL_S = 0.35        # breathing room after the last word
 SLOPE_MIN, SLOPE_MAX = 0.8, 1.25
 MAX_HOLD_F = 90          # 3 s
 MAX_SHIFT_F = 30         # the voice may start up to 1 s late to make room for motion
+DUCK_BRIDGE_F = 75       # gaps up to 2.5 s between lines stay ducked, so the bed does not swell at every scene change
+DUCK_DEPTH_DB = -14.0    # music under the voice
+DUCK_ATTACK_MS = 300.0
+DUCK_RELEASE_MS = 1200.0  # slow, gentle return when a real pause opens up
 
 
 class TimelineError(Exception):
@@ -17,6 +21,21 @@ class TimelineError(Exception):
         super().__init__("; ".join(problems))
         self.problems = problems
 
+
+
+def duck_windows(vo_out: list[dict], total: int) -> list[list[int]]:
+    """Frame windows where the music is ducked under the voice. Gaps up to DUCK_BRIDGE_F stay ducked, so the bed does not
+    swell between lines or at scene changes, and the last window runs to the end, so the bed fades out still ducked."""
+    windows: list[list[int]] = []
+    for v in vo_out:
+        a, b = v["from"], v["from"] + math.ceil(v["samples"] / SPF)
+        if windows and a - windows[-1][1] <= DUCK_BRIDGE_F:
+            windows[-1][1] = max(windows[-1][1], b)
+        else:
+            windows.append([a, b])
+    if windows:
+        windows[-1][1] = total
+    return windows
 
 def _ref_tau(choreo: dict, scene_id: str, ref: str, tau0: float) -> float | None:
     """Scene-local tau of an anchor ref (event id, action handle[.start|.end], or graphic reveal)."""
@@ -206,18 +225,12 @@ def build_timeline(choreo: dict, vo: dict, narration: dict, project_id: str, inp
     if problems:
         raise TimelineError(problems)
     total = f + OUTRO_FRAMES
-    windows = []
-    for v in vo_out:
-        a, b = v["from"], v["from"] + math.ceil(v["samples"] / SPF)
-        if windows and a - windows[-1][1] <= 8:
-            windows[-1][1] = b
-        else:
-            windows.append([a, b])
+    windows = duck_windows(vo_out, total)
     return {
         "version": "1", "project_id": project_id, "inputs": inputs, "fps": FPS, "sr": SPF * FPS, "frames": total,
         "intro": {"from": 0, "to": INTRO_FRAMES}, "outro": {"from": f, "to": total},
         "scenes": scenes, "vo": vo_out, "words": words_out, "anchors": anchors_out,
         "captions": [{"id": f"C{k + 1:02d}", "from": c["from"], "to": max(c["to"], c["from"] + 1), "lines": c["lines"],
                       "words": c["word_index"], "place": "bottom"} for k, c in enumerate(caps)],
-        "duck": {"windows": windows, "depth_db": -10.0, "attack_ms": 150.0, "release_ms": 450.0},
+        "duck": {"windows": windows, "depth_db": DUCK_DEPTH_DB, "attack_ms": DUCK_ATTACK_MS, "release_ms": DUCK_RELEASE_MS},
     }, warnings

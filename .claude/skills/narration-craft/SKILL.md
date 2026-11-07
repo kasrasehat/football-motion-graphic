@@ -16,14 +16,35 @@ Schema: `schemas/artifacts/narration_script.schema.json`; rules `NS-xx` in `conf
 - `title_card` (≤ 40 / ≤ 60 chars) and `end_card` (≤ 60) are on-screen text, not spoken.
 
 ## Timing (the engine measures the real voice later, so estimate honestly)
-- Speech ≈ **2.6 words per second** plus ~0.25 s per sentence break.
+- Speech ≈ **2.6 words per second** plus ~0.25 s per sentence break for the validator's estimate, but the live
+  ElevenLabs voices measured so far speak about **2.0 words per second**, with ~0.5 s at full stops and numbers
+  spoken in full ("1.56" is four words). Size scenes for the real voice, or the timeline will not solve.
 - Per scene: at most 1.6 × scene length + 1 s of speech (holds absorb the excess, ≤ 3 s each). If you need more
   words, lengthen the scene or add a hold after the key moment.
 - Whole script: 0.6–1.15 × the brief's target duration (`NS-03`).
 
 ## Hold attention (match previews and tactic videos)
-- **The hook earns the watch.** In the first 5 seconds: a surprising true fact, a contradiction, or a stake, from the dossier or the tactic. "Arsenal have won eight of nine, and the one team that beat them plays the way Madrid will." It is true and specific to this match, never a generic "this is a huge game".
+- **The hook earns the watch, in the first 3 seconds.** The very first spoken words and the first frame carry it: no
+  greeting, no "today we're looking at", no title or logo before it. Use suspense, surprise, contrast or stakes, as a
+  curiosity gap: one specific unknown the viewer half-knows ("…so why are they above United?"). It is a surprising
+  true fact from the dossier or the tactic, specific to this match, never a generic "this is a huge game".
+  Hook patterns (every number bound to a fact key or prediction path): contrast plus question ("{away} have won
+  {n} of {m} visits here, yet sit {k} places above them"); stakes ("lose, and {team} {sourced consequence}"); one
+  battle ("this game could be decided in one zone…"); a sourced bold claim; a cold open on the pitch mid-move.
+- **Seconds 3 to 15: why it matters and what's coming.** One line of stakes and a one-line roadmap, so the viewer
+  knows the video will answer the hook.
 - **Open a question the end answers.** Say what the video will settle, and pay it off in the last scene. A hook the video doesn't pay off is clickbait: rewrite it.
+- **Re-hook at transitions, about every 20 to 30 seconds.** Viewers leave at scene changes: end a scene with a
+  one-line tease of the next beat ("But that's not where Villa are most exposed…"). Keep at most one big open loop
+  at a time, and close it before opening a bigger one.
+- **Put the strongest reveal about two-thirds in** (usually the decisive tactical battle), not at the very end,
+  while most viewers are still watching. End on the payoff (the prediction plus one "watch for this" cue) with no
+  long outro; for vertical cuts, let the last line echo the first so the loop replays.
+- **Let visuals carry detail** the voice doesn't need to say, and keep on-screen text short enough to read with the
+  sound off.
+- Sources for these rules: YouTube Help on retention (support.google.com/youtube/answer/9314415), TikTok creative
+  best practices (ads.tiktok.com/help/article/creative-best-practices), Meta Reels tips
+  (creators.facebook.com/reels-best-practices-tips-tricks), Loewenstein (1994) on the curiosity gap.
 - **Something new every 15 to 20 seconds:** a new fact, a turn ("but"), or a shift from numbers to the pitch. No two graphic scenes in a row saying the same kind of thing.
 - **A little fun.** Sound like a sharp pundit having a good time: a dry aside, a rivalry, a playful comparison. One or two per video, about football. Never about injuries, illness, private lives, nationality or a person's looks, and never at the cost of accuracy.
 - **Caveats once, up front, in plain words.** "Three games each, so a small sample" is enough; let "if" carry a scenario and let on-screen labels repeat it. Stacking "reportedly" and "according to" sounds like a sourcing memo.

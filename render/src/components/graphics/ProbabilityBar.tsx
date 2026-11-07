@@ -5,7 +5,7 @@ import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
 import { asNumber, cardTeamFill, cardTrack, largestRemainder, layoutMode, revealFrame, revealProgress, shellLayout, splitEven } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asRecord, neutral, pickString, Shell, Swatch, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asRecord, neutral, pickString, Shell, markWidth, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 const GROW_FRAMES = 20;
 
@@ -65,8 +65,8 @@ export const ProbabilityBar: React.FC<GraphicProps> = (gp) => {
                   <span style={{ fontSize: big * 0.5, color: rgba(theme.ink, 0.75), marginLeft: 4 * u }}>%</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: justify, gap: 12 * u, marginTop: 10 * u, flexDirection: i === 2 ? "row-reverse" : "row" }}>
-                  <Swatch theme={theme} side={side} w={12 * u} h={nameFs} u={u} />
-                  <Txt text={labels[i]!} w={cw - 30 * u} inline size={nameFs} upper ls={0.04} color={side ? theme.ink : rgba(theme.ink, 0.75)} lh={1.25} />
+                  <TeamMark theme={theme} side={side} h={nameFs * 0.8} u={u} uid={g.id} />
+                  <Txt text={labels[i]!} w={cw - 12 * u - (side ? markWidth(nameFs * 0.8) : 12 * u) - 6 * u} inline size={nameFs} upper ls={0.04} color={side ? theme.ink : rgba(theme.ink, 0.75)} lh={1.25} />
                 </div>
               </div>
             ) : null}

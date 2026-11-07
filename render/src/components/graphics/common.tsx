@@ -7,7 +7,9 @@ import { clamp01, easeOutCubic } from "../../lib/anim";
 import { mix, rgba } from "../../lib/colors";
 import { barFractions, cardTeamFill, cardTrack, formatValue, ordinal, rankFractions, SHELL_1080, teamCrest, type ShellLayout } from "../../lib/graphics";
 import { estimateTextWidth, fitFontSize } from "../../lib/layout";
-import { CardBackdrop, cardEnvelope, Crest } from "../Cards";
+import { KIT_HEADER_WASH, kitTint } from "../../lib/flags";
+import { CardBackdrop, cardEnvelope, Crest, KitRule } from "../Cards";
+import { flagWidth, TeamFlag } from "../TeamFlag";
 
 export interface GraphicProps {
   g: Graphic;
@@ -163,18 +165,32 @@ export const Swatch: React.FC<{ theme: Theme; side: Side | null; w: number; h: n
 
 /** Crest size in the lock-up, as a share of its text size. */
 const LOCKUP_CREST = 1.6;
+/** Flag height in the lock-up, as a share of its text size. */
+const LOCKUP_FLAG = 0.95;
 
-/** "▮ RMA  v  ARS ▮" chip for the panel header. With `crests`, a team's crest takes the place of its colour block. */
-export const TeamLockup: React.FC<{ theme: Theme; u: number; fs: number; crests?: boolean }> = ({ theme, u, fs, crests = false }) => {
+/**
+ * A team's mark beside its name: its generated kit flag (`TeamFlag`), or the neutral swatch when there is no team
+ * (draws). `h` is the flag height; the mark is `markWidth(h)` wide.
+ */
+export const TeamMark: React.FC<{ theme: Theme; side: Side | null; h: number; u: number; uid: string; style?: React.CSSProperties }> = ({ theme, side, h, u, uid, style }) =>
+  side ? <TeamFlag theme={theme} side={side} h={h} uid={uid} style={style} /> : <Swatch theme={theme} side={null} w={12 * u} h={h} u={u} style={style} />;
+
+/** Width of a TeamMark for a team. */
+export function markWidth(h: number): number {
+  return flagWidth(h);
+}
+
+/** "[flag] MUN  v  AVL [flag]" chip for the panel header. With `crests`, a team's crest takes the place of its flag. */
+export const TeamLockup: React.FC<{ theme: Theme; u: number; fs: number; crests?: boolean; uid?: string }> = ({ theme, u, fs, crests = false, uid = "lockup" }) => {
   const chip = (side: Side) => {
     const crest = crests ? teamCrest(theme, side) : null;
     return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10 * u, flexDirection: side === "H" ? "row" : "row-reverse" }}>
-      {crest ? <Crest src={crest} size={fs * LOCKUP_CREST} /> : <Swatch theme={theme} side={side} w={12 * u} h={fs * 1.05} u={u} />}
-      <div style={{ fontFamily: TITLE_STACK, fontWeight: 800, fontSize: fs, lineHeight: 1.1, letterSpacing: "0.06em", color: theme.ink, whiteSpace: "nowrap" }}>
-        {theme.teams[side].short.toUpperCase().slice(0, 4)}
+      <div style={{ display: "flex", alignItems: "center", gap: 10 * u, flexDirection: side === "H" ? "row" : "row-reverse" }}>
+        {crest ? <Crest src={crest} size={fs * LOCKUP_CREST} /> : <TeamFlag theme={theme} side={side} h={fs * LOCKUP_FLAG} uid={uid} />}
+        <div style={{ fontFamily: TITLE_STACK, fontWeight: 800, fontSize: fs, lineHeight: 1.1, letterSpacing: "0.06em", color: theme.ink, whiteSpace: "nowrap" }}>
+          {theme.teams[side].short.toUpperCase().slice(0, 4)}
+        </div>
       </div>
-    </div>
     );
   };
   return (
@@ -189,7 +205,7 @@ export const TeamLockup: React.FC<{ theme: Theme; u: number; fs: number; crests?
 /** Estimated width of TeamLockup. */
 export function lockupWidth(theme: Theme, u: number, fs: number, crests = false): number {
   const t = (s: string) => estimateTextWidth(s.toUpperCase().slice(0, 4), fs, "title", 0.06);
-  const mark = (side: Side) => (crests && teamCrest(theme, side) ? fs * LOCKUP_CREST : 12 * u) + 10 * u;
+  const mark = (side: Side) => (crests && teamCrest(theme, side) ? fs * LOCKUP_CREST : flagWidth(fs * LOCKUP_FLAG)) + 10 * u;
   return mark("H") + mark("A") + t(theme.teams.H.short) + t(theme.teams.A.short) + 2 * 14 * u + fs * 0.5;
 }
 
@@ -233,7 +249,15 @@ export const Shell: React.FC<ShellProps> = ({ gp, L, kicker, title, lockup = tru
           overflow: "hidden",
         }}
       >
-        <div style={{ ...abs(0, 0, pw * rule, S.accent * u), background: theme.accent }} />
+        <div
+          style={{
+            ...abs(0, 0, pw, L.headerH),
+            background: `linear-gradient(90deg, ${rgba(kitTint(theme, "H"), KIT_HEADER_WASH)} 0%, ${rgba(kitTint(theme, "H"), 0)} 40%, ${rgba(kitTint(theme, "A"), 0)} 60%, ${rgba(kitTint(theme, "A"), KIT_HEADER_WASH)} 100%)`,
+            WebkitMaskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
+            maskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
+          }}
+        />
+        <KitRule theme={theme} w={pw} h={S.accent * u} p={rule} style={{ ...abs(0, 0), borderRadius: 0 }} />
         {kicker ? (
           <Txt
             text={kicker}
@@ -251,7 +275,7 @@ export const Shell: React.FC<ShellProps> = ({ gp, L, kicker, title, lockup = tru
         <Txt text={title} w={innerW - lockW} size={S.title * u} min={S.title * u * 0.6} family="title" weight={800} ls={0.02} upper color={theme.ink} lh={1.05} style={abs(L.padX, titleY)} />
         {lockup ? (
           <div style={{ ...abs(pw - L.padX - lockW + 24 * u, titleY + (S.title * 1.05 * u - lockH) / 2) }}>
-            <TeamLockup theme={theme} u={u} fs={lockFs} crests />
+            <TeamLockup theme={theme} u={u} fs={lockFs} crests uid={`shell-${g.id}`} />
           </div>
         ) : null}
         <div style={{ ...abs(L.padX, L.headerH - S.ruleGap * u * 0.5, innerW, Math.max(1, 1.5 * u)), background: rgba(theme.ink, 0.1) }} />

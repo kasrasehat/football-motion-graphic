@@ -5,7 +5,7 @@ import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
 import { asNumber, cardTeamFill, fitName, kitOutline, layoutMode, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asArray, asRecord, CompareRow, Para, paraLines, pickString, Shell, str, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asArray, asRecord, CompareRow, markWidth, Para, paraLines, pickString, Shell, str, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 const MAX_STATS = 5;
 const JERSEY = "M30 9 L41 4 Q50 13 59 4 L70 9 L93 23 L84 42 L74 36 L74 95 L26 95 L26 36 L16 42 L7 23 Z";
@@ -119,6 +119,7 @@ export const KeyPlayerDuel: React.FC<GraphicProps> = (gp) => {
         }}
       >
         <div style={{ ...abs(0, 0, cardW, 8 * u), background: cardFill }} />
+        <TeamMark theme={theme} side={s} h={26 * u} u={u} uid={g.id} style={abs(s === "H" ? 16 * u : cardW - 16 * u - markWidth(26 * u), 22 * u)} />
         <div style={{ ...abs((cardW - jersey) / 2, jy + 8 * u, jersey, jersey) }}>
           <Jersey size={jersey} theme={theme} side={s} number={num === null ? null : Math.round(num)} />
         </div>

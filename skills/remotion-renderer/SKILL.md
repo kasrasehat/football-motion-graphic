@@ -31,7 +31,8 @@ fixture changes, run `npm --prefix render run sync:fixture`).
 | `freeze` | `components/Hud.tsx` `FreezeVignette` | edge vignette + PAUSED badge (tracks are already frozen by the engine); the engine emits spans only for pauses of at least 1 s on the pitch (`_freeze_spans`) |
 | `graphics` | `components/graphics/registry.tsx` | all 12 templates implemented; see "Graphic templates" below |
 | `principleRail` | `components/PrincipleRail.tsx`, `lib/rail.ts` | tactic still only: key panel in `rect` (title, teams, ball holder, whole principle names, players as chips); type sized to fit (`railMetrics`) |
-| `theme.teams.*.crest` | `components/Cards.tsx` `Crest`, `lib/graphics.ts` `teamCrest` | optional PNG/SVG data URI, present only with `brief.show_crests`. Drawn on title cards and in the `Shell` lock-up (in place of the colour block), nowhere else. Anything but an embedded image is ignored, so the renderer never fetches |
+| `theme.teams.*.crest` | `components/Cards.tsx` `Crest`, `lib/graphics.ts` `teamCrest` | optional PNG/SVG data URI, present only with `brief.show_crests`. Drawn on title cards, the end card and in the `Shell` lock-up, in place of the generated flag. Anything but an embedded image is ignored, so the renderer never fetches |
+| `theme.teams.*` kit colours (flags) | `components/TeamFlag.tsx`, `lib/flags.ts` | every team gets a generated swallowtail pennant from its kit colours (no images, no badges): animated on the title card and opening text card, static in every two-team card header and beside team names. Backdrops wash the home kit in from the left and the away kit from the right (strength capped so white text keeps ≥ 7:1), and accent rules are home colour \| away colour |
 | `debug.overlay` | `components/Hud.tsx` `DebugOverlay` | frame / camera readout + safe-area guide |
 
 Z-order: pitch → overlays "under" (zone, polygon, line, pass_line, run_arrow, distance) → players → ball → overlays

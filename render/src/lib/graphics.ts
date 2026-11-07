@@ -619,3 +619,13 @@ export function fitName(name: string, maxWidth: number, fontSize: number, family
   for (const c of cands) if (estimateTextWidth(c, fontSize, family, ls, upper) <= maxWidth) return c;
   return cands[cands.length - 1] ?? "";
 }
+
+/**
+ * The label for a team beside its flag in a `w`-wide slot: the full name if it fits at `min` x `size` (the smallest a
+ * `Txt` shrinks to), else the short code, so a team name is never cut to "MANCHES...".
+ */
+export function teamLabel(theme: Theme, side: "H" | "A", w: number, size: number, ls = 0, min = 0.72): string {
+  const t = theme.teams[side];
+  if (estimateTextWidth(t.name.toUpperCase(), size * min, "title", ls) <= w) return t.name;
+  return t.short || t.name;
+}

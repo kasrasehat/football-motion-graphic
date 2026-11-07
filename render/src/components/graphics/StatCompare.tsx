@@ -1,8 +1,8 @@
 import React from "react";
 import { rgba } from "../../lib/colors";
-import { layoutMode, lowerBetterFlags, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
+import { layoutMode, lowerBetterFlags, revealFrame, revealProgress, shellLayout, teamLabel } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asArray, asRecord, CompareRow, EmptyNote, pickString, Shell, str, Swatch, Txt, type GraphicProps } from "./common";
+import { abs, asArray, asRecord, CompareRow, EmptyNote, pickString, Shell, str, markWidth, TeamMark, Txt, type GraphicProps } from "./common";
 
 const MAX_ROWS = 10;
 
@@ -41,8 +41,8 @@ export const StatCompare: React.FC<GraphicProps> = (gp) => {
         flexDirection: side === "H" ? "row" : "row-reverse",
       }}
     >
-      <Swatch theme={theme} side={side} w={14 * u} h={44 * u} u={u} />
-      <Txt text={theme.teams[side].name} w={nameW - 30 * u} size={teamFs} upper ls={0.03} color={theme.ink} align={side === "H" ? "left" : "right"} />
+      <TeamMark theme={theme} side={side} h={34 * u} u={u} uid={g.id} />
+      <Txt text={teamLabel(theme, side, nameW - 16 * u - markWidth(34 * u), teamFs, 0.03)} w={nameW - 16 * u - markWidth(34 * u)} size={teamFs} upper ls={0.03} color={theme.ink} align={side === "H" ? "left" : "right"} />
     </div>
   );
   return (

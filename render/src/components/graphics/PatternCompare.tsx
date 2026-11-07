@@ -2,9 +2,9 @@ import React from "react";
 import type { Theme } from "../../generated/render_props";
 import { clamp01, easeOutCubic } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { cardTeamFill, cardTrack, layoutMode, patternRows, revealFrame, revealProgress, shellLayout, type PatternCell } from "../../lib/graphics";
+import { cardTeamFill, cardTrack, layoutMode, patternRows, revealFrame, revealProgress, shellLayout, type PatternCell, teamLabel } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asRecord, pickString, Shell, Swatch, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asRecord, pickString, Shell, markWidth, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 /** One team's half of a row: a bar growing out from the centre over a track that stands for the whole sample. */
 const PatternBar: React.FC<{ theme: Theme; side: Side; cell: PatternCell; x: number; y: number; w: number; h: number; grow: number; u: number }> = ({ theme, side, cell, x, y, w, h, grow, u }) => {
@@ -63,8 +63,8 @@ export const PatternCompare: React.FC<GraphicProps> = (gp) => {
         flexDirection: side === "H" ? "row" : "row-reverse",
       }}
     >
-      <Swatch theme={theme} side={side} w={14 * u} h={44 * u} u={u} />
-      <Txt text={theme.teams[side].name} w={nameW - 30 * u} size={40 * u} upper ls={0.03} color={theme.ink} align={side === "H" ? "left" : "right"} />
+      <TeamMark theme={theme} side={side} h={34 * u} u={u} uid={g.id} />
+      <Txt text={teamLabel(theme, side, nameW - 16 * u - markWidth(34 * u), 40 * u, 0.03)} w={nameW - 16 * u - markWidth(34 * u)} size={40 * u} upper ls={0.03} color={theme.ink} align={side === "H" ? "left" : "right"} />
     </div>
   );
   return (

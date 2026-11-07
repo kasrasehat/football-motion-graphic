@@ -18,6 +18,7 @@ from tms.choreo.cli import compile_project
 from tms.state import project as P
 from tms.state.project import GateViolation
 from tms.timeline.build import TimelineError, build_timeline, solve_scene
+from tms.timeline import SPF as SPF_
 from tms.validate.registry import Context
 from tests.helpers import FIX, expect_clean, expect_violation, findings, fixture, place
 
@@ -340,3 +341,22 @@ def test_VO05_decimals_do_not_make_a_normal_voice_look_slow(ap):
         t += dur + 0.08
     errs = [f for f in findings("voiceover_manifest", d, ctx(ap)) if f.rule == "VO-05" and f.location == c["id"] and f.severity == "error"]
     assert not errs  # 7 words + 2 x 4 spoken = 15 words in about 5.5 s: well over 100 wpm
+
+
+def test_duck_stays_down_across_scene_gaps_and_after_the_last_line():
+    from tms.timeline.build import DUCK_BRIDGE_F, duck_windows
+    vo = [{"from": 60, "samples": 400 * SPF_}, {"from": 470, "samples": 300 * SPF_},  # 10-frame gap: bridged
+          {"from": 770 + DUCK_BRIDGE_F + 30, "samples": 200 * SPF_}]               # a real pause: its own window
+    w = duck_windows(vo, 2000)
+    assert w == [[60, 770], [875, 2000]]  # the last window runs to the end of the video
+
+
+def test_duck_envelope_never_jumps():
+    from tms.audio.mix import duck_envelope
+    from tms.timeline.build import DUCK_ATTACK_MS, DUCK_DEPTH_DB, DUCK_RELEASE_MS
+    tl = {"frames": 900, "duck": {"windows": [[60, 300], [450, 900]], "depth_db": DUCK_DEPTH_DB,
+                                  "attack_ms": DUCK_ATTACK_MS, "release_ms": DUCK_RELEASE_MS}}
+    g = 20 * np.log10(duck_envelope(tl) + 1e-9)
+    step = wav.SR // 10
+    assert np.abs(np.diff(g[::step])).max() <= 6.0  # at most 6 dB change per 100 ms: no sudden swells
+    assert g[-1] == pytest.approx(DUCK_DEPTH_DB, abs=0.01)  # still ducked at the very end

@@ -3,9 +3,9 @@ import type { Theme } from "../../generated/render_props";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { layoutMode, NEWS_REASON_LINES, newsRowLayout, resultColors, revealFrame, revealProgress, shellLayout, wrapText } from "../../lib/graphics";
+import { layoutMode, NEWS_REASON_LINES, newsRowLayout, resultColors, revealFrame, revealProgress, shellLayout, wrapText, teamLabel } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asArray, asRecord, pickString, Shell, str, Swatch, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asArray, asRecord, pickString, Shell, str, markWidth, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 const MAX_ROWS = 6;
 
@@ -94,8 +94,8 @@ export const TeamNews: React.FC<GraphicProps> = (gp) => {
         return (
           <div key={side} style={{ ...abs(x, y, colW, headH + 12 * u + nRows * rowH), opacity: clamp01(p * 1.4) }}>
             <div style={{ ...abs(0, 0, colW - sumW, headH), display: "flex", alignItems: "center", gap: 14 * u }}>
-              <Swatch theme={theme} side={side} w={14 * u} h={46 * u} u={u} />
-              <Txt text={theme.teams[side].name} w={colW - sumW - 40 * u} size={42 * u} upper ls={0.03} color={theme.ink} />
+              <TeamMark theme={theme} side={side} h={34 * u} u={u} uid={g.id} />
+              <Txt text={teamLabel(theme, side, colW - sumW - 26 * u - markWidth(34 * u), 42 * u, 0.03)} w={colW - sumW - 26 * u - markWidth(34 * u)} size={42 * u} upper ls={0.03} color={theme.ink} />
             </div>
             {summary ? (
               <Txt text={summary} w={sumW} size={24 * u} weight={600} ls={0.1} upper color={rgba(theme.ink, 0.6)} align="right" style={abs(colW - sumW, (headH - 29 * u) / 2)} />

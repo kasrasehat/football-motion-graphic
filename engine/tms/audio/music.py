@@ -14,6 +14,7 @@ from tms.timeline import SPF
 FADE_IN_F, FADE_OUT_F = 15, 75
 EXTRA_S = 4.0       # generate a little longer: models add their own intro/outro
 XFADE_S = 2.0
+BED_RMS = 0.06      # music bed level before ducking (was 0.08: the user found the music a little loud)
 
 
 def _body_start(x: np.ndarray, max_skip_s: float = 4.0) -> int:
@@ -66,7 +67,7 @@ def fit(raw: np.ndarray, frames: int) -> tuple[np.ndarray, dict]:
     out[:FADE_IN_F * SPF] *= np.linspace(0, 1, FADE_IN_F * SPF)[:, None]
     out[-FADE_OUT_F * SPF:] *= np.linspace(1, 0, FADE_OUT_F * SPF)[:, None]
     rms = np.sqrt(np.mean(out ** 2)) + 1e-9
-    out *= min(0.08 / rms, 4.0)  # bed level well under the voice before ducking
+    out *= min(BED_RMS / rms, 4.0)  # bed level well under the voice before ducking
     return out.astype(np.float32), {"start_s": round(start / wav.SR, 3), "end_s": round((start + min(len(body), need)) / wav.SR, 3),
                                      "splices": splices}
 

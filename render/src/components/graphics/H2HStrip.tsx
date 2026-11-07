@@ -5,7 +5,7 @@ import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
 import { cardTeamFill, cardTeamInk, formatMatchDay, layoutMode, parseScore, revealFrame, revealProgress, shellLayout, splitEven, teamSide } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asArray, asRecord, EmptyNote, neutral, pickString, Shell, str, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asArray, asRecord, EmptyNote, markWidth, neutral, pickString, Shell, str, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 interface Meeting {
   date: string;
@@ -91,8 +91,9 @@ export const H2HStrip: React.FC<GraphicProps> = (gp) => {
           <div key={i} style={{ ...abs(x, 0, w, summaryH), background: rgba(theme.ink, 0.05), borderRadius: 10 * u, overflow: "hidden" }}>
             <div style={{ ...abs(i === 2 ? w - 8 * u : 0, 0, 8 * u, summaryH), background: sideColor(theme, side) }} />
             <div style={{ ...abs(26 * u, 0, w - 52 * u, summaryH), display: "flex", alignItems: "center", justifyContent: align, gap: 18 * u, flexDirection: i === 2 ? "row-reverse" : "row" }}>
+              {side ? <TeamMark theme={theme} side={side} h={30 * u} u={u} uid={g.id} /> : null}
               <div style={{ fontFamily: TITLE_STACK, fontWeight: 800, fontSize: 60 * u, lineHeight: 1, color: theme.ink }}>{count}</div>
-              <Txt text={label} w={w - 52 * u - 70 * u} inline size={26 * u} family="title" weight={600} ls={0.1} upper color={rgba(theme.ink, 0.72)} />
+              <Txt text={label} w={w - 52 * u - 70 * u - (side ? markWidth(30 * u) + 18 * u : 0)} inline size={26 * u} family="title" weight={600} ls={0.1} upper color={rgba(theme.ink, 0.72)} />
             </div>
           </div>
         );

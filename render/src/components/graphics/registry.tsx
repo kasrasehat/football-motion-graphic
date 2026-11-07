@@ -1,12 +1,12 @@
 import React from "react";
 import type { Graphic, RenderProps } from "../../generated/render_props";
 import { BODY_STACK, TITLE_STACK } from "../../fonts";
-import { easeOutCubic } from "../../lib/anim";
+import { clamp01, easeOutCubic } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
 import { fitWrappedSize, wrapText } from "../../lib/graphics";
 import { fitFontSize, safeArea, unit } from "../../lib/layout";
-import { cardEnvelope, TitleBlock } from "../Cards";
-import { pickString, pickStrings, type GraphicProps } from "./common";
+import { cardEnvelope, KitRule, TitleBlock } from "../Cards";
+import { pickString, pickStrings, TeamLockup, type GraphicProps } from "./common";
 import { FormGuide } from "./FormGuide";
 import { H2HStrip } from "./H2HStrip";
 import { KeyPlayerDuel } from "./KeyPlayerDuel";
@@ -50,6 +50,9 @@ const TextCardGraphic: React.FC<GraphicProps> = ({ g, props, frame }) => {
   const bulletW = inner - 40 * u;
   const lfs = fitWrappedSize(bullets, bulletW, 34 * u, 24 * u, 3);
   const lift = (1 - easeOutCubic((frame - g.from + 1) / 12)) * 28 * u;
+  // the video's opening card carries both teams' flags (a supplied crest takes a flag's place)
+  const opening = isOpeningGraphic(props, g);
+  const rule = easeOutCubic((frame - g.from - 2) / 14);
   return (
     <div style={{ position: "absolute", inset: 0, opacity: env, background: rgba("#000000", 0.45) }}>
       <div
@@ -60,13 +63,19 @@ const TextCardGraphic: React.FC<GraphicProps> = ({ g, props, frame }) => {
           top: "50%",
           transform: `translateY(calc(-50% + ${lift}px))`,
           background: rgba(theme.panel, 0.95),
-          borderTop: `${8 * u}px solid ${theme.accent}`,
           borderRadius: 10 * u,
-          padding: `${36 * u}px ${48 * u}px ${40 * u}px`,
+          padding: `${44 * u}px ${48 * u}px ${40 * u}px`,
           boxSizing: "border-box",
           boxShadow: `0 ${12 * u}px ${40 * u}px rgba(0,0,0,0.45)`,
+          overflow: "hidden",
         }}
       >
+        <KitRule theme={theme} w={cardW} h={8 * u} p={rule} style={{ position: "absolute", left: 0, top: 0 }} />
+        {opening ? (
+          <div style={{ marginBottom: 18 * u, opacity: clamp01((frame - g.from - 2) / 10) }}>
+            <TeamLockup theme={theme} u={u} fs={30 * u} crests uid={`text-${g.id}`} />
+          </div>
+        ) : null}
         {title ? (
           <div style={{ fontFamily: TITLE_STACK, fontWeight: 800, fontSize: tfs, lineHeight: 1, color: theme.ink, whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
             {title}
@@ -109,6 +118,11 @@ const TextCardGraphic: React.FC<GraphicProps> = ({ g, props, frame }) => {
     </div>
   );
 };
+
+/** True for the graphic that opens the video (no graphic starts earlier): it shows both teams' flags. */
+export function isOpeningGraphic(props: RenderProps, g: Graphic): boolean {
+  return props.graphics.every((o) => o.from > g.from || (o.from === g.from && o.id >= g.id));
+}
 
 /**
  * Graphic templates by name. Every template is a pure function of (g, props, frame): it reads `g.data` leniently,

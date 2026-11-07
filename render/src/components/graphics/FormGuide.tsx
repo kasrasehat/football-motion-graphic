@@ -3,9 +3,9 @@ import { spring } from "remotion";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { readableOn, rgba } from "../../lib/colors";
-import { formPoints, layoutMode, normResults, resultColors, revealFrame, revealProgress, shellLayout, type FormResult } from "../../lib/graphics";
+import { formPoints, layoutMode, normResults, resultColors, revealFrame, revealProgress, shellLayout, type FormResult, teamLabel } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asRecord, pickString, Shell, Swatch, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asRecord, pickString, Shell, markWidth, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 const MAX_CHIPS = 10;
 const CHIP_SPRING = { damping: 14, stiffness: 170, mass: 0.6 };
@@ -74,8 +74,8 @@ export const FormGuide: React.FC<GraphicProps> = (gp) => {
         return (
           <div key={side} style={{ ...abs(0, y, bw, rowH), opacity: clamp01(p * 1.5) }}>
             <div style={{ ...abs(0, stacked ? (headH - 64 * u) / 2 : (rowH - 64 * u) / 2, nameW, 64 * u), display: "flex", alignItems: "center", gap: 16 * u }}>
-              <Swatch theme={theme} side={side} w={14 * u} h={56 * u} u={u} />
-              <Txt text={theme.teams[side].name} w={nameW - 32 * u} size={48 * u} upper ls={0.02} color={theme.ink} />
+              <TeamMark theme={theme} side={side} h={40 * u} u={u} uid={g.id} />
+              <Txt text={teamLabel(theme, side, nameW - 16 * u - markWidth(40 * u), 48 * u, 0.02)} w={nameW - 16 * u - markWidth(40 * u)} size={48 * u} upper ls={0.02} color={theme.ink} />
             </div>
             {rs.length ? <div style={{ ...abs(bw - ptsW, stacked ? 0 : (rowH - 92 * u) / 2) }}>{ptsBlock}</div> : null}
             {rs.length === 0 ? (

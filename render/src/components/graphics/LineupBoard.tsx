@@ -4,9 +4,9 @@ import type { Theme } from "../../generated/render_props";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { fitName, layoutMode, lineupRows, normLineup, revealFrame, revealProgress, shellLayout, type LineupPlayer } from "../../lib/graphics";
+import { fitName, layoutMode, lineupRows, normLineup, revealFrame, revealProgress, shellLayout, type LineupPlayer, teamLabel } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
-import { abs, asRecord, pickString, Shell, str, Swatch, Txt, type GraphicProps, type Side } from "./common";
+import { abs, asRecord, pickString, Shell, str, markWidth, TeamMark, Txt, type GraphicProps, type Side } from "./common";
 
 const TOKEN_SPRING = { damping: 13, stiffness: 180, mass: 0.55 };
 
@@ -115,8 +115,8 @@ export const LineupBoard: React.FC<GraphicProps> = (gp) => {
     return (
       <div key={side} style={{ ...abs(bx, by, blockW, blockH), opacity: clamp01(p * 1.4) }}>
         <div style={{ ...abs(0, 0, blockW - formW, headH), display: "flex", alignItems: "center", gap: 14 * u }}>
-          <Swatch theme={theme} side={side} w={14 * u} h={44 * u} u={u} />
-          <Txt text={t.name} w={blockW - formW - 40 * u} size={40 * u} upper ls={0.03} color={theme.ink} />
+          <TeamMark theme={theme} side={side} h={34 * u} u={u} uid={g.id} />
+          <Txt text={teamLabel(theme, side, blockW - formW - 26 * u - markWidth(34 * u), 40 * u, 0.03)} w={blockW - formW - 26 * u - markWidth(34 * u)} size={40 * u} upper ls={0.03} color={theme.ink} />
         </div>
         {formation ? (
           <Txt text={formation} w={formW} size={40 * u} color={theme.accent} align="right" ls={0.04} style={{ ...abs(blockW - formW, (headH - 48 * u) / 2) }} />
