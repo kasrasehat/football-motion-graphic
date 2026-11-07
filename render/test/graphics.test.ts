@@ -17,6 +17,8 @@ import {
   normResults,
   parseFormation,
   parseScore,
+  patternCell,
+  patternRows,
   percentText,
   REVEAL_STAGGER,
   revealFrame,
@@ -25,6 +27,7 @@ import {
   shellLayout,
   splitRow,
   surname,
+  teamCrest,
   teamSide,
   wrapText,
   type LineupPlayer,
@@ -361,5 +364,67 @@ describe("orientation-aware layout", () => {
         expect(L.body.y1).toBeLessThanOrEqual(L.panel.y1);
       }
     }
+  });
+});
+
+describe("patternRows", () => {
+  const SPLIT = {
+    played: 8,
+    btts: { yes: 5, no: 3 },
+    goal_lines: { "2.5": { over: 4, under: 4 } },
+    ht_ft_sample: 6,
+    ht_ft: { "W/W": 2, "W/D": 1, "W/L": 1, "D/W": 2, "L/W": 0, "L/L": 3 },
+  };
+  const cells = (split: unknown) => patternRows(split, null).map((r) => r.home?.text ?? null);
+
+  it("counts each row out of its own sample", () => {
+    expect(patternRows(SPLIT, null).map((r) => r.label)).toEqual([
+      "Both teams scored",
+      "Over 2.5 goals",
+      "Led at half-time",
+      "Won from behind at half-time",
+      "Dropped points after leading at half-time",
+    ]);
+    expect(cells(SPLIT)).toEqual(["5 of 8", "4 of 8", "4 of 6", "0 of 6", "2 of 6"]);
+  });
+  it("gives the bar the share of the sample, not of the other team", () => {
+    expect(patternCell(4, 8)).toEqual({ count: 4, sample: 8, fraction: 0.5, text: "4 of 8" });
+    const [row] = patternRows({ played: 2, btts: { yes: 1 } }, { played: 10, btts: { yes: 1 } });
+    expect(row!.home!.fraction).toBe(0.5);
+    expect(row!.away!.fraction).toBe(0.1);
+  });
+  it("keeps a real 0 as a count and a sample of 0 as unknown", () => {
+    expect(patternCell(0, 8)?.text).toBe("0 of 8");
+    expect(patternCell(0, 8)?.fraction).toBe(0);
+    expect(patternCell(0, 0)).toBeNull();
+    expect(cells({ ...SPLIT, played: 0, ht_ft_sample: 0 })).toEqual([null, null, null, null, null]);
+  });
+  it("is unknown when the count or sample is junk or impossible", () => {
+    for (const [c, s] of [[null, 8], [undefined, 8], ["4", 8], [4, "8"], [4, null], [-1, 8], [1.5, 8], [9, 8], [Number.NaN, 8], [4, Number.POSITIVE_INFINITY]] as [unknown, unknown][]) {
+      expect(patternCell(c, s), `${String(c)} of ${String(s)}`).toBeNull();
+    }
+    for (const junk of [null, undefined, 7, "x", [], {}]) expect(cells(junk)).toEqual([null, null, null, null, null]);
+  });
+  it("does not add up a half-time row with a cell missing", () => {
+    const { "W/L": _gone, ...partial } = SPLIT.ht_ft;
+    expect(cells({ ...SPLIT, ht_ft: partial })).toEqual(["5 of 8", "4 of 8", null, "0 of 6", null]);
+    expect(cells({ ...SPLIT, ht_ft_sample: undefined }).slice(2)).toEqual([null, null, null]);
+  });
+  it("reads each team from its own record", () => {
+    const [row] = patternRows(SPLIT, { played: 4, btts: { yes: 1 } });
+    expect(row!.home?.text).toBe("5 of 8");
+    expect(row!.away?.text).toBe("1 of 4");
+  });
+});
+
+describe("teamCrest", () => {
+  const theme = (crest?: string) => ({ teams: { H: { ...(crest ? { crest } : {}) }, A: {} } }) as unknown as Parameters<typeof teamCrest>[0];
+  it("accepts only an embedded PNG or SVG", () => {
+    expect(teamCrest(theme("data:image/png;base64,AAAA"), "H")).toBe("data:image/png;base64,AAAA");
+    expect(teamCrest(theme("data:image/svg+xml;base64,AAAA"), "H")).toBe("data:image/svg+xml;base64,AAAA");
+    for (const bad of [undefined, "", "https://example.com/c.png", "c.png", "data:image/jpeg;base64,AAAA", "data:text/html;base64,AAAA"]) {
+      expect(teamCrest(theme(bad), "H")).toBeNull();
+    }
+    expect(teamCrest(theme("data:image/png;base64,AAAA"), "A")).toBeNull();
   });
 });

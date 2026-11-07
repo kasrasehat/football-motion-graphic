@@ -12,6 +12,8 @@ Project slug; paths to brief, tactic_spec, the tactic still; in match previews a
 prediction (graphics and numbers must come from them via `bind` / `numbers` refs, never typed).
 
 ## Method
+Open with the most surprising true thing in the dossier, as the narration-craft skill describes, and make the last scene answer the question it opens. Vary scene types so something new lands every 15 to 20 seconds.
+Use `pattern_compare` for half-time and scoring patterns, and `text_card` bullets bound to `T.news.*`, `T.rumour.*` and `*.expert.*` facts for news and opinion. Rumours carry their attribution on screen.
 1. Plan the arc for the target duration: hook → establish the shapes → one scene (or two) per principle / tactical
    battle: show it, then exploit it → recap → outro. Match previews add context/form/team-news/prediction graphics
    (see the template table in `skills/stage-storyboard/SKILL.md`) and 2–3 animated tactical battles.

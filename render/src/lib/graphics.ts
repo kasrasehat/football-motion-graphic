@@ -176,6 +176,61 @@ export function percentText(p: unknown, decimals = 1): string {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+// Pattern rows: counts out of each row's own sample, from one team's split record. Nothing here rounds or prints a
+// percentage; the fraction only sizes a bar.
+// ---------------------------------------------------------------------------------------------------------------
+
+/** A count out of its sample, or null when the sample is 0, the data is missing, or the two cannot both be true. */
+export type PatternCell = { count: number; sample: number; fraction: number; text: string } | null;
+
+const isCount = (v: unknown): v is number => typeof v === "number" && Number.isInteger(v) && v >= 0;
+
+export function patternCell(count: unknown, sample: unknown): PatternCell {
+  if (!isCount(count) || !isCount(sample) || sample === 0 || count > sample) return null;
+  return { count, sample, fraction: count / sample, text: `${count} of ${sample}` };
+}
+
+const field = (v: unknown, key: string): unknown => (v !== null && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>)[key] : undefined);
+
+/** Sum of half-time/full-time cells; one missing cell makes the whole sum unknown, not a smaller number. */
+function htFtCell(split: unknown, keys: ReadonlyArray<string>): PatternCell {
+  const cells = keys.map((k) => field(field(split, "ht_ft"), k));
+  if (!cells.every(isCount)) return null;
+  return patternCell((cells as number[]).reduce((s, n) => s + n, 0), field(split, "ht_ft_sample"));
+}
+
+/** Each row reads one team's split record. ht_ft keys are half-time result / full-time result, relative to that team. */
+const PATTERN_ROWS: ReadonlyArray<{ label: string; cell: (split: unknown) => PatternCell }> = [
+  { label: "Both teams scored", cell: (s) => patternCell(field(field(s, "btts"), "yes"), field(s, "played")) },
+  { label: "Over 2.5 goals", cell: (s) => patternCell(field(field(field(s, "goal_lines"), "2.5"), "over"), field(s, "played")) },
+  { label: "Led at half-time", cell: (s) => htFtCell(s, ["W/W", "W/D", "W/L"]) },
+  { label: "Won from behind at half-time", cell: (s) => htFtCell(s, ["L/W"]) },
+  { label: "Dropped points after leading at half-time", cell: (s) => htFtCell(s, ["W/D", "W/L"]) },
+];
+
+export interface PatternRow {
+  label: string;
+  home: PatternCell;
+  away: PatternCell;
+}
+
+export function patternRows(home: unknown, away: unknown): PatternRow[] {
+  return PATTERN_ROWS.map((r) => ({ label: r.label, home: r.cell(home), away: r.cell(away) }));
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Crests
+// ---------------------------------------------------------------------------------------------------------------
+
+const CREST_URI = /^data:image\/(png|svg\+xml);base64,/;
+
+/** The team's crest, only as an embedded image: anything else (absent, or a URL that would need fetching) is null. */
+export function teamCrest(theme: Theme, side: "H" | "A"): string | null {
+  const c = theme.teams[side].crest;
+  return typeof c === "string" && CREST_URI.test(c) ? c : null;
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 // Results, scores, dates, team names
 // ---------------------------------------------------------------------------------------------------------------
 

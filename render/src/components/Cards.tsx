@@ -1,8 +1,10 @@
 import React from "react";
+import { Img } from "remotion";
 import type { RenderProps, Theme } from "../generated/render_props";
 import { BODY_STACK, TITLE_STACK } from "../fonts";
 import { clamp01, easeOutCubic } from "../lib/anim";
 import { mix, rgba } from "../lib/colors";
+import { teamCrest } from "../lib/graphics";
 import { fitFontSize, safeArea, unit } from "../lib/layout";
 
 /** Fade in/out envelope for a [from, to) card. */
@@ -39,6 +41,11 @@ export const CardBackdrop: React.FC<{ theme: Theme; width: number; height: numbe
   );
 };
 
+/** A crest in a square box, aspect kept. Remotion's Img holds the frame until the image is decoded. */
+export const Crest: React.FC<{ src: string; size: number }> = ({ src, size }) => (
+  <Img src={src} alt="" style={{ width: size, height: size, objectFit: "contain", flex: "none", display: "block" }} />
+);
+
 export interface TitleBlockProps {
   props: RenderProps;
   frame: number;
@@ -62,6 +69,7 @@ export const TitleBlock: React.FC<TitleBlockProps> = ({ props, frame, from, to, 
   const sfs = fitFontSize([subtitle], 40 * u, maxW, "body");
   const rise = (1 - easeOutCubic((frame - from + 1) / 14)) * 40 * u;
   const rule = easeOutCubic((frame - from - 3) / 14);
+  const crests = [teamCrest(theme, "H"), teamCrest(theme, "A")].filter((c): c is string => c !== null);
   return (
     <div style={{ position: "absolute", inset: 0, opacity: env }}>
       <CardBackdrop theme={theme} width={width} height={height} />
@@ -80,6 +88,13 @@ export const TitleBlock: React.FC<TitleBlockProps> = ({ props, frame, from, to, 
           textAlign: "center",
         }}
       >
+        {crests.length > 0 ? (
+          <div style={{ display: "flex", gap: 56 * u, marginBottom: 30 * u }}>
+            {crests.map((c, i) => (
+              <Crest key={i} src={c} size={170 * u} />
+            ))}
+          </div>
+        ) : null}
         {kicker ? (
           <div style={{ fontFamily: TITLE_STACK, fontWeight: 600, fontSize: 34 * u, letterSpacing: "0.22em", color: theme.accent, marginBottom: 10 * u }}>
             {kicker.toUpperCase()}

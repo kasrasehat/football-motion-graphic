@@ -16,7 +16,7 @@
       "items": {
         "type": "object", "additionalProperties": false, "required": ["id", "title", "assertions"],
         "properties": {
-          "id": {"enum": ["context", "form", "team_news", "styles", "tactical", "key_players", "outlook"]},
+          "id": {"enum": ["context", "form", "team_news", "styles", "tactical", "key_players", "outlook", "strengths_weaknesses", "timing", "news", "opinion"]},
           "title": {"type": "string", "maxLength": 40},
           "assertions": {
             "type": "array", "minItems": 1,

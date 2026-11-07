@@ -11,7 +11,7 @@ modes:
     stages: [intake, tactic, storyboard, audio, render, package]
   match_preview:
     title: Match preview (analysis + prediction)
-    duration_s: {min: 60, max: 180, default: 120}
+    duration_s: {min: 60, max: 180, default: 150}
     stages: [intake, research, analysis, storyboard, audio, render, package]
 
 # Where each artifact lives and who may write it. agent = authored by the orchestrator/subagents (artifacts/);
@@ -50,7 +50,7 @@ stages:
   research:
     title: Match research
     skill: skills/stage-research/SKILL.md
-    authors: [match-researcher]
+    authors: [match-researcher, news-researcher, expert-researcher]
     produces: [web_claims, match_dossier]
     inputs: [brief]
     gate: none

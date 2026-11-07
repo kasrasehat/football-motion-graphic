@@ -88,7 +88,7 @@ def preview(pr, scale: float = 0.5, render: bool = True) -> dict:
     tl = provisional(doc, narration, pr.id)
     props = build_props(doc, tl, brief, narration, plan, spec, scale=scale,
                         dossier=pr.load_artifact("match_dossier"), prediction=pr.load_artifact("prediction"),
-                        analysis=pr.load_artifact("match_analysis"))
+                        analysis=pr.load_artifact("match_analysis"), project_dir=pr.dir)
     from tms.render.stage import caption_place  # same placement as the final render, or reviewers can't see it
     for c in props["captions"]:
         c["place"] = caption_place(props, c)

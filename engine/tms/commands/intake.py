@@ -16,7 +16,7 @@ MUSIC_MOOD = {
 
 
 def _team(name: str, short: str, palette: str) -> dict:
-    fill, ring, text = theme.palette(palette)
+    fill, ring, text = theme.kit_colours(palette) if palette.startswith("#") else theme.palette(palette)
     return {"name": name, "short": short, "fill": fill, "ring": ring, "text": text}
 
 
@@ -52,7 +52,9 @@ def cmd_template(a):
     try:
         doc = template(pr, a.home, a.away, a.home_short, a.away_short, a.home_colours, a.away_colours)
     except KeyError as e:
-        raise ProjectError(f"unknown palette {e}; choose from {', '.join(theme.config()['palettes'])}")
+        raise ProjectError(f"unknown palette {e}; choose from {', '.join(theme.config()['palettes'])}, or give kit colours as #RRGGBB[,#RRGGBB]")
+    except ValueError as e:
+        raise ProjectError(str(e))
     if a.out:
         out = Path(a.out)
         if out.exists() and not a.force:

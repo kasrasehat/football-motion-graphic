@@ -2,6 +2,8 @@
 camera and per-frame overlay geometry are sampled there (linear interpolation, so slow-downs stay smooth)."""
 from __future__ import annotations
 
+from pathlib import Path
+
 from tms import theme
 from tms.timeline import FPS, tau_at, wrap
 
@@ -118,7 +120,7 @@ def _overlay_style(o: dict, plan_scene: dict) -> dict:
 
 def build(choreo: dict, tl: dict, brief: dict, narration: dict, plan: dict, spec: dict, *, scale: float = 1.0,
           dossier: dict | None = None, prediction: dict | None = None, inputs: dict | None = None,
-          analysis: dict | None = None) -> dict:
+          analysis: dict | None = None, project_dir: Path | None = None) -> dict:
     res = theme.resolution(brief["aspect"], scale)
     fm = frame_map(choreo, tl)
     N = tl["frames"]
@@ -197,7 +199,7 @@ def build(choreo: dict, tl: dict, brief: dict, narration: dict, plan: dict, spec
     return {
         "version": "1", "project_id": choreo["project_id"], "inputs": inputs or {},
         "fps": FPS, "width": res["width"], "height": res["height"], "durationInFrames": N, "orientation": res["orientation"],
-        "theme": theme.render_theme(brief), "entities": entities,
+        "theme": theme.render_theme(brief, project_dir=project_dir), "entities": entities,
         "tracks": {"unit": "cm", "players": tracks, "ball": ball}, "camera": cam,
         "pitchVisible": pitch_visible, "freeze": freeze, "scenes": scenes, "overlays": overlays, "graphics": graphics,
         "captions": captions,

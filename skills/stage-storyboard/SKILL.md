@@ -41,7 +41,7 @@ Bind values: a dossier fact key (`H.goals_for_avg`), a prediction path (`predict
 (`KB1`), or `text:<label without numbers>`. Never a typed number. Worked example: `tests/fixtures/match/scene_plan.json`.
 | template | required slots (optional in brackets) | example |
 |---|---|---|
-| `title_card` / `text_card` | headline, [sub] | `{"headline":"text:Real Madrid v Arsenal","sub":"text:Champions League preview"}` |
+| `title_card` / `text_card` | headline, [sub]; `text_card` also [bullets, a list of `text:` labels or string facts] | `{"headline":"text:Real Madrid v Arsenal","sub":"text:Champions League preview"}` |
 | `stat_compare` | labels[], home[], away[] (equal length), [title] | `{"labels":["text:Goals per game"],"home":["H.goals_for_avg"],"away":["A.goals_for_avg"]}` |
 | `form_guide` | home, away | `{"home":"H.form.last5","away":"A.form.last5"}` |
 | `h2h_strip` | results | `{"results":"h2h.last5"}` |
@@ -51,5 +51,9 @@ Bind values: a dossier fact key (`H.goals_for_avg`), a prediction path (`predict
 | `probability_bar` | home, draw, away | `{"home":"prediction.probs_final.home", …}` |
 | `scoreline_grid` | scorelines | `{"scorelines":"prediction.scorelines"}` |
 | `prediction_card` | result, scoreline, confidence, [note] | `{"result":"prediction.headline.result","scoreline":"prediction.headline.scoreline","confidence":"prediction.confidence"}` |
+| `pattern_compare` | home, away (one split record each), [title] | `{"title":"text:Home form against away form","home":"H.split.home","away":"A.split.away"}` |
+`pattern_compare` shows five rows: both teams scored, over 2.5 goals, led at half-time, won from behind at half-time,
+dropped points after leading at half-time, each as a count out of its own sample. Nothing on the card says which split
+it shows, so when you bind `.home` / `.away` say so in `title`. Bind `.overall` or `.home` / `.away` only.
 `reveals` (R1, R2, …) bring items in one after another; anchor narration words to them (`"ref":"R1"`).
 Match previews must show the prediction (`probability_bar` or `prediction_card`, which always prints "not betting advice").

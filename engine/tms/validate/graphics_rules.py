@@ -11,7 +11,7 @@ REQUIRED = {
     "stat_compare": ["labels", "home", "away"], "form_guide": ["home", "away"], "h2h_strip": ["results"],
     "lineup_board": ["home", "away"], "team_news": ["home", "away"], "key_player_duel": ["battle"],
     "probability_bar": ["home", "draw", "away"], "scoreline_grid": ["scorelines"],
-    "prediction_card": ["result", "scoreline", "confidence"],
+    "prediction_card": ["result", "scoreline", "confidence"], "pattern_compare": ["home", "away"],
 }
 DATA_TEMPLATES = set(REQUIRED) - {"title_card", "text_card"}
 
@@ -69,6 +69,10 @@ def values_fit(doc, ctx, p):
             yield s["id"], "lineup_board needs two 11-player line-ups"
         if t == "stat_compare" and not (isinstance(d.get("labels"), list) and len(d["labels"]) == len(d.get("home") or []) == len(d.get("away") or [])):
             yield s["id"], "stat_compare labels/home/away must have equal lengths"
+        if t == "text_card" and "bullets" in d and not (isinstance(d["bullets"], list) and all(isinstance(b, str) for b in d["bullets"])):
+            yield s["id"], "text_card bullets must be a list of text: labels or string facts (the card cannot show anything else)"
+        if t == "pattern_compare" and not all(isinstance(d.get(k), dict) for k in ("home", "away")):
+            yield s["id"], "pattern_compare home/away must each bind one split record, such as H.split.overall"
 
 
 @rule("GS-04")

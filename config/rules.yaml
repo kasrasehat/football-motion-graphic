@@ -15,3 +15,4 @@ rules:
   BR-09: {artifact: brief, severity: error, text: "match resolution evidence: api => fixture_id set; web => >= 2 sources", params: {web_min_sources: 2}}
   BR-10: {artifact: brief, severity: error, text: "project_id matches the project folder"}
   BR-11: {artifact: brief, severity: error, text: "brief.mode equals the project's mode"}
+  BR-12: {artifact: brief, severity: error, text: "show_crests => both crests exist inside the project folder, are still PNG or self-contained SVG, and are <= 500 KB"}

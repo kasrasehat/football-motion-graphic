@@ -2,7 +2,7 @@
 rules:
   GS-01: {artifact: scene_plan, severity: error, text: "each graphic template has its required bind slots"}
   GS-02: {artifact: scene_plan, severity: error, text: "every bind ref resolves (dossier fact, prediction path, key battle, or text:)"}
-  GS-03: {artifact: scene_plan, severity: error, text: "resolved values fit the template (probabilities 0-1, W/D/L form, 11-player XI, equal-length stat rows)"}
+  GS-03: {artifact: scene_plan, severity: error, text: "resolved values fit the template (probabilities 0-1, W/D/L form, 11-player XI, equal-length stat rows, pattern_compare records, text_card string bullets)"}
   GS-04: {artifact: scene_plan, severity: error, text: "tactic explainers use only title_card / text_card (no data without a dossier)"}
   GS-05: {artifact: scene_plan, severity: error, text: "graphic scenes last >= 2.5 s and every reveal stays on screen >= 1.5 s", params: {min_len: 2.5, min_visible: 1.5}}
   GS-06: {artifact: scene_plan, severity: error, text: "match previews show the prediction (probability_bar or prediction_card) and the prediction_card's disclaimer"}

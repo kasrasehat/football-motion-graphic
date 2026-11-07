@@ -113,7 +113,7 @@ def still_props(spec: dict, brief: dict, scale: float = 1.0) -> dict:
     return {
         "version": "1", "project_id": spec["project_id"], "inputs": {},
         "fps": 30, "width": res["width"], "height": res["height"], "durationInFrames": 1,
-        "orientation": res["orientation"], "theme": theme.render_theme(brief), "entities": entities,
+        "orientation": res["orientation"], "theme": theme.render_theme({**brief, "show_crests": False}), "entities": entities,  # the still draws no crests
         "tracks": {"unit": "cm", "players": players, "ball": [round(bx * 100), round(by * 100), 11]},
         "camera": [round(v * 100) for v in camera], "pitchVisible": [[0, 1]], "freeze": [],
         "scenes": [{"id": "S01", "kind": "pitch", "from": 0, "to": 1, "title": ""}],  # the panel carries the title

@@ -29,7 +29,7 @@ def build_render_props(pr, scale: float = 1.0) -> dict:
     a = {n: pr.load_artifact(n) for n in ("choreography", "timeline", "brief", "narration_script", "scene_plan", "tactic_spec")}
     props = build_props(a["choreography"], a["timeline"], a["brief"], a["narration_script"], a["scene_plan"], a["tactic_spec"],
                         scale=scale, dossier=pr.load_artifact("match_dossier"), prediction=pr.load_artifact("prediction"),
-                        analysis=pr.load_artifact("match_analysis"),
+                        analysis=pr.load_artifact("match_analysis"), project_dir=pr.dir,
                         inputs=_h(pr, "choreography", "timeline", "brief", "voiceover_manifest", "music_manifest"))
     for c in props["captions"]:
         c["place"] = caption_place(props, c)

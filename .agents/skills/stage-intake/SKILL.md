@@ -25,11 +25,19 @@ No reviewer and no human gate: the brief is shown to the user again at the first
      - User asked you to choose/design → `source: "ai"`, `topic` = a ≤ 80-char topic, `tactic_text: null`.
      - `focus_team`: the team whose idea is explained (usually `H`).
    - `match_preview` mode: follow `skills/stage-research/SKILL.md` § "Intake for match previews" (fixture resolution).
-   - `target_duration_s`: user's request, else the mode default (tactic 75 s, preview 120 s); range is enforced (`BR-01`).
+   - `target_duration_s`: user's request, else the mode default (tactic 75 s, preview 150 s); range is enforced (`BR-01`).
    - `aspect`: `16:9` unless the user asked for vertical/shorts (`9:16`) or square (`1:1`).
    - `audience`: beginner | intermediate (default) | expert — controls vocabulary depth.
-   - Colours: home/away fills must differ (`BR-02`, ΔE ≥ 25) and numbers must be readable (`BR-03`).
+   - Colours: use the teams' real kits. Find this season's shirt colours on the club's site or a major outlet and pass them to the template:
+     `--home-colours "#ef0107,#ffffff" --away-colours "#ffffff,#febe10"` (shirt, then trim; number colour is chosen for you). Palette names still work.
+     Home/away fills must differ (`BR-02`, ΔE ≥ 25) and numbers must be readable (`BR-03`). If home kits clash, use the away team's real change kit, as the match would.
    - `voice.voice_id`: leave empty in dry runs; for live runs use the user's choice or `TMS_DEFAULT_VOICE_ID`.
+   - `show_crests` (optional, default off): team crests on title cards and graphic headers. Leave it out unless the
+     user asks for crests **and gives you the image files**. Set `"show_crests": true` and, in each team,
+     `"crest": "media/home.png"`: a path relative to the project folder, to a PNG or SVG of at most 500 KB that is still
+     and self-contained (no animated PNG; no SVG scripts, animation or outside links) (`BR-12`). Both teams need one.
+     **The user is responsible for the rights to the logos: tell them so, and log it as a decision.** Never download,
+     look up or draw a crest yourself, and never turn this on by default.
    - `music.source`: `generate` (default), `file` (user-supplied path, ≥ 20 s), or `none`.
 4. `.venv/Scripts/tms validate brief` — fix every error.
 5. Log defaults you chose for the user: `.venv/Scripts/tms decision add --category scope --by agent --text "..." --stage intake`

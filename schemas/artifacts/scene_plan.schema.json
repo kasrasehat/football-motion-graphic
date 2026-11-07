@@ -196,7 +196,7 @@
             "transition": {"enum": ["continue", "cut"]},
             "length_s": {"type": ["number", "null"], "minimum": 2, "maximum": 20},
             "template": {"enum": ["title_card", "text_card", "stat_compare", "form_guide", "h2h_strip", "lineup_board",
-                                  "team_news", "key_player_duel", "probability_bar", "scoreline_grid", "prediction_card"]},
+                                  "team_news", "key_player_duel", "probability_bar", "scoreline_grid", "prediction_card", "pattern_compare"]},
             "bind": {
               "description": "template slots -> fact keys (dossier) or prediction paths (prediction.probs_final.home). Never literal numbers.",
               "type": "object",

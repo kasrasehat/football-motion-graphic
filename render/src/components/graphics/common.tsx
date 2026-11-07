@@ -5,9 +5,9 @@ import type { Graphic, RenderProps, Theme } from "../../generated/render_props";
 import { BODY_STACK, TITLE_STACK } from "../../fonts";
 import { clamp01, easeOutCubic } from "../../lib/anim";
 import { mix, rgba } from "../../lib/colors";
-import { barFractions, formatValue, SHELL_1080, type ShellLayout } from "../../lib/graphics";
+import { barFractions, formatValue, SHELL_1080, teamCrest, type ShellLayout } from "../../lib/graphics";
 import { estimateTextWidth, fitFontSize } from "../../lib/layout";
-import { CardBackdrop, cardEnvelope } from "../Cards";
+import { CardBackdrop, cardEnvelope, Crest } from "../Cards";
 
 export interface GraphicProps {
   g: Graphic;
@@ -161,16 +161,22 @@ export const Swatch: React.FC<{ theme: Theme; side: Side | null; w: number; h: n
   );
 };
 
-/** "▮ RMA  v  ARS ▮" chip for the panel header. */
-export const TeamLockup: React.FC<{ theme: Theme; u: number; fs: number }> = ({ theme, u, fs }) => {
-  const chip = (side: Side) => (
+/** Crest size in the lock-up, as a share of its text size. */
+const LOCKUP_CREST = 1.6;
+
+/** "▮ RMA  v  ARS ▮" chip for the panel header. With `crests`, a team's crest takes the place of its colour block. */
+export const TeamLockup: React.FC<{ theme: Theme; u: number; fs: number; crests?: boolean }> = ({ theme, u, fs, crests = false }) => {
+  const chip = (side: Side) => {
+    const crest = crests ? teamCrest(theme, side) : null;
+    return (
     <div style={{ display: "flex", alignItems: "center", gap: 10 * u, flexDirection: side === "H" ? "row" : "row-reverse" }}>
-      <Swatch theme={theme} side={side} w={12 * u} h={fs * 1.05} u={u} />
+      {crest ? <Crest src={crest} size={fs * LOCKUP_CREST} /> : <Swatch theme={theme} side={side} w={12 * u} h={fs * 1.05} u={u} />}
       <div style={{ fontFamily: TITLE_STACK, fontWeight: 800, fontSize: fs, lineHeight: 1.1, letterSpacing: "0.06em", color: theme.ink, whiteSpace: "nowrap" }}>
         {theme.teams[side].short.toUpperCase().slice(0, 4)}
       </div>
     </div>
-  );
+    );
+  };
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14 * u }}>
       {chip("H")}
@@ -181,9 +187,10 @@ export const TeamLockup: React.FC<{ theme: Theme; u: number; fs: number }> = ({ 
 };
 
 /** Estimated width of TeamLockup. */
-export function lockupWidth(theme: Theme, u: number, fs: number): number {
+export function lockupWidth(theme: Theme, u: number, fs: number, crests = false): number {
   const t = (s: string) => estimateTextWidth(s.toUpperCase().slice(0, 4), fs, "title", 0.06);
-  return 2 * (12 * u + 10 * u) + t(theme.teams.H.short) + t(theme.teams.A.short) + 2 * 14 * u + fs * 0.5;
+  const mark = (side: Side) => (crests && teamCrest(theme, side) ? fs * LOCKUP_CREST : 12 * u) + 10 * u;
+  return mark("H") + mark("A") + t(theme.teams.H.short) + t(theme.teams.A.short) + 2 * 14 * u + fs * 0.5;
 }
 
 export interface ShellProps {
@@ -207,7 +214,8 @@ export const Shell: React.FC<ShellProps> = ({ gp, L, kicker, title, lockup = tru
   const ph = panel.y1 - panel.y0;
   const innerW = pw - 2 * L.padX;
   const lockFs = 28 * u;
-  const lockW = lockup ? lockupWidth(theme, u, lockFs) + 24 * u : 0;
+  const lockW = lockup ? lockupWidth(theme, u, lockFs, true) + 24 * u : 0;
+  const lockH = lockFs * (teamCrest(theme, "H") || teamCrest(theme, "A") ? LOCKUP_CREST : 1.1);
   const lift = (1 - easeOutCubic((frame - g.from + 1) / 12)) * 28 * u;
   const rule = clamp01(easeOutCubic((frame - g.from - 2) / 14));
   const kickerY = S.padTop * u;
@@ -242,8 +250,8 @@ export const Shell: React.FC<ShellProps> = ({ gp, L, kicker, title, lockup = tru
         ) : null}
         <Txt text={title} w={innerW - lockW} size={S.title * u} min={S.title * u * 0.6} family="title" weight={800} ls={0.02} upper color={theme.ink} lh={1.05} style={abs(L.padX, titleY)} />
         {lockup ? (
-          <div style={{ ...abs(pw - L.padX - lockW + 24 * u, titleY + (S.title * 1.05 * u - lockFs * 1.1) / 2) }}>
-            <TeamLockup theme={theme} u={u} fs={lockFs} />
+          <div style={{ ...abs(pw - L.padX - lockW + 24 * u, titleY + (S.title * 1.05 * u - lockH) / 2) }}>
+            <TeamLockup theme={theme} u={u} fs={lockFs} crests />
           </div>
         ) : null}
         <div style={{ ...abs(L.padX, L.headerH - S.ruleGap * u * 0.5, innerW, Math.max(1, 1.5 * u)), background: rgba(theme.ink, 0.1) }} />

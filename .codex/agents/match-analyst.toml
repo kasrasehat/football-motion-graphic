@@ -12,6 +12,12 @@ Project slug; brief, `build/match_dossier.json`, `artifacts/web_claims.json`.
 and weaknesses, and always state the sample: rates come from `played`, HT/FT rates from `ht_ft_sample`, and an empty sample is unknown.
 These are historical frequencies, not forecasts.
 
+Where the dossier supports them, add these sections:
+- `strengths_weaknesses`: what each team does well and badly, each point tied to a number and its sample, set against the opponent (a team that concedes late against one that scores late).
+- `timing`: first half against second half, leading and trailing at half-time (`ht_ft`), both teams to score, and goal lines. Say "4 of 8", not only a percentage.
+- `news`: coach changes and reported stories, citing `T.news.*` and `T.rumour.*`. A rumour stays a rumour.
+- `opinion`: what named experts think, where they disagree, and where the numbers disagree with them.
+
 ## Produce
 1. **tactic_spec** (`focus_team: "both"`): scaffold expected shapes
    (`.venv/Scripts/tms tactic scaffold --project-id <slug> --phase <phase> --focus both --home <template> --away <template> ...`),

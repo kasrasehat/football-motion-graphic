@@ -31,8 +31,9 @@ fixture changes, run `npm --prefix render run sync:fixture`).
 | `scenes[].title` | `components/SceneTitle.tsx`, `lib/hud.ts` | lower-third for the first 60 frames; lifted above a bottom caption |
 | `titleCard` / `endCard` | `components/Cards.tsx` | full-screen, null = none |
 | `freeze` | `components/Hud.tsx` `FreezeVignette` | edge vignette + PAUSED badge (tracks are already frozen by the engine); the engine emits spans only for pauses of at least 1 s on the pitch (`_freeze_spans`) |
-| `graphics` | `components/graphics/registry.tsx` | all 11 templates implemented; see "Graphic templates" below |
+| `graphics` | `components/graphics/registry.tsx` | all 12 templates implemented; see "Graphic templates" below |
 | `principleRail` | `components/PrincipleRail.tsx`, `lib/rail.ts` | tactic still only: key panel in `rect` (title, teams, ball holder, whole principle names, players as chips); type sized to fit (`railMetrics`) |
+| `theme.teams.*.crest` | `components/Cards.tsx` `Crest`, `lib/graphics.ts` `teamCrest` | optional PNG/SVG data URI, present only with `brief.show_crests`. Drawn on title cards and in the `Shell` lock-up (in place of the colour block), nowhere else. Anything but an embedded image is ignored, so the renderer never fetches |
 | `debug.overlay` | `components/Hud.tsx` `DebugOverlay` | frame / camera readout + safe-area guide |
 
 Z-order: pitch → overlays "under" (zone, polygon, line, pass_line, run_arrow, distance) → players → ball → overlays
@@ -110,7 +111,7 @@ Shared rules (`components/graphics/common.tsx`, pure helpers in `lib/graphics.ts
 
 | template | data (fixed contract) | items / reveals | notes |
 |---|---|---|---|
-| `title_card` / `text_card` | headline, sub / title, body, bullets[] | bullets | existing |
+| `title_card` / `text_card` | headline, sub / title, body, bullets[] | bullets | bullets (strings only, `GS-03`) wrap to 3 lines, shrinking no lower than 24 px at 1080p, then cut with an ellipsis |
 | `stat_compare` | title?, labels[], home[], away[], units?[] | one per row (≤ 10) | mirrored bars from the centre, length = value / max of the pair; strings/null: value only |
 | `form_guide` | home[], away[] of W/D/L, most recent last | home row, away row | chips centred, latest outlined, points from last N (W3 D1) |
 | `h2h_strip` | results[{date, home, away, score}] | one per meeting | newest first (ISO dates); wins/draws summary when names match the theme; landscape tiles, else rows; loser dimmed |
@@ -120,6 +121,7 @@ Shared rules (`components/graphics/common.tsx`, pure helpers in `lib/graphics.ts
 | `probability_bar` | home, draw, away (0–1) | home, draw, away segment | kicker "Model probabilities"; `largestRemainder` → integers summing to 100 |
 | `scoreline_grid` | scorelines[{home, away, p}] | one per tile (rank order) | top 6 tiles + 0–4 × 0–4 heat grid when ≥ 6 entries, with a note saying how many scores it shows, else ≤ 5 tiles |
 | `prediction_card` | result home/draw/away, scoreline, confidence low/medium/high, note? | result, score, confidence+note | footer "Statistical analysis, not betting advice" ALWAYS rendered (`PREDICTION_DISCLAIMER`) |
+| `pattern_compare` | title?, home, away split records {played, btts, goal_lines, ht_ft_sample, ht_ft} | one per row (5) | `patternRows`: mirrored "4 of 8" with a bar = count / that row's own sample (not the other team). Sample 0, missing or impossible data: "–" and no track; a real 0 stays "0 of 8" over an empty track. Never prints a percentage |
 
 Fixtures: `tests/fixtures/graphics/<template>.json` (Real Madrid v Arsenal, 90 frames, pitch hidden, one graphic over
 all frames). Real stills: `.venv/Scripts/python.exe -m pytest tests/render/test_graphics.py -q -m render` (late

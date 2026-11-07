@@ -19,8 +19,16 @@ Schema: `schemas/artifacts/narration_script.schema.json`; rules `NS-xx` in `conf
   words, lengthen the scene or add a hold after the key moment.
 - Whole script: 0.6–1.15 × the brief's target duration (`NS-03`).
 
+## Hold attention (match previews and tactic videos)
+- **The hook earns the watch.** In the first 5 seconds: a surprising true fact, a contradiction, or a stake, from the dossier or the tactic. "Arsenal have won eight of nine, and the one team that beat them plays the way Madrid will." It is true and specific to this match, never a generic "this is a huge game".
+- **Open a question the end answers.** Say what the video will settle, and pay it off in the last scene. A hook the video doesn't pay off is clickbait: rewrite it.
+- **Something new every 15 to 20 seconds:** a new fact, a turn ("but"), or a shift from numbers to the pitch. No two graphic scenes in a row saying the same kind of thing.
+- **A little fun.** Sound like a sharp pundit having a good time: a dry aside, a rivalry, a playful comparison. One or two per video, about football. Never about injuries, illness, private lives, nationality or a person's looks, and never at the cost of accuracy.
+- **Caveats once, up front, in plain words.** "Three games each, so a small sample" is enough; let "if" carry a scenario and let on-screen labels repeat it. Stacking "reportedly" and "according to" sounds like a sourcing memo.
+- **Rumours are said as rumours,** naming the outlet when it helps. Experts are named, and viewers should hear the disagreement.
+
 ## Style
-- **Hook** first: ≤ 12 words, a promise or a tension ("Watch how one full-back breaks a four-four-two.") (`NS-04`).
+- **Hook** first sentence: ≤ 12 words (`NS-04`), see "Hold attention".
 - Short sentences (≤ 24 words; ≤ 45 words per line — `NS-05`). Present tense, active voice, concrete verbs:
   *steps inside, drags, pins, screens, releases, arrives*.
 - Name roles or players the viewer can see ("the right-back", "Rice"), never ids like H7/E01 (`NS-02`).

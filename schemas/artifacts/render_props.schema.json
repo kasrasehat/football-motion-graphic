@@ -106,7 +106,7 @@
         "properties": {
           "id": {"type": "string"},
           "template": {"enum": ["title_card", "text_card", "stat_compare", "form_guide", "h2h_strip", "lineup_board",
-                                "team_news", "key_player_duel", "probability_bar", "scoreline_grid", "prediction_card"]},
+                                "team_news", "key_player_duel", "probability_bar", "scoreline_grid", "prediction_card", "pattern_compare"]},
           "from": {"type": "integer", "minimum": 0}, "to": {"type": "integer", "minimum": 0},
           "data": {"type": "object"},
           "reveals": {
@@ -200,7 +200,8 @@
       "type": "object", "additionalProperties": false, "required": ["fill", "ring", "text", "short", "name"],
       "properties": {
         "fill": {"$ref": "#/$defs/hex"}, "ring": {"$ref": "#/$defs/hex"}, "text": {"$ref": "#/$defs/hex"},
-        "short": {"type": "string"}, "name": {"type": "string"}
+        "short": {"type": "string"}, "name": {"type": "string"},
+        "crest": {"type": "string", "maxLength": 700000, "pattern": "^data:image/(png|svg\\+xml);base64,[A-Za-z0-9+/]+={0,2}$"}
       }
     }
   }

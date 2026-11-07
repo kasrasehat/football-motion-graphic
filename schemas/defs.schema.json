@@ -31,7 +31,8 @@
         "short": {"type": "string", "pattern": "^[A-Z]{2,4}$"},
         "fill": {"$ref": "#/$defs/hex"},
         "ring": {"$ref": "#/$defs/hex"},
-        "text": {"$ref": "#/$defs/hex"}
+        "text": {"$ref": "#/$defs/hex"},
+        "crest": {"type": "string", "minLength": 1, "maxLength": 200, "description": "PNG or SVG the user supplied, relative to the project folder. Used only when brief.show_crests is true (BR-12)."}
       }
     },
     "source": {

@@ -26,7 +26,7 @@ def spec(key: str) -> dict | None:
         return facts[key]
     m = re.match(r"^([HA])\.(.+)$", key)
     if not m:
-        return None
+        return next((v for k, v in facts.items() if v.get("prefix") and not k.startswith("T.") and key.startswith(k + ".")), None)
     rest = m.group(2)
     if f"T.{rest}" in facts:
         return facts[f"T.{rest}"]

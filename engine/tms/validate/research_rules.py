@@ -47,6 +47,17 @@ def ids_unique(doc, ctx, p):
         yield "claims", f"duplicate claim ids {dup}"
 
 
+@rule("WC-05")
+def rumours_labelled(doc, ctx, p):
+    for c in doc["claims"]:
+        if ".rumour." not in (c["fact_key"] or ""):
+            continue
+        if c["confidence"] == "high":
+            yield c["id"], "a rumour is never high confidence"
+        if not any(s["kind"] == "web" and FX.tier_of(s["url"]) <= 2 for s in c["sources"]):
+            yield c["id"], "a rumour needs a tier 1 or 2 source"
+
+
 # ------------------------------------------------------------------ match_dossier
 @rule("MD-01")
 def fact_types(doc, ctx, p):

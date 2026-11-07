@@ -3,6 +3,7 @@ import type { Graphic, RenderProps } from "../../generated/render_props";
 import { BODY_STACK, TITLE_STACK } from "../../fonts";
 import { easeOutCubic } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
+import { fitWrappedSize, wrapText } from "../../lib/graphics";
 import { fitFontSize, safeArea, unit } from "../../lib/layout";
 import { cardEnvelope, TitleBlock } from "../Cards";
 import { pickString, pickStrings, type GraphicProps } from "./common";
@@ -10,6 +11,7 @@ import { FormGuide } from "./FormGuide";
 import { H2HStrip } from "./H2HStrip";
 import { KeyPlayerDuel } from "./KeyPlayerDuel";
 import { LineupBoard } from "./LineupBoard";
+import { PatternCompare } from "./PatternCompare";
 import { PredictionCard } from "./PredictionCard";
 import { ProbabilityBar } from "./ProbabilityBar";
 import { ScorelineGrid } from "./ScorelineGrid";
@@ -44,7 +46,9 @@ const TextCardGraphic: React.FC<GraphicProps> = ({ g, props, frame }) => {
   const inner = cardW - 2 * 48 * u;
   const tfs = fitFontSize([title], 76 * u, inner, "title", 0.02);
   const bfs = fitFontSize([body], 36 * u, inner, "body");
-  const lfs = fitFontSize(bullets, 34 * u, inner - 40 * u, "body");
+  // Fact strings run to a sentence or two: wrap them, rather than shrink the whole list until one long line fits.
+  const bulletW = inner - 40 * u;
+  const lfs = fitWrappedSize(bullets, bulletW, 34 * u, 24 * u, 3);
   const lift = (1 - easeOutCubic((frame - g.from + 1) / 12)) * 28 * u;
   return (
     <div style={{ position: "absolute", inset: 0, opacity: env, background: rgba("#000000", 0.45) }}>
@@ -93,7 +97,11 @@ const TextCardGraphic: React.FC<GraphicProps> = ({ g, props, frame }) => {
               }}
             >
               <div style={{ width: 12 * u, height: 12 * u, borderRadius: 3 * u, background: theme.accent, flex: "none" }} />
-              {b}
+              <div>
+                {wrapText(b, bulletW, lfs, 3).lines.map((line, n) => (
+                  <div key={n}>{line}</div>
+                ))}
+              </div>
             </div>
           );
         })}
@@ -118,6 +126,7 @@ export const GRAPHIC_TEMPLATES: Record<Graphic["template"], React.FC<GraphicProp
   probability_bar: ProbabilityBar,
   scoreline_grid: ScorelineGrid,
   prediction_card: PredictionCard,
+  pattern_compare: PatternCompare,
 };
 
 export const Graphics: React.FC<{ props: RenderProps; frame: number }> = ({ props, frame }) => (

@@ -38,6 +38,10 @@ facts:
   T.suspensions:           {type: absences, freshness: news, key: true, required: warning}
   T.predicted_xi:          {type: xi, freshness: news, key: true, required: error}
   T.key_players:           {type: list, freshness: stats, key: false, required: warning}
+  T.news:                  {prefix: true, type: string, freshness: news, key: false, required: no}
+  T.rumour:                {prefix: true, type: string, freshness: news, key: true, required: no}  # reported, unconfirmed: WC-05
+  T.expert:                {prefix: true, type: string, freshness: news, key: false, required: no}
+  fixture.expert:          {prefix: true, type: string, freshness: news, key: false, required: no}
   T.split:                 {prefix: true, type: record, freshness: stats, key: false, required: no}  # overall/home/away: W/D/L, goals, BTTS, goal lines, HT/FT, with sample sizes
   T.tactics:               {prefix: true, type: string, freshness: stats, key: false, required: error}
 

@@ -25,6 +25,8 @@ Read `skills/match-data-sources/SKILL.md` (and `skills/api-football/SKILL.md` wh
 4. Launch three **match-researcher** subagents in parallel (scope `H`, `A`, `fixture`) with the brief, the collector's gaps and the list of
    facts the API and collector did not supply (see `config/facts.yaml`; required facts must be covered). Merge their claims into one
    `projects/<slug>/artifacts/web_claims.json` (renumber ids W-001…, keep one `runs` entry per researcher).
+   In the same batch, launch **news-researcher** (with the collector's `data.news` leads) and **expert-researcher**. Merge their claims too.
+   Rumours are `T.rumour.*`, attributed, never high confidence (`WC-05`), and football matters only. If a rumour is doubtful, leave it out.
 5. `.venv/Scripts/tms validate web_claims` then `.venv/Scripts/tms research build` → `build/match_dossier.json`.
    Fix every MD error: missing required facts (research more), single-source key facts (find a second source or
    flag `single_source: true` honestly), stale news (re-fetch), conflicts (verify and drop the wrong claim).

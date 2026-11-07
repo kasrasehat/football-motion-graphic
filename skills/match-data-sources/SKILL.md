@@ -18,6 +18,9 @@ description: Rules for researching football facts for match previews - which sou
 - `quote` is copied verbatim from the page and must support the value. No quote, no claim.
 - `as_of` = when the fact was true (article date, stats date); `retrieved_at` = when you read it.
 
+`T.news.*` is established news; `T.rumour.*` is reported but unconfirmed; `T.expert.*` and `fixture.expert.*` are named opinions, each a sentence that
+attributes it. Opinion is never a statistic and never feeds the prediction.
+
 ## Trust tiers (`config/sources.yaml`)
 1 — official (UEFA, leagues, clubs) and major outlets (BBC, ESPN, Sky, Athletic, Reuters, Marca, AS);
 2 — statistics/analysis (FBref, Understat, WhoScored, Sofascore, FotMob, Transfermarkt, The Analyst);

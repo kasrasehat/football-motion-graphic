@@ -78,6 +78,7 @@
     },
     "captions": {"type": "boolean"},
     "show_names": {"type": "boolean"},
+    "show_crests": {"type": "boolean", "default": false, "description": "Draw teams[].crest on title cards and graphic headers. Off unless the user holds the logo rights (BR-12)."},
     "budget": {
       "type": "object", "additionalProperties": false, "required": ["tts_chars_max", "music_s_max", "api_calls_max"],
       "properties": {

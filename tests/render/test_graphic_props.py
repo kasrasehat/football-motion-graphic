@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import copy
 import json
+from datetime import UTC, datetime
 
 import pytest
+from match_collector.models import CollectionReport
 
 from tests.helpers import FIX, fixture
 from tms import schema
 from tms.choreo.document import build_doc
-from tms.props.builder import _graphic_data, _overlay_style, build
+from tms.props.builder import _graphic_data, _overlay_style, build, resolve_ref
+from tms.research.dossier import merge
+from tms.research.scrape_map import map_report
+from tms.tactic.still import still_props
 from tms.timeline import provisional
 
 pytestmark = pytest.mark.fast
@@ -134,3 +139,69 @@ def test_built_props_are_schema_valid_with_both_changes():
     assert {o["style"]["color"] for o in props["overlays"] if o["kind"] == "pass_line"} <= {"ink"}
     board = next(g for g in props["graphics"] if g["template"] == "lineup_board")["data"]
     assert all("line" in p and "y" in p for p in board["home"] + board["away"])
+
+
+def _collector_dossier():
+    """The real collector report (trimmed fixture) mapped and merged into a dossier, the way the research stage does it."""
+    raw = json.loads((M / "collector_report.json").read_text(encoding="utf-8"))
+    report = CollectionReport.model_validate(raw)
+    report.finished_at = datetime(2026, 11, 2, 12, tzinfo=UTC)
+    brief = fixture("brief.match")
+    brief["match"].update(home="Newcastle", away="Everton", kickoff_utc="2026-11-02T20:00:00Z")
+    return merge("fx", brief, [], None, "2026-11-02T13:00:00Z", {"brief": "0" * 64, "collector_claims": "1" * 64}, 0, map_report(report, brief)["claims"])
+
+
+@pytest.mark.parametrize("key,played", [("H.split.overall", 8), ("A.split.overall", 8), ("H.split.home", 4), ("A.split.away", 4)])
+def test_a_split_key_resolves_to_the_whole_record(key, played):
+    record = resolve_ref(key, _collector_dossier(), None)
+    assert record["played"] == played and record["ht_ft_sample"] == played
+    assert {"wdl", "goals_for", "goals_against", "btts", "goal_lines", "ht_ft"} <= set(record)
+    assert set(record["ht_ft"]) >= {"W/W", "W/D", "W/L", "L/W"} and "over" in record["goal_lines"]["2.5"]
+
+
+def test_pattern_compare_data_carries_both_records_and_the_title():
+    dossier = _collector_dossier()
+    scene = {"template": "pattern_compare", "bind": {"title": "text:League patterns", "home": "H.split.overall", "away": "A.split.overall"}}
+    assert _graphic_data(scene, dossier, None) == {"title": "League patterns", "home": resolve_ref("H.split.overall", dossier, None),
+                                                   "away": resolve_ref("A.split.overall", dossier, None)}
+
+
+def test_text_card_bullets_bound_to_string_facts_stay_a_list_of_strings():
+    facts = {"H.tactics.press": {"value": "Press high from the front."}, "A.tactics.block": {"value": "Sit in a mid-block."}}
+    scene = {"template": "text_card", "bind": {"headline": "text:The plan", "bullets": ["H.tactics.press", "text:Then counter", "A.tactics.block"]}}
+    assert _graphic_data(scene, {"facts": facts}, None)["bullets"] == ["Press high from the front.", "Then counter", "Sit in a mid-block."]
+
+
+def _built_with_brief(brief, **kw):
+    plan, spec, narration = _load("scene_plan"), _load("tactic_spec"), _load("narration_script")
+    doc = build_doc(plan, spec, brief, "fx", {})
+    return build(doc, provisional(doc, narration, "fx"), brief, narration, plan, spec, scale=0.5, dossier=fixture("match_dossier"),
+                 prediction=fixture("prediction"), analysis=fixture("match_analysis"), **kw)
+
+
+def test_crests_reach_the_props_only_when_switched_on(tmp_path):
+    (tmp_path / "c.svg").write_bytes(b'<svg xmlns="http://www.w3.org/2000/svg"><rect width="8" height="8"/></svg>')
+    brief = fixture("brief.match")
+    off = _built_with_brief(brief)
+    brief["teams"]["H"]["crest"] = brief["teams"]["A"]["crest"] = "c.svg"
+    assert _built_with_brief(brief, project_dir=tmp_path)["theme"] == off["theme"]  # named, but not switched on
+    brief["show_crests"] = True
+    on = _built_with_brief(brief, project_dir=tmp_path)
+    assert schema.validate_artifact("render_props", on) == []
+    assert all(t["crest"].startswith("data:image/svg+xml;base64,") for t in on["theme"]["teams"].values())
+    for t in on["theme"]["teams"].values():
+        del t["crest"]
+    assert on == off  # the crests are the only difference
+
+
+def test_show_crests_without_a_project_folder_is_an_error_not_a_silent_drop():
+    brief = fixture("brief.match")
+    brief["show_crests"] = True
+    with pytest.raises(ValueError, match="project folder"):
+        _built_with_brief(brief)
+
+
+def test_the_tactic_still_never_carries_crests():
+    brief = fixture("brief")
+    brief.update(show_crests=True)  # no project folder and no crest files: the still does not look for them
+    assert all("crest" not in t for t in still_props(fixture("tactic_spec"), brief)["theme"]["teams"].values())

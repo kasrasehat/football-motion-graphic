@@ -5,7 +5,7 @@ import json
 from datetime import timedelta
 from pathlib import Path
 
-from tms import jsonio, manifest, proc
+from tms import jsonio, manifest, proc, theme
 from tms.validate.colour import contrast_ratio, delta_e2000
 from tms.validate.registry import rule
 
@@ -115,3 +115,17 @@ def project_id_matches(doc, ctx, p):
 def mode_matches_project(doc, ctx, p):
     if ctx.mode is not None and doc["mode"] != ctx.mode:
         yield "mode", f"brief.mode={doc['mode']!r} but the project mode is {ctx.mode!r}"
+
+
+@rule("BR-12")
+def crests_usable(doc, ctx, p):
+    if not doc.get("show_crests"):
+        return
+    if ctx.project_dir is None:
+        yield "show_crests", "show_crests needs a project folder to check the crests against"
+        return
+    for t in ("H", "A"):
+        try:
+            theme.crest_data_uri(ctx.project_dir, doc["teams"][t].get("crest"))
+        except ValueError as e:
+            yield f"teams/{t}/crest", str(e)

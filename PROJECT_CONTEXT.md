@@ -35,7 +35,7 @@ One-page orientation. The binding rules live in [`AGENTS.md`](AGENTS.md).
 | 5 | `render` | human: `approve final` | render_props, render_report | brief, choreography, timeline, voiceover_manifest, music_manifest | visual-qa (1–2) | `skills/stage-render/SKILL.md` |
 | 6 | `package` | human: `approve package` (optional) | package | brief, narration_script, render_report | – | `skills/stage-package/SKILL.md` |
 
-**Mode `match_preview`** — Match preview (analysis + prediction) (60–180 s, default 120 s)
+**Mode `match_preview`** — Match preview (analysis + prediction) (60–180 s, default 150 s)
 
 | # | Stage | Gate | Produces | Inputs | QA reviewers | Skill |
 |---|---|---|---|---|---|---|

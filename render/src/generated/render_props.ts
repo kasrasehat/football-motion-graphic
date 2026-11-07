@@ -70,6 +70,7 @@ export interface TeamTheme {
   text: Hex;
   short: string;
   name: string;
+  crest?: string;
 }
 export interface Entity {
   id: string;
@@ -137,7 +138,8 @@ export interface Graphic {
     | "key_player_duel"
     | "probability_bar"
     | "scoreline_grid"
-    | "prediction_card";
+    | "prediction_card"
+    | "pattern_compare";
   from: number;
   to: number;
   data: {

@@ -90,12 +90,14 @@ Exit codes: `0` ok · `1` error · `2` gate violation (refused — read the mess
 **Subagents** (`agents/` canonical → `.claude/agents/`, `.codex/agents/`)
 
 - `audio-engineer` — Runs and diagnoses the audio stage - voice-over generation, timeline solving and music fitting.
+- `expert-researcher` — Collects what named pundits, coaches, tactical analysts and data scientists say about a match or its teams, as attributed and mostly paraphrased sourced claims, separating opinion from fact and looking for real disagreement.
 - `fact-checker` — Independent fact-checker for match previews.
 - `gate-verifier` — Independent verifier run before every stage submit and every milestone close.
 - `match-analyst` — Author of match_analysis.json and the match-mode tactic_spec - reads the sourced dossier, identifies the decisive tactical and player battles, models both teams' expected shapes from the predicted line-ups, and proposes only bounded, evidence-backed prediction adjustments.
 - `match-data-collector` — Collects sourced match data from every permitted source through one standard contract - API-Football, ballhelper and its own web research - and returns facts plus explicit gaps.
 - `match-researcher` — Web researcher for one scope of a match preview (home team, away team, or the fixture itself).
 - `motion-designer` — Development-time owner of the Remotion renderer (render/) - components, overlays, captions, cards, graphic templates and themes.
+- `news-researcher` — Collects recent news about a match and both teams - coach changes, pressure on the manager, transfers, dressing-room stories, stakes - as sourced claims, with rumours labelled as rumours.
 - `script-editor` — Independent reviewer of narration_script.json - accuracy against the tactic or analysis, hook, clarity for the brief's audience, pacing against scene lengths, anchors on the right words, pronunciation and number binding.
 - `storyboarder` — Author of the storyboard - writes scene_plan.json (pitch scenes in the choreography language plus data-bound graphic scenes) and narration_script.json together so every spoken idea is shown on screen at the moment it is said.
 - `tactician` — Author of tactic_spec.json.
