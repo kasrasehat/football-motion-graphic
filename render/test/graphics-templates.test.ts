@@ -299,7 +299,7 @@ describe("pattern_compare", () => {
     expect(t).toContain("WON FROM BEHIND AT HALF-TIME 0 of 7 0 of 7");
   });
   it("draws a track only for a known sample", () => {
-    const tracks = (html: string) => (html.match(/rgba\(255,255,255,0\.070\)/g) ?? []).length;
+    const tracks = (html: string) => (html.match(/rgba\(255,255,255,0\.060\)/g) ?? []).length;
     const known = render(withData("pattern_compare", { home: SPLIT, away: SPLIT }), 89);
     const unknown = render(withData("pattern_compare", { home: SPLIT, away: null }), 89);
     expect(tracks(known)).toBe(10);

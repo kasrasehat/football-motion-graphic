@@ -3,7 +3,7 @@ import type { Theme } from "../../generated/render_props";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { formatMatchDay, layoutMode, parseScore, revealFrame, revealProgress, shellLayout, splitEven, teamSide } from "../../lib/graphics";
+import { cardTeamFill, cardTeamInk, formatMatchDay, layoutMode, parseScore, revealFrame, revealProgress, shellLayout, splitEven, teamSide } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asArray, asRecord, EmptyNote, neutral, pickString, Shell, str, Txt, type GraphicProps, type Side } from "./common";
 
@@ -37,7 +37,7 @@ function meetings(data: Record<string, unknown>, theme: Theme): Meeting[] {
 }
 
 function sideColor(theme: Theme, side: Side | null): string {
-  return side ? theme.teams[side].fill : neutral(theme);
+  return side ? cardTeamFill(theme, side) : neutral(theme);
 }
 
 /** h2h_strip: {results: [{date, home, away, score}]} - recent meetings, newest first, winner highlighted. */
@@ -132,7 +132,7 @@ export const H2HStrip: React.FC<GraphicProps> = (gp) => {
             const tag = m.winner === "draw" ? "Draw" : m.winner ? `${m.winner === "home" ? m.home : m.away} win` : m.scoreText;
             const tagSide = winnerSide(m);
             const tagFill = m.winner === "draw" || !m.winner ? rgba(theme.ink, 0.12) : sideColor(theme, tagSide);
-            const tagInk = tagSide ? theme.teams[tagSide].text : theme.ink;
+            const tagInk = tagSide && tagFill === sideColor(theme, tagSide) ? cardTeamInk(theme, tagSide) : theme.ink;
             return (
               <div
                 key={i}

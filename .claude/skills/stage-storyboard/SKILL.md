@@ -49,7 +49,7 @@ Bind values: a dossier fact key (`H.goals_for_avg`), a prediction path (`predict
 | `h2h_strip` | results | `{"results":"h2h.last5"}` |
 | `lineup_board` | home, away, [home_formation, away_formation] | `{"home":"H.predicted_xi","away":"A.predicted_xi","home_formation":"H.formation"}` |
 | `team_news` | home, away (a list merges injuries + suspensions) | `{"home":["H.injuries","H.suspensions"],"away":["A.injuries","A.suspensions"]}` |
-| `key_player_duel` | battle, [home_stats, away_stats as [label, value, …]] | `{"battle":"KB1"}` |
+| `key_player_duel` | battle, [home_stats, away_stats as [label, value, …]; title, why as `text:` labels that replace the battle's] | `{"battle":"KB1"}` |
 | `probability_bar` | home, draw, away | `{"home":"prediction.probs_final.home", …}` |
 | `scoreline_grid` | scorelines | `{"scorelines":"prediction.scorelines"}` |
 | `prediction_card` | result, scoreline, confidence, [note] | `{"result":"prediction.headline.result","scoreline":"prediction.headline.scoreline","confidence":"prediction.confidence"}` |

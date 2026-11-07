@@ -2,7 +2,7 @@ import React from "react";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { layoutMode, parseScore, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
+import { cardTeamFill, cardTeamInk, layoutMode, parseScore, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
 import { estimateTextWidth, unit } from "../../lib/layout";
 import { abs, asRecord, neutral, Para, paraLines, pickString, Shell, str, Swatch, Txt, type GraphicProps, type Side } from "./common";
 
@@ -58,8 +58,8 @@ export const PredictionCard: React.FC<GraphicProps> = (gp) => {
     return (
       <div
         style={{
-          background: t.fill,
-          color: t.text,
+          background: cardTeamFill(theme, s),
+          color: cardTeamInk(theme, s),
           boxShadow: `inset 0 0 0 ${Math.max(1, 2 * u)}px ${rgba(t.ring, 0.6)}`,
           borderRadius: 8 * u,
           padding: `${6 * u}px ${16 * u}px`,

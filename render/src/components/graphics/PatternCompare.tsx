@@ -2,7 +2,7 @@ import React from "react";
 import type { Theme } from "../../generated/render_props";
 import { clamp01, easeOutCubic } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { layoutMode, patternRows, revealFrame, revealProgress, shellLayout, type PatternCell } from "../../lib/graphics";
+import { cardTeamFill, cardTrack, layoutMode, patternRows, revealFrame, revealProgress, shellLayout, type PatternCell } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asRecord, pickString, Shell, Swatch, Txt, type GraphicProps, type Side } from "./common";
 
@@ -10,10 +10,11 @@ import { abs, asRecord, pickString, Shell, Swatch, Txt, type GraphicProps, type 
 const PatternBar: React.FC<{ theme: Theme; side: Side; cell: PatternCell; x: number; y: number; w: number; h: number; grow: number; u: number }> = ({ theme, side, cell, x, y, w, h, grow, u }) => {
   if (!cell) return null; // no sample: no track either, so an unknown can't be read as an empty bar
   const len = w * cell.fraction * grow;
-  const { fill, ring } = theme.teams[side];
+  const fill = cardTeamFill(theme, side);
+  const { ring } = theme.teams[side];
   return (
     <>
-      <div style={{ ...abs(x, y, w, h), background: rgba(theme.ink, 0.07), borderRadius: h / 2 }} />
+      <div style={{ ...abs(x, y, w, h), ...cardTrack(theme, u), borderRadius: h / 2 }} />
       {len > 0 ? (
         <div
           style={{

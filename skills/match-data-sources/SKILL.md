@@ -33,7 +33,7 @@ Subdomains count once: `match.uefa.com` and `www.uefa.com` are one domain. A fla
 `single_source`, even when a second cited source exists; only an unresolved conflict outranks it.
 
 ## Freshness
-Team news ≤ 48 h old, stats ≤ 7 days. Close to kick-off, confirmed line-ups replace predicted ones.
+Injuries, suspensions, line-ups and rumours ≤ 48 h old; stats, news stories and expert opinion ≤ 7 days. A finished event that cannot change (an appointment date, say) may use `as_of: null`; never use that to keep a current situation alive. Close to kick-off, confirmed line-ups replace predicted ones.
 
 ## Never
 Fabricate, round a number to make it "nicer", infer a statistic from memory, or cite a page you did not open. If a

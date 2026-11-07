@@ -5,7 +5,7 @@ import type { Graphic, RenderProps, Theme } from "../../generated/render_props";
 import { BODY_STACK, TITLE_STACK } from "../../fonts";
 import { clamp01, easeOutCubic } from "../../lib/anim";
 import { mix, rgba } from "../../lib/colors";
-import { barFractions, formatValue, SHELL_1080, teamCrest, type ShellLayout } from "../../lib/graphics";
+import { barFractions, cardTeamFill, cardTrack, formatValue, ordinal, rankFractions, SHELL_1080, teamCrest, type ShellLayout } from "../../lib/graphics";
 import { estimateTextWidth, fitFontSize } from "../../lib/layout";
 import { CardBackdrop, cardEnvelope, Crest } from "../Cards";
 
@@ -142,9 +142,9 @@ export function paraLines(text: string, w: number, size: number, max = 2): numbe
   return Math.max(1, Math.min(max, Math.ceil(estimateTextWidth(text, size, "body") / Math.max(1, w))));
 }
 
-/** Team colour block: fill with an inner ring in the team's ring colour. */
+/** Team colour block: the card-safe team fill (`cardTeamFill`) with an inner ring in the team's ring colour. */
 export const Swatch: React.FC<{ theme: Theme; side: Side | null; w: number; h: number; u: number; style?: React.CSSProperties }> = ({ theme, side, w, h, u, style }) => {
-  const fill = side ? theme.teams[side].fill : neutral(theme);
+  const fill = side ? cardTeamFill(theme, side) : neutral(theme);
   const ring = side ? theme.teams[side].ring : theme.ink;
   return (
     <div
@@ -284,10 +284,12 @@ export interface CompareRowProps {
   /** text scale (1 = 1080p sizes) */
   k?: number;
   valueW?: number;
+  /** rank-like row (league position): the smaller value gets the longer bar and values print as ordinals */
+  lowerBetter?: boolean;
 }
 
 /** Label over two bars growing out from the centre (home left, away right), values at the outer ends. */
-export const CompareRow: React.FC<CompareRowProps> = ({ theme, u, x, y, w, h, label, home, away, unit: un, p, k = 1, valueW }) => {
+export const CompareRow: React.FC<CompareRowProps> = ({ theme, u, x, y, w, h, label, home, away, unit: un, p, k = 1, valueW, lowerBetter = false }) => {
   const labelFs = Math.max(18 * u, 26 * u * k);
   const valueFs = Math.max(28 * u, 50 * u * k);
   const barH = Math.max(10 * u, 20 * u * k);
@@ -301,29 +303,30 @@ export const CompareRow: React.FC<CompareRowProps> = ({ theme, u, x, y, w, h, la
   const block = labelFs * 1.2 + 8 * u * k + barH;
   const top = (h - block) / 2;
   const barY = top + labelFs * 1.2 + 8 * u * k;
-  const [fh, fa] = barFractions(home, away);
+  const [fh, fa] = lowerBetter ? rankFractions(home, away) : barFractions(home, away);
   const grow = easeOutCubic(p);
   const fade = clamp01(p * 1.6);
-  const hv = formatValue(home, un);
-  const av = formatValue(away, un);
+  const rankText = (v: unknown) => (lowerBetter && !(typeof un === "string" && un.trim()) ? ordinal(v) : null);
+  const hv = rankText(home) ?? formatValue(home, un);
+  const av = rankText(away) ?? formatValue(away, un);
   const valueTop = barY + barH / 2 - valueFs * 0.55;
-  const track = rgba(theme.ink, 0.07);
+  const track = cardTrack(theme, u);
   return (
     <div style={{ ...abs(x, y, w, h), opacity: fade }}>
       <Txt text={label} w={regionW} size={labelFs} min={labelFs * 0.75} family="title" weight={600} ls={0.08} upper color={rgba(theme.ink, 0.78)} align="center" style={abs(regionX, top)} />
-      <div style={{ ...abs(cx - centreGap / 2 - half, barY, half, barH), background: track, borderRadius: barH / 2 }} />
-      <div style={{ ...abs(cx + centreGap / 2, barY, half, barH), background: track, borderRadius: barH / 2 }} />
+      <div style={{ ...abs(cx - centreGap / 2 - half, barY, half, barH), ...track, borderRadius: barH / 2 }} />
+      <div style={{ ...abs(cx + centreGap / 2, barY, half, barH), ...track, borderRadius: barH / 2 }} />
       {fh !== null ? (
         <div
           style={{
             ...abs(cx - centreGap / 2 - half * fh * grow, barY, half * fh * grow, barH),
-            background: theme.teams.H.fill,
+            background: cardTeamFill(theme, "H"),
             borderRadius: barH / 2,
           }}
         />
       ) : null}
       {fa !== null ? (
-        <div style={{ ...abs(cx + centreGap / 2, barY, half * fa * grow, barH), background: theme.teams.A.fill, borderRadius: barH / 2 }} />
+        <div style={{ ...abs(cx + centreGap / 2, barY, half * fa * grow, barH), background: cardTeamFill(theme, "A"), borderRadius: barH / 2 }} />
       ) : null}
       <Txt text={hv} w={vw} size={valueFs} min={valueFs * 0.6} family="title" weight={800} color={theme.ink} align="right" lh={1.1} style={abs(0, valueTop)} />
       <Txt text={av} w={vw} size={valueFs} min={valueFs * 0.6} family="title" weight={800} color={theme.ink} align="left" lh={1.1} style={abs(w - vw, valueTop)} />

@@ -1,12 +1,13 @@
 import React from "react";
 import { rgba } from "../../lib/colors";
-import { layoutMode, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
+import { layoutMode, lowerBetterFlags, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asArray, asRecord, CompareRow, EmptyNote, pickString, Shell, str, Swatch, Txt, type GraphicProps } from "./common";
 
 const MAX_ROWS = 10;
 
-/** stat_compare: {title?, labels[], home[], away[], units?[]} - mirrored bars per label, one reveal per row. */
+/** stat_compare: {title?, labels[], home[], away[], units?[], lower_better?[]} - mirrored bars per label, one reveal per row;
+ * a lower_better row (rank) gives the smaller value the longer bar. */
 export const StatCompare: React.FC<GraphicProps> = (gp) => {
   const { g, props, frame } = gp;
   const { width, height, theme } = props;
@@ -16,6 +17,7 @@ export const StatCompare: React.FC<GraphicProps> = (gp) => {
   const away = asArray(d.away);
   const units = asArray(d.units);
   const n = Math.min(MAX_ROWS, Math.max(labels.length, home.length, away.length));
+  const lowerBetter = lowerBetterFlags(d.lower_better, n);
   const u = unit(width, height);
   const mode = layoutMode(width, height);
   const panelW = mode === "landscape" ? 1380 * u : undefined;
@@ -70,6 +72,7 @@ export const StatCompare: React.FC<GraphicProps> = (gp) => {
               p={p}
               k={k}
               valueW={valueW}
+              lowerBetter={lowerBetter[i]}
             />
           </React.Fragment>
         );

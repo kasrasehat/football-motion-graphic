@@ -30,7 +30,7 @@ One-page orientation. The binding rules live in [`AGENTS.md`](AGENTS.md).
 |---|---|---|---|---|---|---|
 | 1 | `intake` | auto | brief | – | – | `skills/stage-intake/SKILL.md` |
 | 2 | `tactic` | human: `approve tactic` | tactic_spec | brief | tactics-critic (1–3) | `skills/stage-tactic/SKILL.md` |
-| 3 | `storyboard` | human: `approve storyboard` | scene_plan, narration_script, choreography | brief, tactic_spec | tactics-critic (1–4), script-editor (1–4), visual-qa (1–4) | `skills/stage-storyboard/SKILL.md` |
+| 3 | `storyboard` | human: `approve storyboard` | scene_plan, narration_script, choreography | brief, tactic_spec | tactics-critic (1–6), script-editor (1–6), visual-qa (1–6) | `skills/stage-storyboard/SKILL.md` |
 | 4 | `audio` | auto | voiceover_manifest, timeline, music_manifest | brief, scene_plan, narration_script, choreography | – | `skills/stage-audio/SKILL.md` |
 | 5 | `render` | human: `approve final` | render_props, render_report | brief, choreography, timeline, voiceover_manifest, music_manifest | visual-qa (1–2) | `skills/stage-render/SKILL.md` |
 | 6 | `package` | human: `approve package` (optional) | package | brief, narration_script, render_report | – | `skills/stage-package/SKILL.md` |
@@ -40,9 +40,9 @@ One-page orientation. The binding rules live in [`AGENTS.md`](AGENTS.md).
 | # | Stage | Gate | Produces | Inputs | QA reviewers | Skill |
 |---|---|---|---|---|---|---|
 | 1 | `intake` | auto | brief | – | – | `skills/stage-intake/SKILL.md` |
-| 2 | `research` | auto | web_claims, match_dossier | brief | fact-checker (1–2) | `skills/stage-research/SKILL.md` |
+| 2 | `research` | auto | web_claims, match_dossier | brief | fact-checker (1–3) | `skills/stage-research/SKILL.md` |
 | 3 | `analysis` | human: `approve analysis` | match_analysis, tactic_spec, prediction | brief, match_dossier | tactics-critic (1–3), fact-checker (1–2) | `skills/stage-analysis/SKILL.md` |
-| 4 | `storyboard` | human: `approve storyboard` | scene_plan, narration_script, choreography | brief, match_dossier, match_analysis, tactic_spec, prediction | tactics-critic (1–4), script-editor (1–4), visual-qa (1–4), fact-checker (1–2) | `skills/stage-storyboard/SKILL.md` |
+| 4 | `storyboard` | human: `approve storyboard` | scene_plan, narration_script, choreography | brief, match_dossier, match_analysis, tactic_spec, prediction | tactics-critic (1–6), script-editor (1–6), visual-qa (1–6), fact-checker (1–6) | `skills/stage-storyboard/SKILL.md` |
 | 5 | `audio` | auto | voiceover_manifest, timeline, music_manifest | brief, scene_plan, narration_script, choreography | – | `skills/stage-audio/SKILL.md` |
 | 6 | `render` | human: `approve final` | render_props, render_report | brief, choreography, timeline, voiceover_manifest, music_manifest | visual-qa (1–2) | `skills/stage-render/SKILL.md` |
 | 7 | `package` | human: `approve package` (optional) | package | brief, narration_script, render_report | – | `skills/stage-package/SKILL.md` |

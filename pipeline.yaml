@@ -55,7 +55,7 @@ stages:
     inputs: [brief]
     gate: none
     qa:
-      - {agent: fact-checker, min_rounds: 1, max_rounds: 2, blocking: true}
+      - {agent: fact-checker, min_rounds: 1, max_rounds: 3, blocking: true}
     review_focus:
       - every claim's value matches its quoted source
       - key facts corroborated by 2 independent sources or flagged single_source
@@ -112,10 +112,10 @@ stages:
     gate: human
     approval_word: storyboard
     qa:
-      - {agent: tactics-critic, min_rounds: 1, max_rounds: 4, blocking: true}
-      - {agent: script-editor, min_rounds: 1, max_rounds: 4, blocking: true}
-      - {agent: visual-qa, min_rounds: 1, max_rounds: 4, blocking: true}
-      - {agent: fact-checker, min_rounds: 1, max_rounds: 2, blocking: true, modes: [match_preview]}
+      - {agent: tactics-critic, min_rounds: 1, max_rounds: 6, blocking: true}
+      - {agent: script-editor, min_rounds: 1, max_rounds: 6, blocking: true}
+      - {agent: visual-qa, min_rounds: 1, max_rounds: 6, blocking: true}
+      - {agent: fact-checker, min_rounds: 1, max_rounds: 6, blocking: true, modes: [match_preview]}
     review_focus:
       - every principle / battle is visibly demonstrated
       - narration is accurate, hooks in the first sentence, matches on-screen events

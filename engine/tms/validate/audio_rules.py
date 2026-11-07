@@ -75,13 +75,41 @@ def files_ok(doc, ctx, p):
             yield c["id"], f"{(len(x) - b) / wav.SR:.2f}s trailing silence"
 
 
+_ONES = ("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen "
+         "seventeen eighteen nineteen").split()
+
+
+def _int_words(n: int) -> int:
+    """How many words an integer takes to say ('forty-five' counts as two, as it is spoken)."""
+    if n < 20:
+        return 1
+    if n < 100:
+        return 1 + (n % 10 != 0)
+    if n < 1000:
+        return 2 + (_int_words(n % 100) if n % 100 else 0)
+    return _int_words(n // 1000) + 1 + (_int_words(n % 1000) if n % 1000 else 0)
+
+
+def spoken_words(token: str) -> int:
+    """Words a token takes to say aloud: '1.56' -> one point five six (4), '45%' -> forty five percent (3), '17th' -> 1."""
+    t = token.strip(".,;:!?\"'()")
+    digits = "".join(ch for ch in t if ch.isdigit() or ch == ".")
+    if not any(ch.isdigit() for ch in t):
+        return 1
+    whole, _, frac = digits.partition(".")
+    n = _int_words(int(whole)) if whole.isdigit() else 0
+    n += (1 + len(frac)) if frac.isdigit() else 0
+    return max(1, n) + ("%" in t)
+
+
 @rule("VO-05")
 def speaking_rate(doc, ctx, p):
     for c in doc["clips"]:
         if len(c["words"]) < 4:
             continue
         span = c["words"][-1]["end_s"] - c["words"][0]["start_s"]
-        wpm = len(c["words"]) / max(span, 0.1) * 60
+        spoken = sum(spoken_words(w.get("display") or w.get("text") or "") for w in c["words"])
+        wpm = spoken / max(span, 0.1) * 60
         if not p["min"] <= wpm <= p["max"]:
             if doc["provider"] == "mock_flite":  # rewording barely slows flite, and its pace says nothing about a real voice, so it only warns
                 yield c["id"], f"{wpm:.0f} words per minute (mock voice)"

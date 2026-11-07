@@ -4,7 +4,7 @@ import type { RenderProps, Theme } from "../generated/render_props";
 import { BODY_STACK, TITLE_STACK } from "../fonts";
 import { clamp01, easeOutCubic } from "../lib/anim";
 import { mix, rgba } from "../lib/colors";
-import { teamCrest } from "../lib/graphics";
+import { cardTeamFill, teamCrest } from "../lib/graphics";
 import { fitFontSize, safeArea, unit } from "../lib/layout";
 
 /** Fade in/out envelope for a [from, to) card. */
@@ -143,9 +143,9 @@ export const EndCardView: React.FC<{ props: RenderProps; frame: number }> = ({ p
         }}
       >
         <div style={{ display: "flex", gap: 14 * u }}>
-          <div style={{ width: 46 * u, height: 8 * u, borderRadius: 4 * u, background: theme.teams.H.fill }} />
+          <div style={{ width: 46 * u, height: 8 * u, borderRadius: 4 * u, background: cardTeamFill(theme, "H") }} />
           <div style={{ width: 46 * u, height: 8 * u, borderRadius: 4 * u, background: theme.accent }} />
-          <div style={{ width: 46 * u, height: 8 * u, borderRadius: 4 * u, background: theme.teams.A.fill }} />
+          <div style={{ width: 46 * u, height: 8 * u, borderRadius: 4 * u, background: cardTeamFill(theme, "A") }} />
         </div>
         <div style={{ fontFamily: TITLE_STACK, fontWeight: 800, fontSize: fs, color: theme.ink, letterSpacing: "0.02em", whiteSpace: "nowrap" }}>
           {ec.text.toUpperCase()}

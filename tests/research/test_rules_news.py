@@ -50,3 +50,16 @@ def test_established_news_is_not_held_to_the_rumour_rule():
     low = {**SRC, "url": "https://club.example/x", "publisher": "Club", "tier": 3}
     found = V.validate_doc("web_claims", web(key="H.news.coach", confidence="high", source=low), ctx())
     assert not [f for f in found if f.rule == "WC-05"]
+
+
+@pytest.mark.parametrize("scope", ["news", "expert"])
+def test_a_news_or_expert_run_is_a_valid_run(scope):
+    d = copy.deepcopy(fixture("web_claims"))
+    d["runs"].append({"agent": f"{scope}-researcher", "scope": scope, "finished_at": "2026-11-02T12:20:00Z"})
+    assert not [f for f in V.validate_doc("web_claims", d, ctx()) if f.rule == "SCHEMA"]
+
+
+@pytest.mark.parametrize("key, freshness", [("H.news.coach", "stats"), ("fixture.expert.outcome", "stats"), ("A.expert.shape", "stats"),
+                                            ("H.rumour.transfer", "news"), ("H.injuries", "news")])
+def test_stories_keep_for_a_week_but_rumours_and_team_news_do_not(key, freshness):
+    assert FX.spec(key)["freshness"] == freshness

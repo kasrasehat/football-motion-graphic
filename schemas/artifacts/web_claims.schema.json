@@ -14,7 +14,7 @@
         "type": "object", "additionalProperties": false, "required": ["agent", "scope", "finished_at"],
         "properties": {
           "agent": {"type": "string"},
-          "scope": {"enum": ["H", "A", "fixture"]},
+          "scope": {"enum": ["H", "A", "fixture", "news", "expert"]},
           "finished_at": {"$ref": "../defs.schema.json#/$defs/datetime"}
         }
       }

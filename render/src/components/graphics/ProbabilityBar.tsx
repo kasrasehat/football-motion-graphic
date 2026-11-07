@@ -3,7 +3,7 @@ import { interpolate } from "remotion";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { asNumber, largestRemainder, layoutMode, revealFrame, revealProgress, shellLayout, splitEven } from "../../lib/graphics";
+import { asNumber, cardTeamFill, cardTrack, largestRemainder, layoutMode, revealFrame, revealProgress, shellLayout, splitEven } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asRecord, neutral, pickString, Shell, Swatch, Txt, type GraphicProps, type Side } from "./common";
 
@@ -32,14 +32,14 @@ export const ProbabilityBar: React.FC<GraphicProps> = (gp) => {
   const bw = L.bodyW;
   const barY = numbersH + 36 * u;
   const sepW = 5 * u;
-  const colors = [theme.teams.H.fill, neutral(theme), theme.teams.A.fill];
+  const colors = [cardTeamFill(theme, "H"), neutral(theme), cardTeamFill(theme, "A")];
   const sides: (Side | null)[] = ["H", null, "A"];
   const labels = [theme.teams.H.name, "Draw", theme.teams.A.name];
   const cols = splitEven(bw, 3, 24 * u);
   let cum = 0;
   return (
     <Shell gp={gp} L={L} kicker="Model probabilities" title={pickString(d, ["title", "headline"]) || `${theme.teams.H.name} v ${theme.teams.A.name}`}>
-      <div style={{ ...abs(0, barY, bw, barH), borderRadius: 14 * u, background: rgba(theme.ink, 0.07) }} />
+      <div style={{ ...abs(0, barY, bw, barH), borderRadius: 14 * u, ...cardTrack(theme, u) }} />
       {[0, 1, 2].map((i) => {
         const at = revealFrame(g, i);
         const grow = revealProgress(frame, at, GROW_FRAMES);

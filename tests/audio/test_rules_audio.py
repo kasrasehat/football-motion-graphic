@@ -289,3 +289,54 @@ def test_sync_calibration_end_to_end():
     from tms.qa.sync import run
     res = run()
     assert res["ok"], res
+
+
+def test_music_request_stays_within_the_approved_budget():
+    assert music.music_request_s(100.0, 180) == pytest.approx(100.0 + music.EXTRA_S)  # fits: video + extra
+    assert music.music_request_s(179.0, 180) == 180.0  # over by the extra only: generate the cap, fit() loops the rest
+    with pytest.raises(GateViolation, match="music budget"):
+        music.music_request_s(179.0, 80)  # would need more than one loop
+
+
+def test_fit_loops_a_bed_shorter_than_the_video():
+    sr = wav.SR
+    raw = (np.sin(np.linspace(0, 2000, sr * 10)) * 0.2).astype(np.float32)
+    frames = 12 * 30  # 12 s video from a 10 s bed
+    out, info = music.fit(raw, frames)
+    assert len(out) == frames * music.SPF
+    assert info["splices"] == 1
+
+
+def test_fit_drops_a_silent_outro_and_loops_instead():
+    sr = wav.SR
+    tone = (np.sin(np.linspace(0, 4000, sr * 20)) * 0.2).astype(np.float32)
+    raw = np.concatenate([tone, np.zeros(sr * 4, dtype=np.float32)])  # 20 s of music, then a 4 s silent outro
+    frames = 22 * 30  # the raw file (24 s) is long enough, but its last 4 s are silent
+    out, info = music.fit(raw, frames)
+    assert info["splices"] == 1
+    mono = out[music.FADE_IN_F * music.SPF: -music.FADE_OUT_F * music.SPF].mean(axis=1)  # between the fades
+    win = sr // 10
+    tail = mono[-(len(mono) // win) * win:].reshape(-1, win)
+    assert np.sqrt((tail ** 2).mean(axis=1)).min() > 0.01  # no silent window before the fade-out
+
+
+@pytest.mark.parametrize("token, n", [("goals", 1), ("1.56", 4), ("1.21.", 4), ("45%", 3), ("45%,", 3), ("17th", 1),
+                                       ("12", 1), ("31", 2), ("2026", 4), ("seven", 1)])
+def test_VO05_counts_numbers_as_spoken(token, n):
+    from tms.validate.audio_rules import spoken_words
+    assert spoken_words(token) == n
+
+
+def test_VO05_decimals_do_not_make_a_normal_voice_look_slow(ap):
+    d = doc(ap, "voiceover_manifest")
+    d["provider"] = "elevenlabs"
+    c = d["clips"][0]
+    words = ["United", "create", "1.56", "expected", "goals", "while", "Villa", "create", "1.21."]
+    t = 0.0
+    c["words"] = []
+    for k, w in enumerate(words):  # numbers take as long as the four or five words they are spoken as
+        dur = 1.6 if any(ch.isdigit() for ch in w) else 0.3
+        c["words"].append({"i": k, "display": w, "spoken": w, "start_s": round(t, 3), "end_s": round(t + dur, 3)})
+        t += dur + 0.08
+    errs = [f for f in findings("voiceover_manifest", d, ctx(ap)) if f.rule == "VO-05" and f.location == c["id"] and f.severity == "error"]
+    assert not errs  # 7 words + 2 x 4 spoken = 15 words in about 5.5 s: well over 100 wpm

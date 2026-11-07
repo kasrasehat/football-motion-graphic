@@ -3,7 +3,7 @@ import type { Theme } from "../../generated/render_props";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { rgba } from "../../lib/colors";
-import { asNumber, fitName, layoutMode, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
+import { asNumber, cardTeamFill, fitName, kitOutline, layoutMode, revealFrame, revealProgress, shellLayout } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asArray, asRecord, CompareRow, Para, paraLines, pickString, Shell, str, Txt, type GraphicProps, type Side } from "./common";
 
@@ -13,11 +13,12 @@ const JERSEY = "M30 9 L41 4 Q50 13 59 4 L70 9 L93 23 L84 42 L74 36 L74 95 L26 95
 /** Shirt silhouette in team colours with the squad number (no photos). */
 const Jersey: React.FC<{ size: number; theme: Theme; side: Side; number: number | null }> = ({ size, theme, side, number }) => {
   const t = theme.teams[side];
+  const edge = kitOutline(theme, side);
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}>
       <path d={JERSEY} fill="#000000" opacity={0.3} transform="translate(1.5 3)" />
-      <path d={JERSEY} fill={t.fill} stroke={t.ring} strokeWidth={2.4} strokeLinejoin="round" />
-      <path d="M41 4 Q50 13 59 4" fill="none" stroke={t.ring} strokeWidth={3.2} />
+      <path d={JERSEY} fill={t.fill} stroke={edge} strokeWidth={2.4} strokeLinejoin="round" />
+      <path d="M41 4 Q50 13 59 4" fill="none" stroke={edge} strokeWidth={3.2} />
       {number !== null ? (
         <text x={50} y={74} textAnchor="middle" fontFamily={TITLE_STACK} fontWeight={800} fontSize={number >= 10 ? 38 : 42} fill={t.text}>
           {number}
@@ -101,6 +102,7 @@ export const KeyPlayerDuel: React.FC<GraphicProps> = (gp) => {
     const name = str(player.name);
     const num = asNumber(player.number);
     const shown = name ? fitName(name, cardW - 40 * u, nameFs, "title", 0.02, true) : "–";
+    const cardFill = cardTeamFill(theme, s);
     const slide = (1 - p0) * 60 * u * (s === "H" ? -1 : 1);
     const jy = Math.max(0, (cardH - 8 * u - jersey - gapJ - textH) / 2);
     return (
@@ -112,11 +114,11 @@ export const KeyPlayerDuel: React.FC<GraphicProps> = (gp) => {
           transform: `translateX(${slide}px)`,
           borderRadius: 12 * u,
           overflow: "hidden",
-          background: `linear-gradient(180deg, ${rgba(t.fill, 0.26)} 0%, ${rgba(t.fill, 0.06)} 70%)`,
-          boxShadow: `inset 0 0 0 ${Math.max(1, 2 * u)}px ${rgba(t.fill, 0.35)}`,
+          background: `linear-gradient(180deg, ${rgba(cardFill, 0.26)} 0%, ${rgba(cardFill, 0.06)} 70%)`,
+          boxShadow: `inset 0 0 0 ${Math.max(1, 2 * u)}px ${rgba(cardFill, 0.35)}`,
         }}
       >
-        <div style={{ ...abs(0, 0, cardW, 8 * u), background: t.fill }} />
+        <div style={{ ...abs(0, 0, cardW, 8 * u), background: cardFill }} />
         <div style={{ ...abs((cardW - jersey) / 2, jy + 8 * u, jersey, jersey) }}>
           <Jersey size={jersey} theme={theme} side={s} number={num === null ? null : Math.round(num)} />
         </div>

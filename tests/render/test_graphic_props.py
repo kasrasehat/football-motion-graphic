@@ -205,3 +205,94 @@ def test_the_tactic_still_never_carries_crests():
     brief = fixture("brief")
     brief.update(show_crests=True)  # no project folder and no crest files: the still does not look for them
     assert all("crest" not in t for t in still_props(fixture("tactic_spec"), brief)["theme"]["teams"].values())
+
+
+# --- team_news order and stat_compare rank rows --------------------------------------------------------------------
+
+def _news_scene():
+    return {"template": "team_news", "bind": {"home": ["H.injuries", "H.suspensions"], "away": ["A.injuries", "A.suspensions"]}}
+
+
+def _news_dossier(home_injuries, home_bans):
+    return {"facts": {"H.injuries": {"value": home_injuries}, "H.suspensions": {"value": home_bans},
+                      "A.injuries": {"value": []}, "A.suspensions": {"value": []}}}
+
+
+def test_team_news_lists_bans_then_outs_then_doubts():
+    injuries = [{"player": "Out1", "reason": "knee", "status": "out"}, {"player": "Doubt1", "reason": "hip", "status": "doubt"},
+                {"player": "Out2", "reason": "shin", "status": "out"}, {"player": "Odd", "reason": "?"},
+                {"player": "Doubt2", "reason": "calf", "status": "doubt"}, {"player": "Out3", "reason": "ankle", "status": "out"}]
+    bans = [{"player": "Banned", "reason": "red card", "status": "out"}]
+    data = _graphic_data(_news_scene(), _news_dossier(injuries, bans), None)
+    assert [p["player"] for p in data["home"]] == ["Banned", "Out1", "Out2", "Out3", "Doubt1", "Doubt2", "Odd"]
+    assert data["away"] == []
+
+
+def test_team_news_a_ban_without_a_status_counts_as_out_and_nothing_is_changed():
+    injuries = [{"player": "Out1", "reason": "knee", "status": "out"}, {"player": "Doubt1", "reason": "hip", "status": "doubt"}]
+    bans = [{"player": "Banned", "reason": "ban"}]
+    dossier = _news_dossier(injuries, bans)
+    before = copy.deepcopy(dossier)
+    data = _graphic_data(_news_scene(), dossier, None)
+    assert [p["player"] for p in data["home"]] == ["Banned", "Out1", "Doubt1"]
+    assert dossier == before and data["home"][0] == {"player": "Banned", "reason": "ban"}  # order only, no invented status
+
+
+def test_team_news_on_the_fixture_shows_every_out_before_any_doubt():
+    scene = next(s for s in _load("scene_plan")["scenes"] if s.get("template") == "team_news")
+    data = _graphic_data(scene, fixture("match_dossier"), fixture("prediction"))
+    for side in ("home", "away"):
+        st = [p.get("status") for p in data[side]]
+        assert st == sorted(st, key=lambda s: {"out": 0, "doubt": 1}.get(s, 2))
+
+
+def _stat_facts():
+    return {"facts": {f"{t}.{k}": {"value": v} for t, vals in (("H", (17, 7, 1.1)), ("A", (10, 12, 1.2)))
+                      for k, v in zip(("standing.position", "standing.points", "goals_for_avg"), vals)}}
+
+
+def test_stat_compare_flags_rank_rows_as_lower_is_better():
+    scene = {"template": "stat_compare", "bind": {
+        "labels": ["text:League position", "text:Points", "text:Goals"],
+        "home": ["H.standing.position", "H.standing.points", "H.goals_for_avg"],
+        "away": ["A.standing.position", "A.standing.points", "A.goals_for_avg"]}}
+    data = _graphic_data(scene, _stat_facts(), None)
+    assert data["home"] == [17, 7, 1.1] and data["away"] == [10, 12, 1.2]
+    assert data["lower_better"] == [True, False, False]
+
+
+def test_stat_compare_without_rank_rows_carries_no_flag():
+    scene = {"template": "stat_compare", "bind": {"labels": ["text:Points"], "home": ["H.standing.points"], "away": ["A.standing.points"]}}
+    assert "lower_better" not in _graphic_data(scene, _stat_facts(), None)
+
+
+def test_built_stat_compare_with_a_rank_row_is_schema_valid():
+    plan, spec, narration = _load("scene_plan"), _load("tactic_spec"), _load("narration_script")
+    scene = next(s for s in plan["scenes"] if s.get("template") == "stat_compare")
+    scene["bind"]["home"][0] = "H.standing.position"
+    scene["bind"]["away"][0] = "A.standing.position"
+    dossier = fixture("match_dossier")
+    for t, v in (("H", 3), ("A", 9)):
+        dossier["facts"].setdefault(f"{t}.standing.position", {"value": v})
+    brief = fixture("brief.match")
+    doc = build_doc(plan, spec, brief, "fx", {})
+    props = build(doc, provisional(doc, narration, "fx"), brief, narration, plan, spec, scale=0.5, dossier=dossier,
+                  prediction=fixture("prediction"), analysis=fixture("match_analysis"))
+    assert schema.validate_artifact("render_props", props) == []
+    g = next(g for g in props["graphics"] if g["template"] == "stat_compare")["data"]
+    assert g["lower_better"][0] is True and not any(g["lower_better"][1:])
+
+
+@pytest.mark.parametrize("order", ["battle_first", "title_first"])
+def test_a_text_title_and_why_override_the_key_battle_in_any_bind_order(order):
+    analysis = {"key_battles": [{"id": "KB1", "title": "Battle title", "why": "Battle why",
+                                 "home_player": "H4", "away_player": "A9"}]}
+    spec = {"teams": {"H": {"players": [{"id": "H4", "name": "Home Four", "number": 4}]},
+                      "A": {"players": [{"id": "A9", "name": "Away Nine", "number": 9}]}}}
+    over = {"title": "text:Short title", "why": "text:Short why"}
+    bind = {"battle": "KB1", **over} if order == "battle_first" else {**over, "battle": "KB1"}
+    d = _graphic_data({"template": "key_player_duel", "bind": bind}, None, None, analysis, spec)
+    assert (d["title"], d["why"]) == ("Short title", "Short why")
+    assert d["home_player"] == {"name": "Home Four", "number": 4}
+    plain = _graphic_data({"template": "key_player_duel", "bind": {"battle": "KB1"}}, None, None, analysis, spec)
+    assert (plain["title"], plain["why"]) == ("Battle title", "Battle why")

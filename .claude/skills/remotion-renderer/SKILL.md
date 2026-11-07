@@ -28,7 +28,7 @@ fixture changes, run `npm --prefix render run sync:fixture`).
 | `pitchVisible` | `TacticVideo.tsx` | world layer hidden outside spans (6-frame fade at inner span edges) |
 | `overlays` | `components/overlays/Overlays.tsx` | see below |
 | `captions` | `components/Captions.tsx`, `lib/captions.ts` | ≤ 2 lines, 44 px at 1080p (shrinks only to fit), active word highlighted; `place` comes from `caption_place` in `engine/tms/render/stage.py`: top only if the ball enters the bottom caption box |
-| `scenes[].title` | `components/SceneTitle.tsx`, `lib/hud.ts` | lower-third for the first 60 frames; lifted above a bottom caption |
+| `scenes[].title` | `components/SceneTitle.tsx`, `lib/hud.ts` | lower-third for the first 60 frames on pitch scenes only (never on graphic scenes or while a graphic card is on screen); lifted above a bottom caption |
 | `titleCard` / `endCard` | `components/Cards.tsx` | full-screen, null = none |
 | `freeze` | `components/Hud.tsx` `FreezeVignette` | edge vignette + PAUSED badge (tracks are already frozen by the engine); the engine emits spans only for pauses of at least 1 s on the pitch (`_freeze_spans`) |
 | `graphics` | `components/graphics/registry.tsx` | all 12 templates implemented; see "Graphic templates" below |
@@ -106,17 +106,19 @@ Shared rules (`components/graphics/common.tsx`, pure helpers in `lib/graphics.ts
   data in all orientations and asserts no `NaN`/`undefined` in the markup).
 - **Text never overflows**: `Txt` shrinks to fit (estimate) then CSS-ellipsizes; `Para` clamps to 2 lines;
   player names use `fitName` (full → surname with particles/suffixes → known-as name).
-- **Colours**: theme only. Team fills `theme.teams.H/A` (`Swatch`), win/draw/loss = `resultColors(theme)`
+- **Colours**: theme only. Team fills on cards go through `cardTeamFill` (`lib/graphics.ts`): the primary only if it reaches 3:1 contrast
+  against the card, else the team's ring colour, else a lightened/darkened primary; kit-coloured shapes get `kitOutline`; empty
+  tracks use `cardTrack`. Win/draw/loss = `resultColors(theme)`
   (grass hue / ink-panel grey / warn), neutral = ink-panel mix.
 
 | template | data (fixed contract) | items / reveals | notes |
 |---|---|---|---|
 | `title_card` / `text_card` | headline, sub / title, body, bullets[] | bullets | bullets (strings only, `GS-03`) wrap to 3 lines, shrinking no lower than 24 px at 1080p, then cut with an ellipsis |
-| `stat_compare` | title?, labels[], home[], away[], units?[] | one per row (≤ 10) | mirrored bars from the centre, length = value / max of the pair; strings/null: value only |
+| `stat_compare` | title?, labels[], home[], away[], units?[] | one per row (≤ 10) | mirrored bars from the centre, length = value / max of the pair; strings/null: value only. `lower_better?[]` (set by the builder for `*.standing.position`) draws a rank: the better rank gets the longer bar, printed as ordinals |
 | `form_guide` | home[], away[] of W/D/L, most recent last | home row, away row | chips centred, latest outlined, points from last N (W3 D1) |
 | `h2h_strip` | results[{date, home, away, score}] | one per meeting | newest first (ISO dates); wins/draws summary when names match the theme; landscape tiles, else rows; loser dimmed |
 | `lineup_board` | home[], away[] {name, number, position G/D/M/F, line?, y?}, home_/away_formation? | home, away | mini vertical pitches (stacked in portrait), own goal at the bottom; rows and sides from the tactic spec, matched by shirt number (`line`, `y`, smallest y on the left); if any player of a team has no match, that team uses the formation if it sums to the outfield count, else positions (rows > 5 split) |
-| `team_news` | home[], away[] {player, reason, status?} | home, away | max 6 rows (5 + "+N more"); out = warn ✕, doubt = accent ?, pill on the name line; reasons wrap to 2 lines; "No reported absences" |
+| `team_news` | home[], away[] {player, reason, status?} | home, away | builder orders suspensions, then out, then doubt; max 6 rows (5 + "+N more"); out = warn ✕, doubt = accent ?, pill on the name line; reasons wrap to 2 lines; "No reported absences" |
 | `key_player_duel` | title, home_player, away_player {name, number}, why?, home_stats[], away_stats[] {label, value} | cards, stats, why | jersey with the shirt number in team colours; stats ≤ 5 rows aligned by index |
 | `probability_bar` | home, draw, away (0–1) | home, draw, away segment | kicker "Model probabilities"; `largestRemainder` → integers summing to 100 |
 | `scoreline_grid` | scorelines[{home, away, p}] | one per tile (rank order) | top 6 tiles + 0–4 × 0–4 heat grid when ≥ 6 entries, with a note saying how many scores it shows, else ≤ 5 tiles |

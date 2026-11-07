@@ -3,7 +3,7 @@ import type { Theme } from "../../generated/render_props";
 import { TITLE_STACK } from "../../fonts";
 import { clamp01 } from "../../lib/anim";
 import { mix, readableOn, rgba } from "../../lib/colors";
-import { asNumber, layoutMode, percentText, revealFrame, revealProgress, scoreGridNote, shellLayout } from "../../lib/graphics";
+import { asNumber, cardTeamFill, layoutMode, percentText, revealFrame, revealProgress, scoreGridNote, shellLayout } from "../../lib/graphics";
 import { unit } from "../../lib/layout";
 import { abs, asArray, asRecord, EmptyNote, neutral, pickString, Shell, Txt, type GraphicProps } from "./common";
 
@@ -30,8 +30,8 @@ function scorelines(v: unknown): Scoreline[] {
 }
 
 function outcome(theme: Theme, s: Scoreline): { label: string; color: string } {
-  if (s.home > s.away) return { label: `${theme.teams.H.short} win`, color: theme.teams.H.fill };
-  if (s.away > s.home) return { label: `${theme.teams.A.short} win`, color: theme.teams.A.fill };
+  if (s.home > s.away) return { label: `${theme.teams.H.short} win`, color: cardTeamFill(theme, "H") };
+  if (s.away > s.home) return { label: `${theme.teams.A.short} win`, color: cardTeamFill(theme, "A") };
   return { label: "Draw", color: neutral(theme) };
 }
 

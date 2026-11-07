@@ -31,13 +31,28 @@ def _body_start(x: np.ndarray, max_skip_s: float = 4.0) -> int:
     return int(max_skip_s * wav.SR)
 
 
+def _body_end(x: np.ndarray, max_trim_s: float = 8.0) -> int:
+    """Drop a quiet outro: end after the last 100 ms window within 6 dB of the median loudness (trim at most 8 s)."""
+    mono = x.mean(axis=1) if x.ndim > 1 else x
+    win = wav.SR // 10
+    n = len(mono) // win
+    if n < 5:
+        return len(mono)
+    rms = 20 * np.log10(np.sqrt(np.mean(mono[: n * win].reshape(n, win) ** 2, axis=1)) + 1e-9)
+    med = np.median(rms)
+    for k in range(n - 1, max(-1, n - 1 - int(max_trim_s * 10)), -1):
+        if rms[k] >= med - 6:
+            return min(len(mono), (k + 1) * win)
+    return len(mono) - int(max_trim_s * wav.SR)
+
+
 def fit(raw: np.ndarray, frames: int) -> tuple[np.ndarray, dict]:
     """Exactly frames*SPF stereo samples; loops with a 2 s crossfade when too short; fades; ~-22 LUFS-ish level."""
     if raw.ndim == 1:
         raw = np.stack([raw, raw], axis=1)
     need = frames * SPF
     start = _body_start(raw)
-    body = raw[start:]
+    body = raw[start:_body_end(raw)]
     splices = 0
     xf = int(XFADE_S * wav.SR)
     out = body.copy()
@@ -54,6 +69,17 @@ def fit(raw: np.ndarray, frames: int) -> tuple[np.ndarray, dict]:
     out *= min(0.08 / rms, 4.0)  # bed level well under the voice before ducking
     return out.astype(np.float32), {"start_s": round(start / wav.SR, 3), "end_s": round((start + min(len(body), need)) / wav.SR, 3),
                                      "splices": splices}
+
+
+def music_request_s(seconds: float, cap_s: float) -> float:
+    """Seconds of music to generate: the video plus EXTRA_S, but never beyond the approved budget. When the cap is
+    shorter, `fit` loops the remainder with a crossfade; refuse only if that would need more than one loop (2x)."""
+    want = seconds + EXTRA_S
+    if want <= cap_s:
+        return want
+    if cap_s * 2 < seconds + XFADE_S:
+        raise GateViolation(f"music budget: {want:.0f}s needed, approved {cap_s}s is too short even to loop once")
+    return float(cap_s)
 
 
 def build(pr: Project, timeline: dict, inputs: dict, client: Client | None = None) -> dict:
@@ -76,15 +102,14 @@ def build(pr: Project, timeline: dict, inputs: dict, client: Client | None = Non
     elif pr.dry_run:
         mock.music(seconds + EXTRA_S, raw_path)
     else:
-        if seconds + EXTRA_S > brief["budget"]["music_s_max"]:
-            raise GateViolation(f"music budget: {seconds + EXTRA_S:.0f}s needed > approved {brief['budget']['music_s_max']}s")
+        req_s = music_request_s(seconds, brief["budget"]["music_s_max"])
         client = client or Client()
-        audio, h, cached = client.music(mu["mood"], int((seconds + EXTRA_S) * 1000), seed=brief["voice"]["seed"])
+        audio, h, cached = client.music(mu["mood"], int(req_s * 1000), seed=brief["voice"]["seed"])
         with tempfile.TemporaryDirectory(prefix="tms music ") as td:
             (Path(td) / "raw.mp3").write_bytes(audio)
             wav.to_wav48(Path(td) / "raw.mp3", raw_path, channels=2)
         provider = "elevenlabs"
-        billed = 0.0 if cached else round(seconds + EXTRA_S, 1)
+        billed = 0.0 if cached else round(req_s, 1)
     raw = wav.read(raw_path)
     fitted, body = fit(raw, frames)
     fit_rel = "media/music/bed_fit.wav"

@@ -42,11 +42,24 @@ export interface SceneTitleLayout {
   rect: Rect;
 }
 
-/** Lower-third at bottom-left of the safe area, lifted above any bottom caption overlapping its window. */
+/** A scene that gets the lower-third: pitch scenes only. A graphic scene's card carries its own kicker and title, and
+ * a chip at bottom-left would sit on the card's body text (the panel reaches down to the caption band). */
+export function hasSceneTitle(s: Scene): boolean {
+  return s.kind !== "graphic" && s.title.trim() !== "";
+}
+
+/** True when a full-screen graphic card is on screen at `frame`. */
+export function graphicOnScreen(p: RenderProps, frame: number): boolean {
+  return p.graphics.some((g) => frame >= g.from && frame < g.to);
+}
+
+/** Lower-third at bottom-left of the safe area, lifted above any bottom caption overlapping its window. Never drawn
+ * on a graphic scene or over a graphic card. */
 export function sceneTitleLayout(p: RenderProps, frame: number): SceneTitleLayout | null {
+  if (graphicOnScreen(p, frame)) return null;
   const index = p.scenes.findIndex((s) => {
     const [a, b] = sceneTitleWindow(s);
-    return s.title.trim() !== "" && frame >= a && frame < b;
+    return hasSceneTitle(s) && frame >= a && frame < b;
   });
   if (index < 0) return null;
   const scene = p.scenes[index]!;

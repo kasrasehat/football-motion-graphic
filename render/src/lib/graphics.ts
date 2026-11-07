@@ -3,7 +3,7 @@
 // is a pure function and is covered by render/test/graphics.test.ts.
 import type { Theme } from "../generated/render_props";
 import { easeOutCubic } from "./anim";
-import { mix, withHsl } from "./colors";
+import { contrastRatio, mix, rgba, withHsl } from "./colors";
 import { estimateTextWidth, safeArea, unit, type Rect } from "./layout";
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -147,6 +147,91 @@ export function barFractions(h: unknown, a: unknown): [number | null, number | n
   const m = Math.max(hv ?? 0, av ?? 0);
   const f = (v: number | null): number | null => (v === null ? null : m > 0 ? v / m : 0);
   return [f(hv), f(av)];
+}
+
+/**
+ * Bar lengths for a "lower is better" row such as a league position: the better (smaller) value gets the full bar
+ * and the other `best / value`, so 1st v 2nd reads as 1 v 0.5. Non-numbers and values <= 0 get no bar (null).
+ */
+export function rankFractions(h: unknown, a: unknown): [number | null, number | null] {
+  const pos = (v: unknown): number | null => {
+    const n = asNumber(v);
+    return n !== null && n > 0 ? n : null;
+  };
+  const hv = pos(h);
+  const av = pos(a);
+  const best = Math.min(hv ?? Infinity, av ?? Infinity);
+  const f = (v: number | null): number | null => (v === null ? null : best / v);
+  return [f(hv), f(av)];
+}
+
+/** Per-row "lower is better" flags of a stat_compare (`lower_better[]`, set by the props builder for rank keys). */
+export function lowerBetterFlags(v: unknown, n: number): boolean[] {
+  const a = Array.isArray(v) ? v : [];
+  return Array.from({ length: n }, (_, i) => a[i] === true);
+}
+
+/** English ordinal of a positive integer rank ("1st", "17th", "22nd"); anything else -> null. */
+export function ordinal(v: unknown): string | null {
+  const n = asNumber(v);
+  if (n === null || !Number.isInteger(n) || n <= 0) return null;
+  const t = n % 100;
+  const s = t >= 11 && t <= 13 ? "th" : n % 10 === 1 ? "st" : n % 10 === 2 ? "nd" : n % 10 === 3 ? "rd" : "th";
+  return `${n}${s}`;
+}
+
+/** Contrast a team fill must reach against the card surface to read as a filled shape (WCAG non-text contrast). */
+export const CARD_FILL_MIN_CONTRAST = 3;
+
+/** The colour graphics are drawn on: the top of the panel gradient in `Shell` (the darker bottom differs by < 5%). */
+export function cardSurface(theme: Theme): string {
+  return mix(theme.panel, theme.ink, 0.05);
+}
+
+/**
+ * A colour for a team fill drawn on `bg` that reads at `min`:1 contrast: the primary if it does, else the
+ * secondary if that does, else the primary moved toward whichever of white/black contrasts more with `bg`, in 5%
+ * steps until it does (keeps the hue, so the team stays recognisable).
+ */
+export function contrastSafeFill(primary: string, secondary: string, bg: string, min = CARD_FILL_MIN_CONTRAST): string {
+  if (contrastRatio(primary, bg) >= min) return primary;
+  if (contrastRatio(secondary, bg) >= min) return secondary;
+  const to = contrastRatio("#ffffff", bg) >= contrastRatio("#000000", bg) ? "#ffffff" : "#000000";
+  for (let i = 1; i <= 20; i++) {
+    const c = mix(primary, to, i * 0.05);
+    if (contrastRatio(c, bg) >= min) return c;
+  }
+  return to;
+}
+
+/** A team's fill as drawn on a data card (bars, segments, swatches, chips): `contrastSafeFill` of fill / ring. */
+export function cardTeamFill(theme: Theme, side: "H" | "A"): string {
+  const t = theme.teams[side];
+  return contrastSafeFill(t.fill, t.ring, cardSurface(theme));
+}
+
+/** Text colour on `cardTeamFill`: the kit's own text colour when the fill is the kit's, else black or white, whichever reads. */
+export function cardTeamInk(theme: Theme, side: "H" | "A"): string {
+  const t = theme.teams[side];
+  const fill = cardTeamFill(theme, side);
+  if (fill === t.fill) return t.text;
+  return contrastRatio(fill, "#ffffff") >= contrastRatio(fill, "#111111") ? "#ffffff" : "#111111";
+}
+
+/**
+ * Outline for a kit-coloured shape that keeps the real kit fill (jersey, token): the kit's ring colour when the fill
+ * or the ring stands off the card, else a light (or dark) edge so the shape never disappears into the card.
+ */
+export function kitOutline(theme: Theme, side: "H" | "A"): string {
+  const t = theme.teams[side];
+  const bg = cardSurface(theme);
+  if (contrastRatio(t.fill, bg) >= CARD_FILL_MIN_CONTRAST || contrastRatio(t.ring, bg) >= CARD_FILL_MIN_CONTRAST) return t.ring;
+  return contrastRatio("#ffffff", bg) >= contrastRatio("#000000", bg) ? rgba("#ffffff", 0.85) : rgba("#000000", 0.7);
+}
+
+/** Empty bar track on a card: faint fill plus a hairline edge, so an empty slot never reads as a filled one. */
+export function cardTrack(theme: Theme, u: number): { background: string; boxShadow: string } {
+  return { background: rgba(theme.ink, 0.06), boxShadow: `inset 0 0 0 ${Math.max(1, 1.5 * u)}px ${rgba(theme.ink, 0.14)}` };
 }
 
 /**

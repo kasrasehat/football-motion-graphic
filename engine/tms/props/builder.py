@@ -74,15 +74,49 @@ def _spec_lineup(players, team: dict | None):
     return [{**p, "line": by_number[n]["line"], "y": by_number[n]["pos"][1]} for p, n in zip(players, numbers)]
 
 
-def _graphic_data(scene: dict, dossier: dict | None, prediction: dict | None, analysis: dict | None = None,
+LOWER_IS_BETTER = (".standing.position",)
+"""Fact-key suffixes of rank-like metrics, where a smaller number is the better one (1st beats 17th)."""
+
+
+def _lower_better(bind: dict) -> list[bool]:
+    """Per stat_compare row: True when the row's home or away value is bound to a rank-like fact key."""
+    rows = []
+    for side in ("home", "away"):
+        refs = bind.get(side)
+        refs = refs if isinstance(refs, list) else [refs] if isinstance(refs, str) else []
+        for i, r in enumerate(refs):
+            while len(rows) <= i:
+                rows.append(False)
+            rows[i] = rows[i] or (isinstance(r, str) and r.endswith(LOWER_IS_BETTER))
+    return rows
+
+
+_ABSENCE_RANK = {"out": 1, "doubt": 2}
+
+
+def _absence_order(refs: list[str], lists: list[list]) -> list:
+    """Merge injury and suspension lists into one column ordered by how certain the absence is: suspensions, then
+    players ruled out, then doubts, then anything else (stable within a group). The card shows only the first rows,
+    so the definite absentees must come first and the doubts fall into "+N more"."""
+    def rank(ref: str, item) -> int:
+        status = str(item.get("status", "")).strip().lower() if isinstance(item, dict) else ""
+        if ref.endswith(".suspensions") and status in ("", "out"):
+            return 0
+        return _ABSENCE_RANK.get(status, 3)
+    tagged = [(rank(r, x), x) for r, v in zip(refs, lists) for x in v]
+    return [x for _, x in sorted(tagged, key=lambda t: t[0])]  # sorted() is stable
+
+
+def _graphic_data(scene: dict,dossier: dict | None, prediction: dict | None, analysis: dict | None = None,
                   spec: dict | None = None) -> dict:
     """Resolve a graphic scene's bind slots into the template data contract (see skills/stage-storyboard)."""
     data = {}
     for slot, ref in scene["bind"].items():
         if isinstance(ref, list):
-            vals = [resolve_ref(r, dossier, prediction) for r in ref if not r.startswith("KB")]
+            refs = [r for r in ref if not r.startswith("KB")]
+            vals = [resolve_ref(r, dossier, prediction) for r in refs]
             if scene["template"] == "team_news" and all(isinstance(v, list) for v in vals):
-                vals = [x for v in vals for x in v]  # injuries + suspensions in one column
+                vals = _absence_order(refs, vals)  # injuries + suspensions in one column, definite absentees first
             data[slot] = vals
         elif ref.startswith("KB") and analysis and spec:
             kb = next((k for k in analysis["key_battles"] if k["id"] == ref), None)
@@ -95,12 +129,20 @@ def _graphic_data(scene: dict, dossier: dict | None, prediction: dict | None, an
         else:
             data[slot] = resolve_ref(ref, dossier, prediction)
     if scene["template"] == "key_player_duel":
+        for slot in ("title", "why"):  # a `text:` title/why in the scene overrides the battle's, whatever the bind order
+            ref = scene["bind"].get(slot)
+            if isinstance(ref, str) and ref.startswith("text:"):
+                data[slot] = resolve_ref(ref, dossier, prediction)
         data.setdefault("home_stats", [])
         data.setdefault("away_stats", [])
         for side in ("home_stats", "away_stats"):  # stat slots are bound as alternating [label, value, ...] lists
             if data[side] and not isinstance(data[side][0], dict):
                 it = data[side]
                 data[side] = [{"label": str(it[i]), "value": it[i + 1]} for i in range(0, len(it) - 1, 2)]
+    if scene["template"] == "stat_compare":
+        flags = _lower_better(scene["bind"])
+        if any(flags):
+            data["lower_better"] = flags
     if scene["template"] == "lineup_board":
         teams = (spec or {}).get("teams", {})
         for slot, side in (("home", "H"), ("away", "A")):
