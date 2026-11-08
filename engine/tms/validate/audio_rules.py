@@ -119,6 +119,24 @@ def speaking_rate(doc, ctx, p):
             yield c["id"], f"{wpm:.0f} words per minute"
 
 
+@rule("VO-07")
+def clean_edges(doc, ctx, p):
+    for c in doc["clips"]:
+        f = _clip_path(ctx, c["file"])
+        if f is None:
+            return
+        if not f.is_file():
+            continue
+        x = wav.read(f)
+        n = max(1, int(p["edge_s"] * wav.SR))
+        if len(x) < 2 * n:
+            continue
+        for where, seg in (("start", x[:n]), ("end", x[-n:])):
+            level = 20 * math.log10(float(np.sqrt(np.mean(np.asarray(seg, dtype=np.float64) ** 2))) + 1e-12)
+            if level > p["max_db"]:
+                yield c["id"], f"clip {where}s at {level:.0f} dBFS: it will click against the next line (rebuild the voice-over)"
+
+
 @rule("VO-06")
 def not_stale(doc, ctx, p):
     nar, brief = ctx.other("narration_script"), ctx.other("brief")

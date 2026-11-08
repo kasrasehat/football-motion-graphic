@@ -21,7 +21,9 @@ Use `pattern_compare` for half-time and scoring patterns, and `text_card` bullet
    (see the template table in `skills/stage-storyboard/SKILL.md`) and 2–3 animated tactical battles.
 2. Write motion as intent: actions, passes, presses, holds after key moments, overlays that reveal the idea at the
    moment it is spoken, camera that frames what is being explained.
-3. Write one narration line per scene, sized to the scene (≈ 2.6 words/s), anchored to the events it describes.
+3. Before writing lines, assign each fact, event and quote to exactly ONE scene, the one where it serves the point;
+   never reuse it in another scene, and keep tactical scenes to evidence about that pattern (no match news).
+   Then write one narration line per scene, sized to the scene (the live voice speaks ≈ 2.0 words/s; the validator estimates 2.6), anchored to the events it describes.
 4. Iterate until clean — drafts only in `projects/<slug>/drafts/` (you may Write there and nowhere else):
    ```
    .venv/Scripts/tms validate scene_plan --file projects/<slug>/drafts/scene_plan.json -p <slug>

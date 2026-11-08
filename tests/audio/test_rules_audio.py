@@ -360,3 +360,49 @@ def test_duck_envelope_never_jumps():
     step = wav.SR // 10
     assert np.abs(np.diff(g[::step])).max() <= 6.0  # at most 6 dB change per 100 ms: no sudden swells
     assert g[-1] == pytest.approx(DUCK_DEPTH_DB, abs=0.01)  # still ducked at the very end
+
+
+def _clip_with_end_burst():
+    sr = wav.SR
+    speech = (np.sin(np.linspace(0, 3000, sr)) * 0.3).astype(np.float32)          # 1 s "speech"
+    gap = np.zeros(int(0.15 * sr), dtype=np.float32)                               # 150 ms silence
+    burst = (np.sin(np.linspace(0, 200, int(0.03 * sr))) * 0.2).astype(np.float32)  # 30 ms burst at the very end
+    lead = np.zeros(int(0.2 * sr), dtype=np.float32)                                # real clips start with silence
+    return np.concatenate([lead, speech, gap, burst]), len(lead) + len(speech)
+
+
+def test_trim_drops_a_tts_end_burst_and_fades_the_edges():
+    x, speech_end = _clip_with_end_burst()
+    words = [{"i": 0, "display": "Hello", "spoken": "Hello", "start_s": 0.2, "end_s": 1.2}]
+    y, ws, _ = voiceover._trim(x, words)
+    assert len(y) < len(x)  # the burst is gone
+    edge = int(0.01 * wav.SR)
+    assert 20 * np.log10(np.sqrt(np.mean(y[-edge:] ** 2)) + 1e-12) < -45  # ends quietly
+    assert 20 * np.log10(np.sqrt(np.mean(y[:edge] ** 2)) + 1e-12) < -45   # starts quietly
+
+
+def test_trim_keeps_real_speech_at_the_end():
+    sr = wav.SR
+    x = (np.sin(np.linspace(0, 3000, sr)) * 0.3).astype(np.float32)  # speech right to the last sample, no gap
+    y, _, _ = voiceover._trim(x, [{"i": 0, "display": "Hi", "spoken": "Hi", "start_s": 0.0, "end_s": 1.0}])
+    assert len(y) >= len(x) - int(0.02 * sr)
+
+
+def test_VO07_flags_a_clip_that_ends_loud(tmp_path):
+    from tms.validate.audio_rules import clean_edges
+    x, _ = _clip_with_end_burst()
+    wav.write(tmp_path / "v.wav", x)
+    d = {"clips": [{"id": "V01", "file": "v.wav"}]}
+    found = list(clean_edges(d, Context(project_dir=tmp_path, mode="tactic", artifacts={}), {"edge_s": 0.01, "max_db": -45.0}))
+    assert any("ends at" in msg for _, msg in found)
+
+
+def test_VO07_clip_ending_on_a_click(ap):
+    d = doc(ap, "voiceover_manifest")
+    c = d["clips"][0]
+    x = wav.read(ap.dir / c["file"]).copy()
+    x[-int(0.02 * wav.SR):] = 0.3  # the last 20 ms jump to full level, as a TTS end burst would
+    rel = "media/vo/vo07_loud_end.wav"
+    wav.write(ap.dir / rel, x)
+    c["file"] = rel
+    expect_violation("VO-07", "voiceover_manifest", d, ctx(ap))

@@ -45,6 +45,12 @@ Schema: `schemas/artifacts/narration_script.schema.json`; rules `NS-xx` in `conf
   (creators.facebook.com/reels-best-practices-tips-tricks), Loewenstein (1994) on the curiosity gap.
 - **Something new every 15 to 20 seconds:** a new fact, a turn ("but"), or a shift from numbers to the pitch. No two graphic scenes in a row saying the same kind of thing.
 - **A little fun.** Sound like a sharp pundit having a good time: a dry aside, a rivalry, a playful comparison. One or two per video, about football. Never about injuries, illness, private lives, nationality or a person's looks, and never at the cost of accuracy.
+- **Say each fact once.** An event, statistic or quote appears in one scene only: where it does the most work. If it
+  supports two points, make it once and refer back ("that Roma night") or drop the weaker use. The same game,
+  stat or quote in two scenes wastes seconds and sounds padded.
+- **Stay on the scene's point.** Every sentence must serve what the scene is showing. In a tactical scene, use only
+  evidence about that pattern (how this team defends or attacks), not match news, results from other competitions
+  or context the viewer already has. If a fact is real but off-topic here, move it to the scene it belongs to or cut it.
 - **Caveats once, up front, in plain words.** "Three games each, so a small sample" is enough; let "if" carry a scenario and let on-screen labels repeat it. Stacking "reportedly" and "according to" sounds like a sourcing memo.
 - **Rumours are said as rumours,** naming the outlet when it helps. Experts are named, and viewers should hear the disagreement.
 

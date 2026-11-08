@@ -24,7 +24,7 @@ Engine-built, no reviewer, no human gate (the spend was approved with the storyb
 4. `.venv/Scripts/tms stage submit audio` → `completed`.
 
 ## Rules (config/rules.d/audio.yaml)
-VO-01..06 (clips complete, words 1:1, onset, files, rate, not stale) · TL-01..10 (contiguous, clips in scenes,
+VO-01..07 (clips complete, words 1:1, onset, files, rate counting numbers as spoken, not stale, clean clip edges) · TL-01..10 (contiguous, clips in scenes,
 warp 0.8–1.25×, anchors ±2 frames, duration vs target, captions, word order, intro/first word, end card) ·
 MU-01..04 (splices, dropouts, exact length, fades).
 

@@ -14,6 +14,10 @@ from tms.state.project import GateViolation, Project, ProjectError
 
 PRE_ROLL_S = 0.08
 TAIL_S = 0.22
+BURST_MAX_S = 0.08   # a loud stretch this short at the very end, after silence, is a TTS artefact, not speech
+BURST_GAP_S = 0.10
+FADE_IN_S = 0.01
+FADE_OUT_S = 0.04
 
 
 def tts_text(text: str, pron: dict[str, str]) -> str:
@@ -47,12 +51,48 @@ def words_from_alignment(spoken: str, display: str, al: dict) -> list[dict]:
     return out
 
 
+def _drop_end_burst(x: np.ndarray, b: int, win: int = 480) -> tuple[int, int]:
+    """TTS files sometimes end with a short noise burst after the speech has gone quiet. If the last loud stretch is
+    shorter than BURST_MAX_S and follows at least BURST_GAP_S of silence, the speech really ended before it.
+    Returns (speech end, limit): the trim must not reach the burst, which starts at `limit`."""
+    mono = x.mean(axis=1) if x.ndim > 1 else x
+    n = b // win
+    if n < 3:
+        return b, len(x)
+    rms_db = 20 * np.log10(np.sqrt(np.mean(mono[: n * win].reshape(n, win) ** 2, axis=1) + 1e-12))
+    loud = rms_db > -40.0
+    k = n - 1
+    while k >= 0 and loud[k]:
+        k -= 1
+    burst = n - 1 - k
+    gap_end = k
+    while k >= 0 and not loud[k]:
+        k -= 1
+    gap = gap_end - k
+    if 0 < burst * win <= BURST_MAX_S * wav.SR and gap * win >= BURST_GAP_S * wav.SR and k >= 0:
+        return (k + 1) * win, (gap_end + 1) * win
+    return b, len(x)
+
+
+def _fade_edges(y: np.ndarray) -> np.ndarray:
+    """Short raised-cosine fades so no clip can start or stop with a click."""
+    y = y.copy()
+    fi, fo = min(int(FADE_IN_S * wav.SR), len(y) // 2), min(int(FADE_OUT_S * wav.SR), len(y) // 2)
+    if fi:
+        y[:fi] *= (0.5 - 0.5 * np.cos(np.linspace(0, np.pi, fi))).reshape(-1, *([1] * (y.ndim - 1)))
+    if fo:
+        y[-fo:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, fo))).reshape(-1, *([1] * (y.ndim - 1)))
+    return y
+
+
 def _trim(x: np.ndarray, words: list[dict]) -> tuple[np.ndarray, list[dict], float]:
-    """Trim leading silence to PRE_ROLL_S and trailing to TAIL_S; shift words; return onset correction."""
+    """Trim leading silence to PRE_ROLL_S and trailing to TAIL_S (ignoring an end burst); shift words; fade the edges;
+    return onset correction."""
     a, b = wav.speech_bounds(x)
+    b, limit = _drop_end_burst(x, b)
     start = max(0, a - int(PRE_ROLL_S * wav.SR))
-    end = min(len(x), b + int(TAIL_S * wav.SR))
-    y = x[start:end]
+    end = min(limit, b + int(TAIL_S * wav.SR))
+    y = _fade_edges(x[start:end])
     shift = start / wav.SR
     ws = [dict(w, start_s=round(max(w["start_s"] - shift, 0.0), 4), end_s=round(max(w["end_s"] - shift, 0.0), 4)) for w in words]
     onset_measured = (a - start) / wav.SR

@@ -18,6 +18,9 @@ previews), the animatic and contact sheet paths, validator warnings, and the sta
   contact sheet; `.venv/Scripts/tms validate -p <slug> --json` for rule findings — any NS error is critical).
 - **Hook** grabs in ≤ 12 words, is true and specific to this match, and opens a question the last scene answers; the arc builds; the ending lands (end card complements the last line).
 - **Attention**: something new every 15 to 20 seconds; would a viewer stay? A generic hook, a hook the video doesn't pay off, or a stretch that sounds like a lecture is `major`.
+- **Repetition and relevance**: list every event, statistic and quote, and the scenes it appears in. The same fact
+  (for example the same match) in two scenes is `major` unless the second is a one-word callback. A sentence that
+  doesn't serve its scene's point (match news or another competition dropped into a tactical scene) is `major`.
 - **Tone**: a little wit, at nobody's expense off the pitch; a joke about injury, illness, private life, nationality or looks is `critical`. Caveats said once, not stacked. Rumours sound like rumours.
 - **Clarity** for the audience level; jargon defined once for beginners; no ids, no filler, formations spelled out.
 - **Pacing**: lines fit their scenes; key scenes have anchors on the verb of the action, not on filler words.

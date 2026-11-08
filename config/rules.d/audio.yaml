@@ -6,6 +6,7 @@ rules:
   VO-04: {artifact: voiceover_manifest, severity: error, text: "clip files exist, are 48 kHz mono, sample counts match, trailing silence <= 0.3 s", params: {tail_s: 0.3}}
   VO-05: {artifact: voiceover_manifest, severity: warning, text: "speaking rate 120-190 wpm, numbers counted as spoken (1.56 = four words) (error outside 100-220; the mock voice only warns)", params: {lo: 120, hi: 190, min: 100, max: 220}}
   VO-06: {artifact: voiceover_manifest, severity: error, text: "each clip's request hash matches the current narration and voice settings (no stale audio)"}
+  VO-07: {artifact: voiceover_manifest, severity: error, text: "each clip starts and ends quietly (first and last 10 ms below -45 dBFS), so joins between lines cannot click", params: {edge_s: 0.01, max_db: -45.0}}
   TL-01: {artifact: timeline, severity: error, text: "intro, scenes and outro are contiguous and sum to `frames`"}
   TL-02: {artifact: timeline, severity: error, text: "each voice clip sits inside its scene; clips never overlap"}
   TL-03: {artifact: timeline, severity: error, text: "warp segments run at 0.8-1.25x; each hold <= 3 s; warning when holds exceed 20% of the video", params: {lo: 0.8, hi: 1.25, max_hold_f: 90, hold_share: 0.2}}
